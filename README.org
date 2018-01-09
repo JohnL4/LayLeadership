@@ -9,7 +9,7 @@
 
   (A quick note on the license: I understand that, without a license, software really can't be used at all, from a legal
   perspective, without fear of being sued.  Probably not a giant concern for charitable organizations such as churches,
-  but, just to be safe, I've picked the most permissive license I see.  Enjoy; just give me credit. :) )
+  but, just to be safe, I've picked the most permissive license I see.  Enjoy. :) )
 
 * Design/implementation process
 
