@@ -1,6 +1,6 @@
 * Overview
 
-  This repo is intended to capture my notes and various bits of software I write to help my Methodist church's Lay
+  This repository is intended to capture my notes and various bits of software I write to help my Methodist church's Lay
   Leadership committee.
 
   In a Methodist church, the Lay Leadership committee is a committee comprised of lay members and led by one of the
