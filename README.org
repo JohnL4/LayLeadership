@@ -1,0 +1,117 @@
+* Overview
+
+  This repository is intended to capture my notes and various bits of software I write to help my Methodist church's Lay
+  Leadership committee.
+
+  In a Methodist church, the Lay Leadership committee is a committee comprised of lay members and led by one of the
+  clergy (head pastor?) whose job is to recruit other lay members to server on all church committees.  It's kind of a
+  recruiting/HR/sales activity.
+
+  (A quick note on the license: I understand that, without a license, software really can't be used at all, from a legal
+  perspective, without fear of being sued.  Probably not a giant concern for charitable organizations such as churches,
+  but, just to be safe, I've picked the most permissive license I see.  Enjoy. :) )
+
+* Design/implementation process
+
+  Just a quick note to say this should be an iterative process, with lots of changes (big and little) along the way, as
+  opposed to a bunch of up-front cogitation and programming followed by delivery of a final product that never changes.
+
+  People who are change-averse will probably not be comfortable, but the end result should (eventually) be better than
+  what would be delivered by a "waterfall" process.
+
+* Tables
+
+** Member
+
+   Church member.
+
+   - First Name :: 
+   - Last Name ::
+   - Phone Number ::
+   - Email Address ::
+   - Comments :: I guess this should be confidential, if we want to commit this to the cloud.  I think we can trust it,
+                 for the most part, but maybe we shouldn't put anything TOO embarrassing in here.
+
+** MemberInterest
+
+   n-to-n link of Members and Interests.
+
+   *NOTE:* AirTable can apparently handle n-to-n relations behind the scenes, so we don't need these explicit relation
+   tables.
+
+   - Notes :: Further notes on the particular member's interest, if any.
+
+** MemberContactHistory
+
+   Contact history. n-to-n.
+
+   - Member ::
+   - ContactTask ::
+   - Date :: 
+   - Notes ::
+   - Result :: Explicit focus on results. :)
+   - NextTask :: Don't know if we can automatically create records or not. Use Zapier?
+
+** MemberCommitteeHistory
+
+   n-to-n.  Maybe, for the purposes of AirTable, we want the member-history tables combined, so they can be presented in
+   one stream.  Bad d/b design, but oh well.
+
+   - Member ::
+   - Committee ::
+   - StartDate ::
+   - EndDate ::
+   - Notes :: Any (confidential) notes on that member's tenure on that committee.
+
+** Committee
+
+   Church committee.
+
+   - Name ::
+   - Blurb :: description of committee, for use in recruiting.  Really, the type of standard things we'd like to put in
+              blurbs should be separate fields, so we can make sure to get them covered for all committees.
+   - MeetingsPerYear :: assumption: 1-2-hour meetings
+   - ExtraHoursPerMonth :: time required outside of meetings
+
+** CommitteeMember?
+
+   Not sure we need this, but it would be n-to-n.
+
+** ContactTask
+
+   A thing a lay leadership member is tasked with (mostly contacting church members to recruit them).  I assume the
+   tasks LL is concerned with are contacts with church members.  Maybe contacts with clergy/committee chairs to get
+   questions answered? Do we want to document that? Maybe, so we can get results captured?
+
+   Note: In any system, "Task" turns out to be a hairy, nebulous concept, so we'll need to apply a little discipline
+   here when deciding what this system will do.  (In fact, I just renamed this thing from "Task" to "ContactTask", to be
+   more clear.)
+
+   - Member :: Church member to contact
+   - Assignee :: LayLeadershipCommitteeMember this task is assigned to.
+   - Summary :: Short display text.
+   - Description :: Notes pertaining to the task as a whole, not its history.  In case a task requires multiple contacts
+                    (or steps of some sort? What would those be?), the results of each step would go in the
+                    MemberContactHistory notes/result.
+
+** LayLeadershipCommitteeMember
+
+   Church members who are on the Lay Leadership committee.
+
+   - Member :: Link back to church member, where the contact info will be stored
+
+** Interest
+
+   The type of thing a church member might be interested in doing.  Free-form-ish in that we shouldn't be afraid to
+   create new ones of these things.
+
+   - Name ::
+   - Description :: Do we need this?  In case just the name isn't enough to describe it?  Or should the name really be
+                    descriptive enough?
+
+** Tag?
+
+   Just seems like a good idea, rather than "category" (since a thing can really one ever be in one category).
+   
+   - Name ::
+             
