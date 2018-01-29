@@ -16,6 +16,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -36,8 +37,15 @@ public class App
        HSSFWorkbook workbook = readFile( filename);
        for (Sheet sheet : workbook)
           for (Row row : sheet)
-             for (Cell cell : row)
-                System.out.println( "got: " + cell.getStringCellValue() + " (" + cell.getCellStyle() + ")");
+             for (Cell cell : row) {
+                Font font = workbook.getFontAt( cell.getCellStyle().getFontIndex());
+                String format;
+                if (font.getBold())
+                   format = " (bold)";
+                else
+                   format = "";
+                System.out.println( "got: " + cell.getStringCellValue() + format /* + "\t" + font */ );
+             }
     }
     
     private static HSSFWorkbook readFile(String filename) throws IOException {
