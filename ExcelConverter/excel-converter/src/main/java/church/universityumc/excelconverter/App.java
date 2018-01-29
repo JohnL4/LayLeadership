@@ -35,9 +35,9 @@ public class App
     private static void dumpExcelFile() throws IOException {
        String filename = "test.xls";
        HSSFWorkbook workbook = readFile( filename);
-       for (Sheet sheet : workbook)
-          for (Row row : sheet)
-             for (Cell cell : row) {
+       for (Sheet sheet : workbook) // For all sheets in the workbook...
+          for (Row row : sheet) // For all rows in the sheet...
+             for (Cell cell : row) { // For all cells in the row...
                 Font font = workbook.getFontAt( cell.getCellStyle().getFontIndex());
                 String format;
                 if (font.getBold())
