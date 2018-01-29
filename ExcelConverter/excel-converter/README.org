@@ -1,0 +1,20 @@
+* Convert AccessACS Excel Output To A More-Usable Format
+
+  The problem is that AccessACS (our church info system) spits out reports in Excel format that are
+  (sort of) readable by humans, but not very useful for computers.  For example, we get a church
+  member's name in one row, then a bunch of prior activities in the following rows.  Ideally, we'd
+  get all that in one monster row or even separate linked tables.
+
+  This utility will handle the conversion from AccessACS's output to a more useful form for us.
+
+* Build, Run
+
+  Test:
+
+  : mvn test
+
+  Build:
+
+  : mvn package
+
+  
