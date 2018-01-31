@@ -13,8 +13,14 @@
 
   : mvn test
 
-  Build:
+  Build (also runs unit tests):
 
   : mvn package
 
+  Copy Dependencies (really, only needs to be done the first time or when you change dependencies)
+
+  : mvn dependency:copy-dependencies
+
+  After this is done, you can zip up the generated jar file plus the dependencies and you /should/ have a complete,
+  executable package.
   

@@ -38,6 +38,8 @@
             <archive>
               <manifest>
                 <mainClass>church.universityumc.excelconverter.App</mainClass>
+                <addClasspath>true</addClasspath>
+                <classpathPrefix>dependency/</classpathPrefix> <!-- Populate with 'mvn dependency:copy-dependencies', I think -->
               </manifest>
             </archive>
           </configuration>
