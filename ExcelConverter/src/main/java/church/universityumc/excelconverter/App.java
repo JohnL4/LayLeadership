@@ -75,6 +75,7 @@ public class App
        for (Sheet sheet : workbook) // For all sheets in the workbook...
           for (Row row : sheet) 
              for (Cell cell : row) { 
+                                
                 Font font = workbook.getFontAt( cell.getCellStyle().getFontIndex());
                 List<String> formats = new ArrayList<String>();
                 if (font.getBold())
@@ -86,7 +87,37 @@ public class App
                    format = "";
                 else
                    format = " (" + String.join( " ", formats) + ")";
-                System.out.println( "got: " + cell.getStringCellValue() + " " + format /* + "\t" + font */ );
+                
+                String cellValue;
+                
+                switch (cell.getCellTypeEnum())
+                {
+               case BLANK:
+                  cellValue = "";
+                  break;
+               case BOOLEAN:
+                  cellValue = cell.getBooleanCellValue() ? "TRUE" : "FALSE";
+                  break;
+               case ERROR:
+                  cellValue = String.format( "(#ERROR %g)", cell.getErrorCellValue());
+                  break;
+               case FORMULA:
+                  cellValue = String.format( "(FORMULA: %s)", cell.getCellFormula());
+                  break;
+               case NUMERIC:
+                  cellValue = new Double( cell.getNumericCellValue()).toString();
+                  break;
+               case STRING:
+                  cellValue = cell.getStringCellValue();
+                  break;
+               case _NONE:
+                  cellValue = "(#NONE)";
+                  break;
+               default:
+                  cellValue = String.format( "(UNEXPECTED CELL TYPE: %s)", cell.getCellTypeEnum());
+                  break;
+                }
+                System.out.println( String.format( "got %s %s", cellValue, format));
              }
     }
     
