@@ -34,64 +34,59 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * Hello world!
  *
  */
-public class App 
+public class App
 {
-   private static void showHelp() {
-      String help =
-            "Reformat Excel file.\n\n"
-            + "-h\thelp\n"
-            + "-f\tinput file\n"     
-            ;
+   private static void showHelp()
+   {
+      String help = "Reformat Excel file.\n\n" + "-h\thelp\n" + "-f\tinput file\n";
       System.out.println( help);
    }
-   
-    public static void main( String[] args ) throws IOException, ParseException
-    {
-       CommandLine cmdLine = parseCommandLine( args);
-       if (cmdLine.hasOption( 'h'))
-          showHelp();
-       String infileName = "test.xls";
-       if (cmdLine.hasOption( 'f'))
-       {
-          infileName = cmdLine.getOptionValue( 'f');
-          dumpExcelFile( infileName);
-       }
-    }
-    
-    
-    private static CommandLine parseCommandLine( String[] args) throws ParseException
-    {
-       Options options = new Options();
-       options.addOption( "h", "show help");
-       options.addOption( "f", true, "input file");
-       
-       CommandLineParser parser = new DefaultParser();
-       CommandLine cmdLine = parser.parse( options, args);
-       return cmdLine;
-    }
-    
-    private static void dumpExcelFile(String anInfileName) throws IOException {
-       Workbook workbook = readFile( anInfileName);
-       for (Sheet sheet : workbook) // For all sheets in the workbook...
-          for (Row row : sheet) 
-             for (Cell cell : row) { 
-                                
-                Font font = workbook.getFontAt( cell.getCellStyle().getFontIndex());
-                List<String> formats = new ArrayList<String>();
-                if (font.getBold())
-                   formats.add( "bold");
-                if (font.getItalic())
-                   formats.add( "italic");
-                String format;
-                if (formats.isEmpty())
-                   format = "";
-                else
-                   format = " (" + String.join( " ", formats) + ")";
-                
-                String cellValue;
-                
-                switch (cell.getCellTypeEnum())
-                {
+
+   public static void main( String[] args) throws IOException, ParseException
+   {
+      CommandLine cmdLine = parseCommandLine( args);
+      if (cmdLine.hasOption( 'h')) showHelp();
+      String infileName = "test.xls";
+      if (cmdLine.hasOption( 'f'))
+      {
+         infileName = cmdLine.getOptionValue( 'f');
+         dumpExcelFile( infileName);
+      }
+   }
+
+   private static CommandLine parseCommandLine( String[] args) throws ParseException
+   {
+      Options options = new Options();
+      options.addOption( "h", "show help");
+      options.addOption( "f", true, "input file");
+
+      CommandLineParser parser = new DefaultParser();
+      CommandLine cmdLine = parser.parse( options, args);
+      return cmdLine;
+   }
+
+   private static void dumpExcelFile( String anInfileName) throws IOException
+   {
+      Workbook workbook = readFile( anInfileName);
+      for (Sheet sheet : workbook) // For all sheets in the workbook...
+         for (Row row : sheet)
+            for (Cell cell : row)
+            {
+
+               Font font = workbook.getFontAt( cell.getCellStyle().getFontIndex());
+               List<String> formats = new ArrayList<String>();
+               if (font.getBold()) formats.add( "bold");
+               if (font.getItalic()) formats.add( "italic");
+               String format;
+               if (formats.isEmpty())
+                  format = "";
+               else
+                  format = " (" + String.join( " ", formats) + ")";
+
+               String cellValue;
+
+               switch (cell.getCellTypeEnum())
+               {
                case BLANK:
                   cellValue = "";
                   break;
@@ -116,13 +111,11 @@ public class App
                default:
                   cellValue = String.format( "(UNEXPECTED CELL TYPE: %s)", cell.getCellTypeEnum());
                   break;
-                }
-                System.out.println( String.format( "got %s %s", cellValue, format));
-             }
-    }
-    
-    
-    
+               }
+               System.out.println( String.format( "got [%s] %s %s", cell.getCellTypeEnum(), cellValue, format));
+            }
+   }
+
    private static Workbook readFile( String filename) throws IOException
    {
       try (FileInputStream fis = new FileInputStream( filename))
