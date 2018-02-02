@@ -26,7 +26,9 @@ import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * Hello world!
@@ -50,8 +52,10 @@ public class App
           showHelp();
        String infileName = "test.xls";
        if (cmdLine.hasOption( 'f'))
+       {
           infileName = cmdLine.getOptionValue( 'f');
-       dumpExcelFile( infileName);
+          dumpExcelFile( infileName);
+       }
     }
     
     
@@ -67,10 +71,10 @@ public class App
     }
     
     private static void dumpExcelFile(String anInfileName) throws IOException {
-       HSSFWorkbook workbook = readFile( anInfileName);
+       Workbook workbook = readFile( anInfileName);
        for (Sheet sheet : workbook) // For all sheets in the workbook...
-          for (Row row : sheet) // For all rows in the sheet...
-             for (Cell cell : row) { // For all cells in the row...
+          for (Row row : sheet) 
+             for (Cell cell : row) { 
                 Font font = workbook.getFontAt( cell.getCellStyle().getFontIndex());
                 List<String> formats = new ArrayList<String>();
                 if (font.getBold())
@@ -88,9 +92,21 @@ public class App
     
     
     
-    private static HSSFWorkbook readFile(String filename) throws IOException {
-       try (FileInputStream fis = new FileInputStream(filename)) {
-               return new HSSFWorkbook(fis);        // NOSONAR - should not be closed here
-       }
-    }       
+   private static Workbook readFile( String filename) throws IOException
+   {
+      try (FileInputStream fis = new FileInputStream( filename))
+      {
+         try
+         {
+            return new HSSFWorkbook( fis);
+         }
+         catch (Exception exc)
+         {
+         }
+      }
+      try (FileInputStream fis = new FileInputStream( filename))
+      {
+         return new XSSFWorkbook( fis);
+      }
+   }
 }
