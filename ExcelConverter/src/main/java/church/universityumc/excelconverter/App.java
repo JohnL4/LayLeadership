@@ -10,6 +10,8 @@ import java.util.Locale;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -36,36 +38,73 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class App
 {
-   private static void showHelp()
+   private static Options options;
+   
+   private static Options makeOptions()
    {
-      String help = "Reformat Excel file.\n\n" + "-h\thelp\n" + "-f\tinput file\n";
-      System.out.println( help);
+      Options options = new Options();
+      options.addOption( "h", "help", false, "show help");
+      options.addOption( Option.builder( "f") // "f", true, "input file");
+            .desc( "input .xls or .xlsx file")
+            .hasArg()
+            .build());
+      options.addOption( Option.builder()
+            .longOpt( "dump")
+            .desc( "dump input to stdout, in no particular format")
+            .build());
+      options.addOption( Option.builder()
+            .longOpt( "xlsx")
+            .desc( "output to specified .xlsx file")
+            .hasArg()
+            .build());
+      options.addOption( Option.builder()
+            .longOpt( "db")
+            .desc( "update given SQL database, using specified JDBC connection string")
+            .hasArg()
+            .build());
+      return options;
    }
 
    public static void main( String[] args) throws IOException, ParseException
    {
+      options = makeOptions();
       CommandLine cmdLine = parseCommandLine( args);
       if (cmdLine.hasOption( 'h')) showHelp();
       String infileName = "test.xls";
       if (cmdLine.hasOption( 'f'))
       {
          infileName = cmdLine.getOptionValue( 'f');
-         dumpExcelFile( infileName);
+         if (cmdLine.hasOption( "dump"))
+            dumpToStdout( infileName);
+         if (cmdLine.hasOption( "xslx"))
+         {
+            String outfileName = cmdLine.getOptionValue( "xslx");
+            dumpToExcelFile( infileName, outfileName);
+         }
+         if (cmdLine.hasOption( "db"))
+         {
+            String jdbcConnectionString = cmdLine.getOptionValue( "db");
+            // Magical JDBC connection
+            updateDatabase( infileName, jdbcConnectionString);
+         }
       }
    }
 
    private static CommandLine parseCommandLine( String[] args) throws ParseException
    {
-      Options options = new Options();
-      options.addOption( "h", "show help");
-      options.addOption( "f", true, "input file");
-
       CommandLineParser parser = new DefaultParser();
       CommandLine cmdLine = parser.parse( options, args);
       return cmdLine;
    }
 
-   private static void dumpExcelFile( String anInfileName) throws IOException
+   private static void showHelp()
+   {
+      String overview = "Read an Excel file and do something with it, one of --dump, --xslx, --db";
+      HelpFormatter helpFormatter = new HelpFormatter();
+      helpFormatter.printHelp( "java -jar <this-jar-file>", overview, options, "", false);
+   }
+
+   private static void dumpToStdout( String anInfileName) throws IOException
    {
       Workbook workbook = readFile( anInfileName);
       for (Sheet sheet : workbook) // For all sheets in the workbook...
@@ -114,6 +153,18 @@ public class App
                }
                System.out.println( String.format( "got [%s] %s %s", cell.getCellTypeEnum(), cellValue, format));
             }
+   }
+
+   private static void dumpToExcelFile( String anInfileName, String anOutfileName)
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
+   private static void updateDatabase( String anInfileName, String aJdbcConnectionString)
+   {
+      // TODO Auto-generated method stub
+      
    }
 
    private static Workbook readFile( String filename) throws IOException
