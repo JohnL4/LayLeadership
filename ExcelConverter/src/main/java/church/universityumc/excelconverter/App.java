@@ -4,8 +4,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -24,6 +27,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
@@ -31,6 +35,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import church.universityumc.ChurchMember;
 
 /**
  * Hello world!
@@ -64,6 +70,23 @@ public class App
             .build());
       return options;
    }
+   
+   /**
+    * Expected column header for expected columns. Used to allow a little flexibility in where the columns 
+    * appear.
+    */
+   private static final String
+      NAME = "Name",
+      AGE = "Age",
+      PHONE = "Preferred Phone",
+      EMAIL = "E-mail",
+      DATE_JOINED = "Date Joined"
+      ;
+   
+   /**
+    * Map from String column header to column index corresponding to header.
+    */
+   private static Map<String, Integer> headerColumnIndex; 
 
    public static void main( String[] args) throws IOException, ParseException
    {
@@ -112,7 +135,7 @@ public class App
             for (Cell cell : row)
             {
 
-               Font font = workbook.getFontAt( cell.getCellStyle().getFontIndex());
+               Font font = getCellFont( workbook, cell);
                List<String> formats = new ArrayList<String>();
                if (font.getBold()) formats.add( "bold");
                if (font.getItalic()) formats.add( "italic");
@@ -155,16 +178,105 @@ public class App
             }
    }
 
-   private static void dumpToExcelFile( String anInfileName, String anOutfileName)
+   private static Font getCellFont( Workbook workbook, Cell cell)
    {
-      // TODO Auto-generated method stub
+      Font font = workbook.getFontAt( cell.getCellStyle().getFontIndex());
+      return font;
+   }
+
+   private static void dumpToExcelFile( String anInfileName, String anOutfileName) throws IOException
+   {
+      Collection<ChurchMember> churchMembers = buildChurchMembers( anInfileName);
       
    }
 
-   private static void updateDatabase( String anInfileName, String aJdbcConnectionString)
+   private static void updateDatabase( String anInfileName, String aJdbcConnectionString) throws IOException
    {
-      // TODO Auto-generated method stub
+      Collection<ChurchMember> churchMembers = buildChurchMembers( anInfileName);
       
+   }
+
+   /**
+    * Build an internal database of {@link ChurchMember}s and all the associated collections of objects.
+    * @param anInfileName
+    * @return
+    * @throws IOException 
+    */
+   private static Collection<ChurchMember> buildChurchMembers( String anInfileName) throws IOException
+   {
+      Collection<ChurchMember> churchMembers = new ArrayList<ChurchMember>();
+      
+      Workbook workbook = readFile( anInfileName);
+      
+      Sheet sheet = workbook.getSheetAt( 0);
+      for (Row row : sheet)
+      {
+         int firstCellIx = row.getFirstCellNum();
+         if (firstCellIx >= 0)
+         {
+            Cell firstCell = row.getCell( firstCellIx);
+            CellType cellType = firstCell.getCellTypeEnum();
+            if (firstCellIx == 0)
+            {
+               if (cellType == CellType.STRING)
+               {
+                  String cellValue = firstCell.getStringCellValue();
+                  if (cellValue.equals( "Date :") || cellValue.equals( "Time :"))
+                     continue; // Next row.
+                  Font font = getCellFont( workbook, firstCell);
+                  // Assumption: first cell of header row will be "Name" and no church member will have a name of "Name".
+                  if (cellValue.equals( NAME) && font.getBold())
+                  {
+                     // Iterate across and get indexes for each header pos'n.
+                     for (Cell cell : row)
+                     {
+                        if (cell.getCellTypeEnum() == CellType.STRING)
+                        {
+                           headerColumnIndex = new HashMap<String, Integer>();
+                           switch (cell.getStringCellValue())
+                           {
+                           case NAME:
+                              headerColumnIndex.put( NAME, cell.getColumnIndex());
+                              break;
+                           case AGE:
+                              headerColumnIndex.put( AGE, cell.getColumnIndex());
+                              break;
+                           case PHONE:
+                              headerColumnIndex.put( PHONE, cell.getColumnIndex());
+                              break;
+                           case EMAIL:
+                              headerColumnIndex.put( EMAIL, cell.getColumnIndex());
+                              break;
+                           case DATE_JOINED:
+                              headerColumnIndex.put( DATE_JOINED, cell.getColumnIndex());
+                              break;
+                           default:
+                              warn( "Unexpected column header: %s\n", cell.getStringCellValue());
+                              break;
+                           }
+                        }
+                        else
+                           warn( "Unexpected cell type in header row: %g", cell.getCellTypeEnum());
+                     }
+                     
+                     continue; // Header row, skip.
+                  }
+               }
+            }
+         }
+      }
+      
+      return churchMembers;
+   }
+
+   /**
+    * Log a message to stderr.
+    * @param aFormat
+    * @param args
+    */
+   private static void warn( String aFormat, Object ... args)
+   {
+      System.err.printf( "WARNING: " + aFormat, args);
    }
 
    private static Workbook readFile( String filename) throws IOException
