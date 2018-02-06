@@ -209,7 +209,7 @@ public class App
       Workbook workbook = readFile( anInfileName);
       
       Sheet sheet = workbook.getSheetAt( 0);
-      for (Row row : sheet)
+      for (Row row : sheet) // TODO: label, so can do "continue <label>" instead of just "continue".
       {
          int firstCellIx = row.getFirstCellNum();
          if (firstCellIx >= 0)
@@ -225,6 +225,8 @@ public class App
                      continue; // Next row.
                   Font font = getCellFont( workbook, firstCell);
                   // Assumption: first cell of header row will be "Name" and no church member will have a name of "Name".
+                  // TODO: recognize header row by cmd-line-specified list of header labels, possibly even have a dynamic
+                  // list of header values per user row?  Instead of this static property thing.
                   if (cellValue.equals( NAME) && font.getBold())
                   {
                      // Iterate across and get indexes for each header pos'n.
