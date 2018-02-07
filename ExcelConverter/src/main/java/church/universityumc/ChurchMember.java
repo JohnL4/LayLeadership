@@ -1,5 +1,6 @@
 package church.universityumc;
 
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -27,4 +28,13 @@ public class ChurchMember
    private Collection<Skill> skills;
    private Collection<ActivityEngagement> serviceHistory;
    private Collection<Contact> contactHistory;
+
+   /**
+    * Dumps this object to the given stream as text.
+    * @param out
+    */
+   public void dumpText(PrintStream out) {
+	   // TODO Auto-generated method stub
+
+   }
 }

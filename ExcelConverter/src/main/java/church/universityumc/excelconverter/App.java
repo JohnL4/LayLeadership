@@ -47,7 +47,27 @@ import church.universityumc.ChurchMember;
  */
 public class App
 {
-   private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat();
+	/**
+	 * Expected column header for expected columns. Used to allow a little
+	 * flexibility in where the columns appear.
+	 */
+	private static final String NAME = "Name", AGE = "Age", PHONE = "Preferred Phone", EMAIL = "E-mail",
+			DATE_JOINED = "Date Joined";
+
+	private static final String ACTIVITIES = "ACTIVITIES";
+
+	private static final String COMMENTS = "COMMENTS";
+
+	private static final String CATEGORY = "Category";
+
+	private static boolean headersInitialized;
+
+	/**
+	 * Map from String column header to column index corresponding to header.
+	 */
+	private static Map<String, Integer> memberHeaderColumnNumbers = new HashMap<String, Integer>();
+
+	private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat();
 
    private static Options options;
    
@@ -64,27 +84,6 @@ public class App
             .desc( "update given SQL database, using specified JDBC connection string").hasArg().build());
       return options;
    }
-
-   /**
-    * Expected column header for expected columns. Used to allow a little flexibility in where the columns appear.
-    */
-   private static final String         NAME = "Name", AGE = "Age", PHONE = "Preferred Phone", EMAIL = "E-mail",
-         DATE_JOINED = "Date Joined";
-
-   private static final String ACTIVITIES = "ACTIVITIES";
-
-   private static final String COMMENTS = "COMMENTS";
-
-   private static final String CATEGORY = "Category";
-
-   /**
-    * Map from String column header to column index corresponding to header.
-    */
-   private static Map<String, Integer> headerColumnIndex;
-
-   private static boolean              headersInitialized;
-
-   private static Map<String, Integer> memberHeaderColumnNumbers = new HashMap<String, Integer>();
 
    public static void main( String[] args) throws IOException, ParseException, UnknownRowTypeException
    {
@@ -209,11 +208,15 @@ public class App
 
       Sheet sheet = workbook.getSheetAt( 0);
       RowType previousRowType = RowType.None;
-      ChurchMember currentChurchMember;
+      ChurchMember currentChurchMember = null;
       nextRow: for (Row row : sheet) // Label makes 'continue' stmts a little more obvious.
       {
-         RowType rowType = getRowType( row, workbook, previousRowType);
-         switch (rowType)
+			RowType rowType = getRowType(row, workbook, previousRowType); // TODO: don't use prev. row type; use a
+																			// concept of "what section are we in?". So,
+																			// it could be something (e.g., section
+																			// marker) that was seen more than one row
+																			// ago.
+			switch (rowType)
          {
          case PageHeader:
             break;
@@ -221,6 +224,9 @@ public class App
             if (memberHeaderColumnNumbers.size() == 0) buildMemberHeaderColumnNumbers( row);
             break;
          case Member:
+        	 if (currentChurchMember == null) {}
+        	 else
+        		 currentChurchMember.dumpText( System.out);
             currentChurchMember = parseMember( row);
             break;
          case ActivitiesHeader:
@@ -237,65 +243,7 @@ public class App
             break;
          }
          previousRowType = rowType;
-         
-         // TODO: delete most of the rest of this.
-         
-         if (isPageHeaderRow( row)) continue nextRow;
-         if (isMemberHeaderRow( row)) continue nextRow;
-         int firstCellIx = row.getFirstCellNum();
-         if (firstCellIx >= 0)
-         {
-            Cell firstCell = row.getCell( firstCellIx);
-            CellType cellType = firstCell.getCellTypeEnum();
-            if (firstCellIx == 0)
-            {
-               if (cellType == CellType.STRING)
-               {
-                  String cellValue = firstCell.getStringCellValue();
-                  if (cellValue.equals( "Date :") || cellValue.equals( "Time :")) continue nextRow;
-                  Font font = getCellFont( workbook, firstCell);
-                  // Assumption: first cell of header row will be "Name" and no church member will have a name of
-                  // "Name".
-                  if (cellValue.equals( NAME) && font.getBold())
-                  {
-                     // Iterate across and get indexes for each header pos'n.
-                     for (Cell cell : row)
-                     {
-                        if (cell.getCellTypeEnum() == CellType.STRING)
-                        {
-                           headerColumnIndex = new HashMap<String, Integer>();
-                           switch (cell.getStringCellValue())
-                           {
-                           case NAME:
-                              headerColumnIndex.put( NAME, cell.getColumnIndex());
-                              break;
-                           case AGE:
-                              headerColumnIndex.put( AGE, cell.getColumnIndex());
-                              break;
-                           case PHONE:
-                              headerColumnIndex.put( PHONE, cell.getColumnIndex());
-                              break;
-                           case EMAIL:
-                              headerColumnIndex.put( EMAIL, cell.getColumnIndex());
-                              break;
-                           case DATE_JOINED:
-                              headerColumnIndex.put( DATE_JOINED, cell.getColumnIndex());
-                              break;
-                           default:
-                              warn( "Unexpected column header: %s\n", cell.getStringCellValue());
-                              break;
-                           }
-                        }
-                        else
-                           warn( "Unexpected cell type in header row: %g", cell.getCellTypeEnum());
-                     }
-                     continue nextRow;
-                  }
-               }
-            }
-         }
       }
-
       return churchMembers;
    }
 
@@ -333,8 +281,10 @@ public class App
 
    private static void buildMemberHeaderColumnNumbers( Row aRow)
    {
-      // TODO Auto-generated method stub
-      
+	   memberHeaderColumnNumbers.clear();
+	   // Iterate across and get indexes for each header pos'n.
+	   for (Cell cell : aRow)
+		   memberHeaderColumnNumbers.put( cell.getStringCellValue(), cell.getColumnIndex());
    }
 
    private static RowType getRowType( Row aRow, Workbook aWorkbook, RowType aMostRecentRowType) throws UnknownRowTypeException
