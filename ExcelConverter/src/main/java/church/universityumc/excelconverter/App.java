@@ -3,8 +3,11 @@ package church.universityumc.excelconverter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+// import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -44,6 +47,8 @@ import church.universityumc.ChurchMember;
  */
 public class App
 {
+   private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat();
+
    private static Options options;
    
    private static Options makeOptions()
@@ -51,44 +56,37 @@ public class App
       Options options = new Options();
       options.addOption( "h", "help", false, "show help");
       options.addOption( Option.builder( "f") // "f", true, "input file");
-            .desc( "input .xls or .xlsx file")
-            .hasArg()
-            .build());
-      options.addOption( Option.builder()
-            .longOpt( "dump")
-            .desc( "dump input to stdout, in no particular format")
-            .build());
-      options.addOption( Option.builder()
-            .longOpt( "xlsx")
-            .desc( "output to specified .xlsx file")
-            .hasArg()
-            .build());
-      options.addOption( Option.builder()
-            .longOpt( "db")
-            .desc( "update given SQL database, using specified JDBC connection string")
-            .hasArg()
-            .build());
+            .desc( "input .xls or .xlsx file").hasArg().build());
+      options.addOption(
+            Option.builder().longOpt( "dump").desc( "dump input to stdout, in no particular format").build());
+      options.addOption( Option.builder().longOpt( "xlsx").desc( "output to specified .xlsx file").hasArg().build());
+      options.addOption( Option.builder().longOpt( "db")
+            .desc( "update given SQL database, using specified JDBC connection string").hasArg().build());
       return options;
    }
-   
+
    /**
-    * Expected column header for expected columns. Used to allow a little flexibility in where the columns 
-    * appear.
+    * Expected column header for expected columns. Used to allow a little flexibility in where the columns appear.
     */
-   private static final String
-      NAME = "Name",
-      AGE = "Age",
-      PHONE = "Preferred Phone",
-      EMAIL = "E-mail",
-      DATE_JOINED = "Date Joined"
-      ;
-   
+   private static final String         NAME = "Name", AGE = "Age", PHONE = "Preferred Phone", EMAIL = "E-mail",
+         DATE_JOINED = "Date Joined";
+
+   private static final String ACTIVITIES = "ACTIVITIES";
+
+   private static final String COMMENTS = "COMMENTS";
+
+   private static final String CATEGORY = "Category";
+
    /**
     * Map from String column header to column index corresponding to header.
     */
-   private static Map<String, Integer> headerColumnIndex; 
+   private static Map<String, Integer> headerColumnIndex;
 
-   public static void main( String[] args) throws IOException, ParseException
+   private static boolean              headersInitialized;
+
+   private static Map<String, Integer> memberHeaderColumnNumbers = new HashMap<String, Integer>();
+
+   public static void main( String[] args) throws IOException, ParseException, UnknownRowTypeException
    {
       options = makeOptions();
       CommandLine cmdLine = parseCommandLine( args);
@@ -97,8 +95,7 @@ public class App
       if (cmdLine.hasOption( 'f'))
       {
          infileName = cmdLine.getOptionValue( 'f');
-         if (cmdLine.hasOption( "dump"))
-            dumpToStdout( infileName);
+         if (cmdLine.hasOption( "dump")) dumpToStdout( infileName);
          if (cmdLine.hasOption( "xslx"))
          {
             String outfileName = cmdLine.getOptionValue( "xslx");
@@ -184,33 +181,67 @@ public class App
       return font;
    }
 
-   private static void dumpToExcelFile( String anInfileName, String anOutfileName) throws IOException
+   private static void dumpToExcelFile( String anInfileName, String anOutfileName) throws IOException, UnknownRowTypeException
    {
       Collection<ChurchMember> churchMembers = buildChurchMembers( anInfileName);
-      
+
    }
 
-   private static void updateDatabase( String anInfileName, String aJdbcConnectionString) throws IOException
+   private static void updateDatabase( String anInfileName, String aJdbcConnectionString) throws IOException, UnknownRowTypeException
    {
       Collection<ChurchMember> churchMembers = buildChurchMembers( anInfileName);
-      
+
    }
 
    /**
     * Build an internal database of {@link ChurchMember}s and all the associated collections of objects.
+    * 
     * @param anInfileName
     * @return
-    * @throws IOException 
+    * @throws IOException
+    * @throws UnknownRowTypeException 
     */
-   private static Collection<ChurchMember> buildChurchMembers( String anInfileName) throws IOException
+   private static Collection<ChurchMember> buildChurchMembers( String anInfileName) throws IOException, UnknownRowTypeException
    {
       Collection<ChurchMember> churchMembers = new ArrayList<ChurchMember>();
-      
+
       Workbook workbook = readFile( anInfileName);
-      
+
       Sheet sheet = workbook.getSheetAt( 0);
-      for (Row row : sheet) // TODO: label, so can do "continue <label>" instead of just "continue".
+      RowType previousRowType = RowType.None;
+      ChurchMember currentChurchMember;
+      nextRow: for (Row row : sheet) // Label makes 'continue' stmts a little more obvious.
       {
+         RowType rowType = getRowType( row, workbook, previousRowType);
+         switch (rowType)
+         {
+         case PageHeader:
+            break;
+         case MemberHeader:
+            if (memberHeaderColumnNumbers.size() == 0) buildMemberHeaderColumnNumbers( row);
+            break;
+         case Member:
+            currentChurchMember = parseMember( row);
+            break;
+         case ActivitiesHeader:
+            buildActivitiesHeaderColumnNumbers( row);
+            break;
+         case ActivitiesSectionMarker:
+         case CommentsSectionMarker:
+            break;
+         case Comments:
+            parseComments( row);
+            break;
+         default:
+            warn( "Unexpected row type: %g", rowType);
+            break;
+         }
+         previousRowType = rowType;
+         
+         // TODO: delete most of the rest of this.
+         
+         if (isPageHeaderRow( row)) continue nextRow;
+         if (isMemberHeaderRow( row)) continue nextRow;
          int firstCellIx = row.getFirstCellNum();
          if (firstCellIx >= 0)
          {
@@ -221,12 +252,10 @@ public class App
                if (cellType == CellType.STRING)
                {
                   String cellValue = firstCell.getStringCellValue();
-                  if (cellValue.equals( "Date :") || cellValue.equals( "Time :"))
-                     continue; // Next row.
+                  if (cellValue.equals( "Date :") || cellValue.equals( "Time :")) continue nextRow;
                   Font font = getCellFont( workbook, firstCell);
-                  // Assumption: first cell of header row will be "Name" and no church member will have a name of "Name".
-                  // TODO: recognize header row by cmd-line-specified list of header labels, possibly even have a dynamic
-                  // list of header values per user row?  Instead of this static property thing.
+                  // Assumption: first cell of header row will be "Name" and no church member will have a name of
+                  // "Name".
                   if (cellValue.equals( NAME) && font.getBold())
                   {
                      // Iterate across and get indexes for each header pos'n.
@@ -260,25 +289,174 @@ public class App
                         else
                            warn( "Unexpected cell type in header row: %g", cell.getCellTypeEnum());
                      }
-                     
-                     continue; // Header row, skip.
+                     continue nextRow;
                   }
                }
             }
          }
       }
-      
+
       return churchMembers;
    }
 
    /**
-    * Log a message to stderr.
+    * Parse the comments section into the current {@link ChurchMember}'s data.
+    * @param aRow
+    */
+   private static void parseComments( Row aRow)
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
+   /**
+    * Build a map from Activities column headers to column offsets.
+    * @param aRow
+    */
+   private static void buildActivitiesHeaderColumnNumbers( Row aRow)
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
+   /**
+    * Parse the given row into a {@link ChurchMember}.  Row contains basic properties such as email, phone, 
+    * name, age, join date, etc.
+    * @param aRow
+    * @return
+    */
+   private static ChurchMember parseMember( Row aRow)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   private static void buildMemberHeaderColumnNumbers( Row aRow)
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
+   private static RowType getRowType( Row aRow, Workbook aWorkbook, RowType aMostRecentRowType) throws UnknownRowTypeException
+   {
+      RowType retval;
+      
+      int firstCellIx = aRow.getFirstCellNum();
+      if (firstCellIx >= 0)
+      {
+         Cell firstCell = aRow.getCell( firstCellIx);
+         CellType cellType = firstCell.getCellTypeEnum();
+         if (firstCellIx == 0)
+         {
+            if (cellType == CellType.STRING)
+            {
+               String cellValue = firstCell.getStringCellValue();
+               if (cellValue.equals( "Date :") || cellValue.equals( "Time :")) retval = RowType.PageHeader;
+               else
+               {
+               Font font = getCellFont( aWorkbook, firstCell);
+               // Assumption: first cell of header row will be "Name" and no church member will have a name of
+               // "Name".
+               if (cellValue.equals( NAME) && font.getBold())
+                  retval = RowType.MemberHeader;
+               else if (cellValue.equals( ACTIVITIES) && font.getBold() && font.getItalic())
+                  retval = RowType.ActivitiesSectionMarker;
+               else if (cellValue.equals( COMMENTS) && font.getBold() && font.getItalic())
+                  retval = RowType.CommentsSectionMarker;
+               else if (cellValue.equals( CATEGORY) && font.getBold() && aMostRecentRowType == RowType.ActivitiesSectionMarker)
+                  retval = RowType.ActivitiesHeader;
+               else if (parseDate( cellValue) != null && ! font.getBold() && ! font.getItalic() && aMostRecentRowType == RowType.CommentsSectionMarker)
+                  retval = RowType.Comments;
+               else if (font.getBold() && ! font.getItalic()) // Could be preceded by Activities or Comments or MemberHeader
+                  retval = RowType.Member;
+               else
+                  throw new UnknownRowTypeException( aRow.getRowNum());
+               }
+            }
+            else
+               throw new UnknownRowTypeException( aRow.getRowNum());
+         }
+         else
+            throw new UnknownRowTypeException( aRow.getRowNum());
+      }
+      else
+         throw new UnknownRowTypeException( aRow.getRowNum());
+
+      return retval;
+   }
+
+   /**
+    * Attempts to parse a string as a date, returning the given Data on success or null on failure.
+    * @param aDateString
+    * @return
+    */
+   private static Date parseDate( String aDateString)
+   {
+      Date retval;
+      
+      try 
+      {
+         retval = SIMPLE_DATE_FORMAT.parse( aDateString);
+      }
+      catch (java.text.ParseException exc)
+      {
+         retval = null;
+      }
+      return retval;
+   }
+
+   private static void initializeMemberHeaders( Row aRow)
+   {
+      // TODO Auto-generated method stub
+      headersInitialized = true;
+   }
+
+   private static boolean isMemberHeaderRow( Row aRow)
+   {
+      // TODO Auto-generated method stub
+      return false;
+   }
+
+   private static boolean isPageHeaderRow( Row aRow)
+   {
+      boolean retval;
+
+      int firstCellIx = aRow.getFirstCellNum();
+      if (firstCellIx >= 0)
+      {
+         Cell firstCell = aRow.getCell( firstCellIx);
+         CellType cellType = firstCell.getCellTypeEnum();
+         if (firstCellIx == 0)
+         {
+            if (cellType == CellType.STRING)
+            {
+               String cellValue = firstCell.getStringCellValue();
+               if (cellValue.equals( "Date :") || cellValue.equals( "Time :"))
+                  retval = true;
+               else
+                  retval = false;
+            }
+            else
+               retval = false;
+         }
+         else
+            retval = false;
+      }
+      else
+         retval = false;
+
+      return retval;
+   }
+
+   /**
+    * Log a message to stderr, followed by a newline.
+    * 
     * @param aFormat
     * @param args
     */
-   private static void warn( String aFormat, Object ... args)
+   private static void warn( String aFormat, Object... args)
    {
-      System.err.printf( "WARNING: " + aFormat, args);
+      System.err.printf( "WARNING: " + aFormat + "\n", args);
    }
 
    private static Workbook readFile( String filename) throws IOException
