@@ -18,14 +18,9 @@ public enum RowType
    MemberHeader,
    
    /**
-    * Column headers for an Activities subsection of a {@link ChurchMember}.
+    * Row is the details of a {@link ChurchMember} (age, join date, phone, email, etc.).
     */
-   ActivitiesHeader, 
-   
-   /**
-    * Marks the beginning of an "ACTIVITIES" section.
-    */
-   ActivitiesSectionMarker, 
+   Member,
    
    /**
     * Marks the beginning of a "COMMENTS" section.
@@ -38,7 +33,17 @@ public enum RowType
    Comments, 
    
    /**
-    * Row is the details of a {@link ChurchMember} (age, join date, phone, email, etc.).
+    * Marks the beginning of an "ACTIVITIES" section.
     */
-   Member;
+   ActivitiesSectionMarker, 
+   
+   /**
+    * Column headers for an Activities subsection of a {@link ChurchMember}.
+    */
+   ActivitiesHeader,
+   
+   /**
+    * A row describing a single activity.
+    */
+   Activity;
 }

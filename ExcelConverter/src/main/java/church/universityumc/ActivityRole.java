@@ -3,22 +3,13 @@ package church.universityumc;
 /**
  * A role a {@link ChurchMember} may play in an {@link Activity}.
  */
-public enum ActivityRole
+public class ActivityRole
 {
-   /**
-    * A "normal" member of this activity, committee, etc.
-    */
-   MEMBER,
-   
-   /**
-    * The chairperson of the committee (or activity or whatever).
-    */
-   CHAIR,
-   
-   /**
-    * Organizes but doesn't otherwise serve.
-    */
-   ORGANIZER
-   
-   // Obviously, we can make up more roles here if we need to.
+   private String name;
+
+   public static ActivityRole find( String anActivityRole)
+   {
+      // TODO Auto-generated method stub -- find/add in static set
+      return null;
+   }
 }
