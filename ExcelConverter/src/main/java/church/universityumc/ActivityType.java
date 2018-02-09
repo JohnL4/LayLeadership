@@ -1,5 +1,6 @@
 package church.universityumc;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,10 +20,12 @@ public class ActivityType
    private static Map<String,ActivityType> allActivityTypes = new HashMap<String,ActivityType>();
    
    private String name;
+   private Calendar startDate;
 
    public static ActivityType find( String anActivityType)
    {
-      
+      // Pick out start year (and month?), "Committee" as type (or not).  Everything successfully picked out, strip out.
+      // May wind up with empty string but recognized as "Committee", so that's the type.
       // TODO Auto-generated method stub -- find/add in static set.
       return null;
    }
