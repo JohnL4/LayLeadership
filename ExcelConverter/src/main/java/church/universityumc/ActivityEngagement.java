@@ -1,5 +1,6 @@
 package church.universityumc;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -25,7 +26,19 @@ public class ActivityEngagement
       activity = Activity.find( anActivityName);
       role = ActivityRole.find( anActivityRole);
       if (aStartDate == null)
-         startDate = activityType.getStartDate();
+      {
+         if (activityType.getStartYear() == null)
+            startDate = null;
+         else
+         {
+            Calendar cal = Calendar.getInstance();
+            cal.clear();
+            cal.set( Calendar.YEAR, activityType.getStartYear());
+            if (activityType.getStartMonth() != null)
+               cal.set( Calendar.MONTH, activityType.getStartMonth());
+            startDate = cal.getTime();
+         }
+      }
       else
          startDate = aStartDate;
       endDate = anEndDate; // May be null, but if so, there's nothing we can do about it.

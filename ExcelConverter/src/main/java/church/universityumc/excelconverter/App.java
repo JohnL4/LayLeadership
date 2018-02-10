@@ -60,30 +60,26 @@ public class App
       NAME = "Name", 
       AGE = "Age", 
       PHONE = "Preferred Phone",
-      EMAIL = "E-mail", 
+      EMAIL = "Preferred E-mail", 
       DATE_JOINED = "Date Joined";
 
-   private static final String           ACTIVITIES                = "ACTIVITIES";
+   private static final String  ACTIVITIES        = "ACTIVITIES";
+   private static final String  COMMENTS          = "COMMENTS";
+   private static final String  CATEGORY          = "Category";
+   private static final Pattern NO_ROTATION_REGEX = Pattern.compile( "no rotation", Pattern.CASE_INSENSITIVE);
 
-   private static final String           COMMENTS                  = "COMMENTS";
-
-   private static final String           CATEGORY                  = "Category";
-
-   private static final Pattern          NO_ROTATION_REGEX         = Pattern.compile( "no rotation",
-         Pattern.CASE_INSENSITIVE);
-
-   private static boolean                headersInitialized;
+   private static boolean headersInitialized;
 
    /**
     * Map from String column header to column index corresponding to header.
     */
    private static Map<String, Integer>   memberHeaderColumnNumbers = new HashMap<String, Integer>();
 
-   private static final SimpleDateFormat SIMPLE_DATE_FORMAT        = new SimpleDateFormat();
+   private static final SimpleDateFormat SIMPLE_DATE_FORMAT         = new SimpleDateFormat();
+   private static final SimpleDateFormat SIMPLE_DATE_FORMAT_SLASHES = new SimpleDateFormat( "M/d/y");
+   private static final Calendar         CALENDAR                   = Calendar.getInstance();
 
-   private static final Calendar         CALENDAR                  = new GregorianCalendar();
-
-   private static Options                options;
+   private static Options options;
 
    private static Options makeOptions()
    {
@@ -109,9 +105,9 @@ public class App
       {
          infileName = cmdLine.getOptionValue( 'f');
          if (cmdLine.hasOption( "dump")) dumpToStdout( infileName);
-         if (cmdLine.hasOption( "xslx"))
+         if (cmdLine.hasOption( "xlsx"))
          {
-            String outfileName = cmdLine.getOptionValue( "xslx");
+            String outfileName = cmdLine.getOptionValue( "xlsx");
             dumpToExcelFile( infileName, outfileName);
          }
          if (cmdLine.hasOption( "db"))
@@ -198,7 +194,7 @@ public class App
          throws IOException, UnknownRowTypeException
    {
       Collection<ChurchMember> churchMembers = buildChurchMembers( anInfileName);
-
+      System.out.println( "Done.");
    }
 
    private static void updateDatabase( String anInfileName, String aJdbcConnectionString)
@@ -306,44 +302,49 @@ public class App
       for (String header : memberHeaderColumnNumbers.keySet()) 
       {
          int colNum = memberHeaderColumnNumbers.get( header);
-         switch (header) 
+         Cell cell = aRow.getCell( colNum);
+         if (cell == null) {}
+         else
          {
-            case NAME:
-               member.setName( aRow.getCell( colNum).getStringCellValue());
-               break;
-            case AGE:
-               try
-               {
-                  member.setAge( Integer.parseInt( aRow.getCell( colNum).getStringCellValue()));
-                  member.setAgeAsOf( new Date());
-               }
-               catch (NumberFormatException exc)
-               {
-                  warn( "NumberFormatException parsing age \"%s\" at row %d",
-                        aRow.getCell( colNum).getStringCellValue(), aRow.getRowNum());
-               }
-               break;
-            case PHONE:
-               member.setPhone( aRow.getCell( colNum).getStringCellValue());
-               break;
-            case EMAIL:
-               member.setEmail( aRow.getCell( colNum).getStringCellValue());
-               break;
-            case DATE_JOINED:
-               try 
-               {
-                  Date joinDate = SIMPLE_DATE_FORMAT.parse( aRow.getCell( colNum).getStringCellValue());
-                  CALENDAR.setTime( joinDate);
-               }
-               catch (java.text.ParseException exc)
-               {
-                  CALENDAR.setTime( new Date());
-               }
-               member.setYearJoined( CALENDAR.get( Calendar.YEAR));
-               break;
-            default:
-               warn( "Member header unhandled at row %d: %s", aRow.getRowNum(), header);
-               break;
+            switch (header)
+            {
+               case NAME:
+                  member.setName( aRow.getCell( colNum).getStringCellValue());
+                  break;
+               case AGE:
+                  try
+                  {
+                     member.setAge( Integer.parseInt( aRow.getCell( colNum).getStringCellValue()));
+                     member.setAgeAsOf( new Date());
+                  }
+                  catch (NumberFormatException exc)
+                  {
+                     warn( "NumberFormatException parsing age \"%s\" at row %d",
+                           aRow.getCell( colNum).getStringCellValue(), aRow.getRowNum());
+                  }
+                  break;
+               case PHONE:
+                  member.setPhone( aRow.getCell( colNum).getStringCellValue());
+                  break;
+               case EMAIL:
+                  member.setEmail( aRow.getCell( colNum).getStringCellValue());
+                  break;
+               case DATE_JOINED:
+                  try
+                  {
+                     Date joinDate = SIMPLE_DATE_FORMAT.parse( aRow.getCell( colNum).getStringCellValue());
+                     CALENDAR.setTime( joinDate);
+                  }
+                  catch (java.text.ParseException exc)
+                  {
+                     CALENDAR.setTime( new Date());
+                  }
+                  member.setYearJoined( CALENDAR.get( Calendar.YEAR));
+                  break;
+               default:
+                  warn( "Member header unhandled at row %d: %s", aRow.getRowNum(), header);
+                  break;
+            }
          }
       }
       return member;
@@ -377,7 +378,7 @@ public class App
       boolean noEndYear;
       
       Matcher noRotationMatcher = NO_ROTATION_REGEX.matcher( activityEndYearString);
-      if (noRotationMatcher.matches())
+      if (noRotationMatcher.find())
       {
          noEndYear = true;
          activityEndYear = 0;
@@ -449,7 +450,12 @@ public class App
                      retval = RowType.Comments;
                   else if (font.getBold() && !font.getItalic()) // Could be preceded by Activities or Comments or
                                                                 // MemberHeader
-                     retval = RowType.Member;
+                  {
+                     if (cellValue.equals( "Total Records:"))
+                        retval = RowType.ReportSummary;
+                     else
+                        retval = RowType.Member;
+                  }
                   else if (! font.getBold() && ! font.getItalic())
                   {
                      if (aCurrentSection == RowType.ActivitiesSectionMarker
@@ -486,11 +492,18 @@ public class App
 
       try
       {
-         retval = SIMPLE_DATE_FORMAT.parse( aDateString);
+         retval = SIMPLE_DATE_FORMAT_SLASHES.parse( aDateString);
       }
       catch (java.text.ParseException exc)
       {
-         retval = null;
+         try 
+         {
+            retval = SIMPLE_DATE_FORMAT.parse( aDateString);
+         }
+         catch (java.text.ParseException exc2)
+         {
+            retval = null;
+         }
       }
       return retval;
    }

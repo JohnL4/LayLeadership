@@ -45,5 +45,10 @@ public enum RowType
    /**
     * A row describing a single activity.
     */
-   Activity;
+   Activity, 
+   
+   /**
+    * A row summarizing the report somehow (e.g., by printing a total record count).
+    */
+   ReportSummary;
 }
