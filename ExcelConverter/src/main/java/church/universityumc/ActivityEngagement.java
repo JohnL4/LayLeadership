@@ -4,7 +4,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * An activity a {@link ChurchMember} may engage in.
+ * An activity a {@link ChurchMember} may engage in.  If this has associated dates, it's (obviously?) some
+ * sort of activity in which a church member has engaged.  If it has no associated dates, it's assumed to be
+ * some sort of skill or other background info about the church member.
  *
  */
 public class ActivityEngagement
@@ -30,7 +32,7 @@ public class ActivityEngagement
     *       simply being missing or unparseable).
     */
    public ActivityEngagement( String anActivityType, 
-         String anActivityName, 
+         String anActivityName,
          String anActivityRole, 
          Date aStartDate,
          Date anEndDate, 
@@ -69,4 +71,66 @@ public class ActivityEngagement
          endDate = anEndDate; // May be null, but if so, there's nothing we can do about it.
       hasRotationDate = aHasRotationDateFlag; 
    }
+
+   /**
+    * @return the activityType
+    */
+   public ActivityType getActivityType()
+   {
+      return activityType;
+   }
+
+   /**
+    * @return the activity
+    */
+   public Activity getActivity()
+   {
+      return activity;
+   }
+
+   /**
+    * @return the role
+    */
+   public ActivityRole getRole()
+   {
+      return role;
+   }
+
+   /**
+    * @return the startDate
+    */
+   public Date getStartDate()
+   {
+      return startDate;
+   }
+
+   /**
+    * @return the endDate
+    */
+   public Date getEndDate()
+   {
+      return endDate;
+   }
+
+   /**
+    * @return the hasRotationDate
+    */
+   public boolean hasRotationDate()
+   {
+      return hasRotationDate;
+   }
+
+   /**
+    * The skill associated with this {@link ActivityEngagement} (which, in this case, probably IS the
+    * description/definition of a skill).
+    * 
+    * @return may be null
+    */
+   public Skill toSkill()
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+   
+   
 }

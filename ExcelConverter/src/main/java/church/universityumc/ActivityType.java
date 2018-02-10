@@ -10,6 +10,18 @@ import java.util.stream.Collectors;
 
 public class ActivityType
 {
+   private String name;
+   
+   /**
+    * The year the activity starts; transient data available after a {@link #find} op, not stored as part of the {@link ActivityType}.
+    */
+   private Integer startYear;
+   
+   /**
+    * The month the activity starts; transient data available after a {@link #find} op, not stored as part of the {@link ActivityType}.
+    */
+   private Integer startMonth;
+
    /**
     * Canonical name for a committee activity type (special case).
     */
@@ -39,18 +51,6 @@ public class ActivityType
     */
    private static Map<String,ActivityType> allActivityTypes = new HashMap<String,ActivityType>();
    
-   private String name;
-   
-   /**
-    * The year the activity starts; transient data available after a {@link #find} op, not stored as part of the {@link ActivityType}.
-    */
-   private Integer startYear;
-   
-   /**
-    * The month the activity starts; transient data available after a {@link #find} op, not stored as part of the {@link ActivityType}.
-    */
-   private Integer startMonth;
-
    private ActivityType(String anActivityType) {
       name = anActivityType;
    }

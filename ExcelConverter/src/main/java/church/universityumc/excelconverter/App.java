@@ -249,7 +249,17 @@ public class App
                buildActivitiesHeaderColumnNumbers( row);
                break;
             case Activity:
-               currentChurchMember.addServiceHistory( parseActivity( row));
+               {
+                  ActivityEngagement activityEngagement = parseActivity( row);
+                  if (activityEngagement.getStartDate() == null)
+                  {
+                     // It's a skill?
+                     currentChurchMember.addSkill( activityEngagement.toSkill());
+                  }
+                  else
+                     // It's an activity engagement?
+                     currentChurchMember.addServiceHistory( parseActivity( row));
+               }
                break;
             case ActivitiesSectionMarker:
             case CommentsSectionMarker:
@@ -379,7 +389,7 @@ public class App
     * @param aRow
     * @return
     */
-   private static ActivityEngagement parseActivity( Row aRow)
+   private static ActivityEngagement parseActivity( Row aRow) // TODO: this needs to be a variety of things: ActivityEngagement, Skill, etc.
    {
       Iterator<Cell> iter = aRow.cellIterator();
       
