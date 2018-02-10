@@ -3,6 +3,7 @@ package church.universityumc.excelconverter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.StackWalker.StackFrame;
 // import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -559,7 +561,22 @@ public class App
     */
    private static void warn( String aFormat, Object... args)
    {
-      System.err.printf( "WARNING: " + aFormat + "\n", args);
+      Optional<StackFrame> caller = StackWalker.getInstance().walk( stream -> stream.skip(1).findFirst());
+      StringBuilder fmt = new StringBuilder();
+      fmt.append( "WARNING: ").append( aFormat);
+      if (caller.isPresent())
+      {
+         StackFrame callerSF = caller.get();
+         fmt.append( " (")
+            .append( callerSF.getMethodName())
+            .append( "(), ")
+            .append( callerSF.getFileName())
+            .append(  ":")
+            .append(  callerSF.getLineNumber())
+            .append( ")");
+      }
+      fmt.append( "\n");
+      System.err.printf( fmt.toString(), args);
    }
 
    private static Workbook readFile( String filename) throws IOException
