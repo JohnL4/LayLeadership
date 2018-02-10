@@ -308,41 +308,56 @@ public class App
          if (cell == null) {}
          else
          {
-            switch (header)
+            if (cell.getCellTypeEnum() != CellType.BLANK)
             {
-               case NAME:
-                  member.setName( aRow.getCell( colNum).getStringCellValue());
-                  break;
-               case AGE:
-                  try
-                  {
-                     member.setAge( Integer.parseInt( aRow.getCell( colNum).getStringCellValue()));
-                     member.setAgeAsOf( new Date());
-                  }
-                  catch (NumberFormatException exc)
-                  {
-                     warn( "NumberFormatException parsing age \"%s\" at row %d",
-                           aRow.getCell( colNum).getStringCellValue(), aRow.getRowNum());
-                  }
-                  break;
-               case PHONE:
-                  member.setPhone( aRow.getCell( colNum).getStringCellValue());
-                  break;
-               case EMAIL:
-                  member.setEmail( aRow.getCell( colNum).getStringCellValue());
-                  break;
-               case DATE_JOINED:
-                  Date joinDate = parseDate( aRow.getCell( colNum).getStringCellValue());
-                  if (joinDate != null)
-                  {
-                     Calendar cal = Calendar.getInstance();
-                     cal.setTime( joinDate);
-                     member.setYearJoined( cal.get( Calendar.YEAR));
-                  }
-                  break;
-               default:
-                  warn( "Member header unhandled at row %d: %s", aRow.getRowNum(), header);
-                  break;
+               switch (header)
+               {
+                  case NAME:
+                     member.setName( cell.getStringCellValue());
+                     break;
+                  case AGE:
+                     switch (cell.getCellTypeEnum())
+                     {
+                        case STRING:
+                           try
+                           {
+                              member.setAge( Integer.parseInt( cell.getStringCellValue()));
+                              member.setAgeAsOf( new Date());
+                           }
+                           catch (NumberFormatException exc)
+                           {
+                              warn( "NumberFormatException parsing age \"%s\" at row %d", cell.getStringCellValue(),
+                                    aRow.getRowNum());
+                           }
+                           break;
+                        case NUMERIC:
+                           member.setAge( Math.round( cell.getNumericCellValue()));
+                           member.setAgeAsOf( new Date());
+                           break;
+                        default:
+                           warn( "Unexpected cell type (%s) at row %d", cell.getCellTypeEnum(), aRow.getRowNum());
+                           break;
+                     }
+                     break;
+                  case PHONE:
+                     member.setPhone( cell.getStringCellValue());
+                     break;
+                  case EMAIL:
+                     member.setEmail( cell.getStringCellValue());
+                     break;
+                  case DATE_JOINED:
+                     Date joinDate = parseDate( cell.getStringCellValue());
+                     if (joinDate != null)
+                     {
+                        Calendar cal = Calendar.getInstance();
+                        cal.setTime( joinDate);
+                        member.setYearJoined( cal.get( Calendar.YEAR));
+                     }
+                     break;
+                  default:
+                     warn( "Member header unhandled at row %d: %s", aRow.getRowNum(), header);
+                     break;
+               }
             }
          }
       }

@@ -65,7 +65,8 @@ public class ActivityEngagement
          cal.set( Calendar.DAY_OF_MONTH, cal.getActualMaximum( Calendar.DAY_OF_MONTH));
          endDate = cal.getTime();
       }
-      endDate = anEndDate; // May be null, but if so, there's nothing we can do about it.
+      else
+         endDate = anEndDate; // May be null, but if so, there's nothing we can do about it.
       hasRotationDate = aHasRotationDateFlag; 
    }
 }

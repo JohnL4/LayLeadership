@@ -12,7 +12,7 @@ import java.util.List;
 public class ChurchMember
 {
    private String name;
-   private int age;
+   private long age;
    
    /**
     * The date the member's {@link age} is "as of", meaning that age is correct as of the indicated date.
@@ -47,14 +47,14 @@ public class ChurchMember
     * In years.
     * @return
     */
-   public int getAge()
+   public long getAge()
    {
       return age;
    }
 
-   public void setAge( int aAge)
+   public void setAge( long anAge)
    {
-      age = aAge;
+      age = anAge;
    }
 
    /**
