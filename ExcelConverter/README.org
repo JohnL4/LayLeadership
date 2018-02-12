@@ -10,7 +10,7 @@
 * Roadmap
 
 ** DONE Setup
-   CLOSED: <2018-01-28 Sun 13:04>
+   CLOSED: [2018-01-28 Sun 13:04]
 
    - CLOSING NOTE [2018-02-12 Mon 13:04] \\
      Well, as done as it'll ever be.
@@ -35,6 +35,49 @@
 
     Dependency-management and build system.  Great for sharing dependencies with other developers and automating testing
     (if I bother to write any unit tests, which I may actually do, at some point) and building.
+
+*** RESEARCH-HOLD Amazon Web Services (AWS)
+    CLOSED: [2018-01-31 Wed 13:21]
+
+    - State "RESEARCH-HOLD" from "RESEARCH-IN-PROGRESS" [2018-02-12 Mon 13:21] \\
+      Did some initial research, but now I'm mostly coding the spreadsheet-reading software.
+    If we take the route of having data on a central server somewhere (as opposed to somebody's individual PC), I
+    nominate AWS as the most stable and cheapest solution.  This is something I'm currently researching, 
+
+** IN-PROGRESS Read & Parse Excel generated from an ACS report
+
+*** DONE Basic church member info
+    CLOSED: [2018-02-07 Wed 13:13]
+
+    - CLOSING NOTE [2018-02-12 Mon 13:13] \\
+      Pending issues I discover while running the whole shebang for real.
+    Name, phone, etc.
+
+*** IN-PROGRESS Member activities
+
+    Past and present committees, skills survey data, etc.
+
+*** RESEARCH-TODO Member comments
+
+    As far as I can tell right now, this is only general biographical info, from the member's initial introduction to
+    the church during the "new member" moments.
+
+** TODO Write out new spreadsheet in more-usable format
+
+   Allow searching and filtering and maybe sorting.
+
+** TODO Update external SQL database
+
+   PostreSQL, in this case.  I propose to use AWS RDS (https://aws.amazon.com/rds/).
+
+   Another possibility is simply a local database instance, either Postgres or maybe even ~sqlite~.
+
+** TODO Web app to maintain data in SQL database
+
+   This is more of a long shot, and I'm not 100% sure we'll even do it.  But if we are going to have an external system,
+   this is /probably/ the best way to go.
+   
+   I propose to use the Amazon Serverless Application Model (RDS, Lambda, Cognito, API Gateway).
 
 * Build, Run
 
