@@ -1,7 +1,13 @@
 package church.universityumc;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 
 /**
  * An activity a {@link ChurchMember} may engage in.  If this has associated dates, it's (obviously?) some
@@ -16,6 +22,8 @@ public class ActivityEngagement
    private ActivityRole role;
    private Date startDate, endDate;
    private boolean hasRotationDate;
+
+//   private Logger logger;
    
    /**
     * This constructor is intended to build an {@link ActivityEngagement} from fields read directly from the
@@ -31,45 +39,95 @@ public class ActivityEngagement
     * @param aHasRotationDateFlag - If false, then the activity explicitly no end date (as opposed to data
     *       simply being missing or unparseable).
     */
-   public ActivityEngagement( String anActivityType, 
+   public ActivityEngagement( 
+         // Row aRow
+         String anActivityType,
          String anActivityName,
-         String anActivityRole, 
-         Date aStartDate,
-         Date anEndDate, 
-         boolean aHasRotationDateFlag)
+         String anActivityEndYearString,
+         String anActivityRole,
+         AppLogger anAppLogger
+         // Date aStartDate,
+         // Date anEndDate,
+         // boolean aHasRotationDateFlag
+         )
    {
+//      logger = System.getLogger( "church.universityumc");
+
+//      Iterator<Cell> iter = aRow.cellIterator();
+//
+//      String activityTypeString = iter.next().getStringCellValue();
+//      String activityName = iter.next().getStringCellValue();
+//      String activityEndYearString = iter.next().getStringCellValue();
+//      String activityRoleString = iter.next().getStringCellValue();
+
       activityType = ActivityType.find( anActivityType);
       activity = Activity.find( anActivityName);
       role = ActivityRole.find( anActivityRole);
-      if (aStartDate == null)
+      
+      if (activityType.getStartYear() == null)
+         startDate = null;
+      else
       {
-         if (activityType.getStartYear() == null)
-            startDate = null;
+         Calendar cal = Calendar.getInstance();
+         cal.clear();
+         cal.set( Calendar.YEAR, activityType.getStartYear());
+         if (activityType.getStartMonth() != null) cal.set( Calendar.MONTH, activityType.getStartMonth());
+         // Assume day doesn't need to be set because of the .clear() call above.
+         startDate = cal.getTime();
+      }
+
+      ParsedDate parsedEndDate;
+
+      try
+      {
+         parsedEndDate = new ParsedDate( anActivityEndYearString);
+         if (parsedEndDate.explicitNone)
+         {
+            hasRotationDate = false;
+         }
          else
          {
+            hasRotationDate = true;
             Calendar cal = Calendar.getInstance();
             cal.clear();
-            cal.set( Calendar.YEAR, activityType.getStartYear());
-            if (activityType.getStartMonth() != null)
-               cal.set( Calendar.MONTH, activityType.getStartMonth());
-            startDate = cal.getTime();
+            if (parsedEndDate.year == null)
+            {
+               anAppLogger.warn( "Can't find year in activity end date \"%s\" at data row %d",
+                     anActivityEndYearString);
+//               logger.log( Level.WARNING, String.format( "Can't find year in activity end date \"%s\" at data row %d",
+//                     anActivityEndYearString));
+            }
+            else
+            {
+               if (parsedEndDate.date == null)
+               {
+                  cal.set( Calendar.YEAR, parsedEndDate.year);
+                  if (activityType.getStartMonth() == null)
+                  {
+                     // No start month; assume calendar year boundaries -- last day of current year.
+                     cal.set( Calendar.DAY_OF_YEAR, cal.getActualMaximum( Calendar.DAY_OF_YEAR));
+                  }
+                  else
+                  {
+                     // Last day of previous month.
+                     cal.set( Calendar.MONTH, activityType.getStartMonth());
+                     cal.roll( Calendar.MONTH, false);
+                     cal.set( Calendar.DAY_OF_MONTH, cal.getActualMaximum( Calendar.DAY_OF_MONTH));
+                  }
+               }
+               else
+                  cal.setTime( parsedEndDate.date);
+               endDate = cal.getTime();
+            }
          }
       }
-      else
-         startDate = aStartDate;
-      if (anEndDate != null && activityType.getStartMonth() != null)
+      catch (java.text.ParseException exc)
       {
-         // Adjust end date to correspond to last day of previous month in end year.
-         Calendar cal = Calendar.getInstance();
-         cal.setTime( anEndDate);
-         cal.set( Calendar.MONTH, activityType.getStartMonth());
-         cal.roll( Calendar.MONTH, false);
-         cal.set( Calendar.DAY_OF_MONTH, cal.getActualMaximum( Calendar.DAY_OF_MONTH));
-         endDate = cal.getTime();
+         StringBuilder msg = new StringBuilder( exc.getMessage());
+//         msg.append( " at data row ").append( aRow.getRowNum()); // TODO: +1?
+//         logger.log( Level.WARNING, msg);
+         anAppLogger.warn( msg.toString(), null);
       }
-      else
-         endDate = anEndDate; // May be null, but if so, there's nothing we can do about it.
-      hasRotationDate = aHasRotationDateFlag; 
    }
 
    /**

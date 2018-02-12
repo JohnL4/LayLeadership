@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.StackWalker.StackFrame;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 // import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import church.universityumc.ActivityEngagement;
+import church.universityumc.AppLogger;
 import church.universityumc.ChurchMember;
 
 /**
@@ -99,6 +102,8 @@ public class App
 
    public static void main( String[] args) throws IOException, ParseException, UnknownRowTypeException
    {
+      Logger logger = System.getLogger( "church.universityumc");
+      logger.log( Level.WARNING, "test warning");
       options = makeOptions();
       CommandLine cmdLine = parseCommandLine( args);
       if (cmdLine.hasOption( 'h')) showHelp();
@@ -268,7 +273,7 @@ public class App
                parseComments( row);
                break;
             default:
-               warn( "Unexpected row type: %g", rowType);
+               warn( "Unexpected row type: %s", rowType);
                break;
          }
          switch (rowType)
@@ -391,6 +396,7 @@ public class App
     */
    private static ActivityEngagement parseActivity( Row aRow) // TODO: this needs to be a variety of things: ActivityEngagement, Skill, etc.
    {
+      AppLogger.getInstance().setRow( aRow.getRowNum());
       Iterator<Cell> iter = aRow.cellIterator();
       
       String activityType = iter.next().getStringCellValue();
@@ -398,50 +404,51 @@ public class App
       String activityEndYearString = iter.next().getStringCellValue();
       String activityRole = iter.next().getStringCellValue();
       
-      int activityEndYear;
-      boolean hasEndYear;
-      Date endDate;
+//      int activityEndYear;
+//      boolean hasEndYear;
+//      Date endDate;
+//      
+//      Matcher noRotationMatcher = NO_ROTATION_REGEX.matcher( activityEndYearString);
+//      if (noRotationMatcher.find())
+//      {
+//         hasEndYear = false;
+//         activityEndYear = 0;
+//         endDate = null;
+//      }
+//      else
+//      {
+//         hasEndYear = true;
+//         // First, try to parse as a normal date, just in case we can. Otherwise, we'll assume it's one
+//         // or more years separated by non-numeric characters (slash, comma, space, whatever).
+//         endDate = parseDate( activityEndYearString);
+//         if (endDate == null)
+//         {
+//            String[] endYears = activityEndYearString.split( "\\D+");
+//            if (endYears.length == 0)
+//               warn( "Unable to find end years in \"%s\" in row %d", activityEndYearString, aRow.getRowNum());
+//            else
+//               try
+//               {
+//                  // Assume last year is the true end year.
+//                  activityEndYear = Integer.parseInt( endYears[endYears.length - 1]);
+//                  Calendar cal = Calendar.getInstance();
+//                  cal.clear();
+//                  cal.set( Calendar.YEAR, activityEndYear);
+//                  cal.set( Calendar.DAY_OF_YEAR, cal.getActualMaximum( Calendar.DAY_OF_YEAR));
+//                  endDate = cal.getTime();
+//               }
+//               catch (NumberFormatException exc)
+//               {
+//                  warn( "Unable to parse end year \"%s\" (element 2) at row %d", activityEndYearString,
+//                        aRow.getRowNum());
+//               }
+//         }
+//      }
+//      // TODO: might need both an end year AND an end date in ActivityEngagement, since we might have only the year, and
+//      // a falsely-precise Date could be misleading.
       
-      Matcher noRotationMatcher = NO_ROTATION_REGEX.matcher( activityEndYearString);
-      if (noRotationMatcher.find())
-      {
-         hasEndYear = false;
-         activityEndYear = 0;
-         endDate = null;
-      }
-      else
-      {
-         hasEndYear = true;
-         // First, try to parse as a normal date, just in case we can. Otherwise, we'll assume it's one
-         // or more years separated by non-numeric characters (slash, comma, space, whatever).
-         endDate = parseDate( activityEndYearString);
-         if (endDate == null)
-         {
-            String[] endYears = activityEndYearString.split( "\\D+");
-            if (endYears.length == 0)
-               warn( "Unable to find end years in \"%s\" in row %d", activityEndYearString, aRow.getRowNum());
-            else
-               try
-               {
-                  // Assume last year is the true end year.
-                  activityEndYear = Integer.parseInt( endYears[endYears.length - 1]);
-                  Calendar cal = Calendar.getInstance();
-                  cal.clear();
-                  cal.set( Calendar.YEAR, activityEndYear);
-                  cal.set( Calendar.DAY_OF_YEAR, cal.getActualMaximum( Calendar.DAY_OF_YEAR));
-                  endDate = cal.getTime();
-               }
-               catch (NumberFormatException exc)
-               {
-                  warn( "Unable to parse end year \"%s\" (element 2) at row %d", activityEndYearString,
-                        aRow.getRowNum());
-               }
-         }
-      }
-      // TODO: might need both an end year AND an end date in ActivityEngagement, since we might have only the year, and
-      // a falsely-precise Date could be misleading.
-      
-      return new ActivityEngagement( activityType, activityName, activityRole, null, endDate, hasEndYear);
+//      return new ActivityEngagement( activityType, activityName, activityEndYearString, activityRole);
+      return new ActivityEngagement( activityType, activityName, activityEndYearString, activityRole, AppLogger.getInstance());
    }
 
    /**
