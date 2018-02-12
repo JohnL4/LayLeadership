@@ -24,7 +24,7 @@ public class ActivityType
       StringBuilder concatenatedREs = Arrays.asList( MONTH_RES).stream().collect( 
             () -> new StringBuilder(), 
             (sb,s) -> {if (sb.length() > 0) sb.append("|"); sb.append(s);}, 
-            (sb1,sb2) -> {sb1.append(sb2);});
+            (sb1,sb2) -> {if (sb1.length() > 0) sb1.append( "|"); sb1.append(sb2);});
       concatenatedREs.insert(0, "\\b");
       concatenatedREs.append("\\b");
       MONTH_RE = Pattern.compile( concatenatedREs.toString(), Pattern.CASE_INSENSITIVE);
