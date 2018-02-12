@@ -7,6 +7,35 @@
 
   This utility will handle the conversion from AccessACS's output to a more useful form for us.
 
+* Roadmap
+
+** DONE Setup
+   CLOSED: <2018-01-28 Sun 13:04>
+
+   - CLOSING NOTE [2018-02-12 Mon 13:04] \\
+     Well, as done as it'll ever be.
+
+*** Java
+
+    Well-developed, publicly-available language allowing non-hacky development that I'm most familiar with.  Has good
+    libraries for Excel spreadsheet, SQL database, web API access.  All of that edges out other possibilities, in my
+    mind:
+
+    - Python :: Good language, but I'm not as familiar with it as I am with Java.
+    - Node.js :: I'm a big fan of strong, static typing, and I see Javascript as really a little too "cowboy".
+    - C# :: Microsoft.  In spite of MS's recent "MS (loves) Linux" horsefeathers, I still don't like them.  In the long
+            run, something more open and accorded first-class citizenship on more platforms (Apple, Linux) is going to
+            be better, I believe.
+    - Perl :: Good language, but I was ready to move on 15 years ago.  Besides, line noise ain't my thing.
+    - Go, Rust, D :: All wonderful languages, I have no doubt, but (a) intended for low-level system programming, and
+                     (b) what kind of Excel-spreadsheet-readin' libraries do they have?
+    - C, C++ :: These languages are the reason Java exists.  Similar arguments as for Go, Rust, and D.
+
+*** Maven
+
+    Dependency-management and build system.  Great for sharing dependencies with other developers and automating testing
+    (if I bother to write any unit tests, which I may actually do, at some point) and building.
+
 * Build, Run
 
   Test:
