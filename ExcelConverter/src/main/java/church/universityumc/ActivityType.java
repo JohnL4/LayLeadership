@@ -1,93 +1,154 @@
 package church.universityumc;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ActivityType
 {
-   private static final Pattern YEAR_RE = Pattern.compile( "\\b\\d{4}\\b");
+   private String name;
+   
+   /**
+    * The year the activity starts; transient data available after a {@link #find} op, not stored as part of the {@link ActivityType}.
+    */
+   private Integer startYear;
+   
+   /**
+    * The month the activity starts; transient data available after a {@link #find} op, not stored as part of the {@link ActivityType}.
+    */
+   private Integer startMonth;
+
+   /**
+    * Canonical name for a committee activity type (special case).
+    */
+   private static final String COMMITTEE_TYPE_NAME = "Committee";
+   
+   private static final Pattern YEAR_RE      = Pattern.compile( "\\d{4}");
    private static final Pattern COMMITTEE_RE = Pattern.compile( "\\bcommittees?\\b", Pattern.CASE_INSENSITIVE);
-   private static final String[]            MONTH_RES        = { "(jan(uary)?", "feb(ruary)?", "mar(ch)?", "apr(il)?",
-         "may", "june?", "july?", "aug(ust)?", "sep(t(ember)?)?", "oct(ober)?", "nov(ember)?", "dec(ember)?" };
-   private static final Pattern MONTH_RE; // = Pattern.compile(
+   
+   private static final List<String>  MONTH_RE_STRINGS = List.of( "jan(uary)?", "feb(ruary)?", "mar(ch)?", "apr(il)?",
+         "may", "june?", "july?", "aug(ust)?", "sep(t(ember)?)?", "oct(ober)?", "nov(ember)?", "dec(ember)?");
+   private static final List<Pattern> MONTH_RES;
+   private static final Pattern       MONTHS_RE;
+         // = Pattern.compile(
          // "\\b(jan(uary)?|feb(ruary)?|mar(ch)?|apr(il)?|may|june?|july?|aug(ust)?|sep(t(ember)?)?|oct(ober)?|nov(ember)?|dec(ember)?)\\b",
          // Pattern.CASE_INSENSITIVE);
 
    static {
-      StringBuilder concatenatedREs = Arrays.asList( MONTH_RES).stream().collect( 
-            () -> new StringBuilder(), 
-            (sb,s) -> {if (sb.length() > 0) sb.append("|"); sb.append(s);}, 
-            (sb1,sb2) -> {if (sb1.length() > 0) sb1.append( "|"); sb1.append(sb2);});
-      concatenatedREs.insert(0, "\\b");
-      concatenatedREs.append("\\b");
-      MONTH_RE = Pattern.compile( concatenatedREs.toString(), Pattern.CASE_INSENSITIVE);
+      MONTH_RES = Collections.unmodifiableList( MONTH_RE_STRINGS.stream()
+            .map( s -> Pattern.compile( s, Pattern.CASE_INSENSITIVE))
+            .collect( Collectors.toList()));
+      String concatenatedREs = MONTH_RE_STRINGS.stream().collect( Collectors.joining( "|")); 
+      MONTHS_RE = Pattern.compile( "\\b(" + concatenatedREs.toString() + ")\\b", Pattern.CASE_INSENSITIVE);
    }
    
    /**
-    * Map from {@link #name} to {@link ActivityType}.
+    * Map from {@link #name} to {@link ActivityType}, in-memory repository.
     */
    private static Map<String,ActivityType> allActivityTypes = new HashMap<String,ActivityType>();
    
-   private String name;
+   private ActivityType(String anActivityType) {
+      name = anActivityType;
+   }
+   
+   public String getName() { return name; }
    
    /**
-    * We use Calendar instead of Date because some date fields may not be known.
+    * The year the activity starts; transient data available after a {@link #find} op, not stored as part of the {@link ActivityType}.
+    * @return the startYear
     */
-   private Calendar startDate = new GregorianCalendar(); 
+   public Integer getStartYear()
+   {
+      return startYear;
+   }
 
-   private ActivityType() {}
-   
+   /**
+    * @param startYear the startYear to set
+    */
+   public void setStartYear( Integer startYear)
+   {
+      this.startYear = startYear;
+   }
+
+   /**
+    * The (0-based) month the activity starts; transient data available after a {@link #find} op, not stored as part of
+    * the {@link ActivityType}.
+    * 
+    * @return the startMonth
+    */
+   public Integer getStartMonth()
+   {
+      return startMonth;
+   }
+
+   /**
+    * @param startMonth the startMonth to set
+    */
+   public void setStartMonth( Integer startMonth)
+   {
+      this.startMonth = startMonth;
+   }
+
    /**
     * Parses given string into a true activity type and a start date for the activity. Start date is not a part of the
     * activity type, but, because of the way we store data in ACS, may be part of the activity type specification. It
     * will not be stored; this data must be transferred into an {@link ActivityEngagement} object.
     * 
     * @param anActivityType
-    * @return
+    * @return {@link ActivityType} with start year and month set from input string.
     */
    public static ActivityType find( String anActivityType)
    {
+      ActivityType retval;
+      String activityType = anActivityType;
       Integer year;
       
-      Matcher yrMatcher = YEAR_RE.matcher( anActivityType);
-      if (yrMatcher.matches()) 
+      Matcher yrMatcher = YEAR_RE.matcher( activityType);
+      if (yrMatcher.find()) 
       {
          year = Integer.parseInt( yrMatcher.group());
-         yrMatcher.replaceFirst( "");
+         activityType = yrMatcher.replaceFirst( "");
       }
       else
          year = null;
       
-      // TODO: turn month string into number (in range [1..12]?)
       String month;
       Integer monthNum;
-      Matcher monthMatcher = MONTH_RE.matcher( anActivityType);
-      if (monthMatcher.matches())
+      Matcher monthMatcher = MONTHS_RE.matcher( activityType);
+      if (monthMatcher.find())
       {
          month = monthMatcher.group();
-         monthMatcher.replaceFirst( "");
+         activityType = monthMatcher.replaceFirst( "");
          monthNum = 0;
-         
+         for (Pattern monthRE : MONTH_RES)
+         {
+            if (monthRE.matcher( month).matches())
+               break;
+            else
+               monthNum++;
+         }
       }
-      // TODO Auto-generated method stub -- find/add in static set.
-      return null;
-   }
+      else
+         monthNum = null;
+      
+      activityType = activityType.trim();
+      Matcher committeeMatcher = COMMITTEE_RE.matcher( activityType);
+      if (committeeMatcher.matches()) // Scan entire string for match, not part (we want a more-or-less exact match).
+         activityType = COMMITTEE_TYPE_NAME;
+      
+      retval = allActivityTypes.get( activityType);
+      if (retval == null)
+      {
+         retval = new ActivityType( activityType);
+         allActivityTypes.put( activityType, retval);
+      }
+      retval.startYear = year;
+      retval.startMonth = monthNum;
 
-   /**
-    * In our ACS system, our activity types sometimes imply activity start dates (e.g., "2015 Committee" vs. "2017
-    * committee").
-    * 
-    * @return
-    */
-   public Date getStartDate()
-   {
-      return startDate.getTime();
+      return retval;
    }
 }
