@@ -92,12 +92,24 @@ public class App
       Options options = new Options();
       options.addOption( "h", "help", false, "show help");
       options.addOption( Option.builder( "f") // "f", true, "input file");
-            .desc( "input .xls or .xlsx file").hasArg().build());
+            .desc( "input .xls or .xlsx file")
+            .hasArg()
+            .build());
       options.addOption(
-            Option.builder().longOpt( "dump").desc( "dump input to stdout, in no particular format").build());
-      options.addOption( Option.builder().longOpt( "xlsx").desc( "output to specified .xlsx file").hasArg().build());
-      options.addOption( Option.builder().longOpt( "db")
-            .desc( "update given SQL database, using specified JDBC connection string").hasArg().build());
+            Option.builder()
+            .longOpt( "dump")
+            .desc( "dump input to stdout, in no particular format")
+            .build());
+      options.addOption( Option.builder()
+            .longOpt( "xlsx")
+            .desc( "output to specified .xlsx file")
+            .hasArg()
+            .build());
+      options.addOption( Option.builder()
+            .longOpt( "db")
+            .desc( "update given SQL database, using specified JDBC connection string")
+            .hasArg()
+            .build());
       return options;
    }
 
@@ -105,6 +117,7 @@ public class App
    {
       Logger logger = System.getLogger( "church.universityumc");
       logger.log( Level.WARNING, "test warning");
+      AppLogger.getInstance().warn( "test warning", (Object[])null);
       options = makeOptions();
       CommandLine cmdLine = parseCommandLine( args);
       if (cmdLine.hasOption( 'h')) showHelp();
@@ -125,6 +138,7 @@ public class App
             updateDatabase( infileName, jdbcConnectionString);
          }
       }
+      System.out.println( "Done.");
    }
 
    private static CommandLine parseCommandLine( String[] args) throws ParseException
@@ -202,7 +216,6 @@ public class App
          throws IOException, UnknownRowTypeException
    {
       Collection<ChurchMember> churchMembers = buildChurchMembers( anInfileName);
-      System.out.println( "Done.");
    }
 
    private static void updateDatabase( String anInfileName, String aJdbcConnectionString)
@@ -230,8 +243,9 @@ public class App
       Sheet sheet = workbook.getSheetAt( 0);
       RowType previousSectionRowType = RowType.None;
       ChurchMember currentChurchMember = null;
-      nextRow: for (Row row : sheet) // Label makes 'continue' stmts a little more obvious.
+      for (Row row : sheet) // Label makes 'continue' stmts a little more obvious.
       {
+         AppLogger.getInstance().setRow( row.getRowNum());
          RowType rowType = getRowType( row, workbook, previousSectionRowType); // TODO: don't use prev. row type; use a
                                                                         // concept of "what section are we in?". So,
                                                                         // it could be something (e.g., section
@@ -274,7 +288,7 @@ public class App
                parseComments( row);
                break;
             default:
-               warn( "Unexpected row type: %s", rowType);
+               AppLogger.getInstance().warn( "Unexpected row type: %s", rowType);
                break;
          }
          switch (rowType)
@@ -337,13 +351,15 @@ public class App
                         case STRING:
                            try
                            {
-                              member.setAge( Integer.parseInt( cell.getStringCellValue()));
-                              member.setAgeAsOf( new Date());
+                              if (cell.getStringCellValue() != null)
+                              {
+                                 member.setAge( Integer.parseInt( cell.getStringCellValue()));
+                                 member.setAgeAsOf( new Date());
+                              }
                            }
                            catch (NumberFormatException exc)
                            {
-                              warn( "NumberFormatException parsing age \"%s\" at row %d", cell.getStringCellValue(),
-                                    aRow.getRowNum());
+                              AppLogger.getInstance().warn( "NumberFormatException parsing age \"%s\"", cell.getStringCellValue());
                            }
                            break;
                         case NUMERIC:
@@ -351,7 +367,7 @@ public class App
                            member.setAgeAsOf( new Date());
                            break;
                         default:
-                           warn( "Unexpected cell type (%s) at row %d", cell.getCellTypeEnum(), aRow.getRowNum());
+                           AppLogger.getInstance().warn( "Unexpected cell type (%s)", cell.getCellTypeEnum());
                            break;
                      }
                      break;
@@ -371,7 +387,7 @@ public class App
                      }
                      break;
                   default:
-                     warn( "Member header unhandled at row %d: %s", aRow.getRowNum(), header);
+                     AppLogger.getInstance().warn( "Member header \"%s\" unhandled", header);
                      break;
                }
             }
@@ -397,7 +413,6 @@ public class App
     */
    private static ActivityEngagement parseActivity( Row aRow) // TODO: this needs to be a variety of things: ActivityEngagement, Skill, etc.
    {
-      AppLogger.getInstance().setRow( aRow.getRowNum());
       Iterator<Cell> iter = aRow.cellIterator();
       
       String activityType = iter.next().getStringCellValue();
@@ -602,6 +617,8 @@ public class App
 
    /**
     * Log a message to stderr, followed by a newline.
+    * 
+    * @deprecated Use {@link AppLogger} instead.
     * 
     * @param aFormat
     * @param args

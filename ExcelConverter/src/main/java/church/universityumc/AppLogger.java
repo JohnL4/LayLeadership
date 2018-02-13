@@ -29,9 +29,11 @@ public class AppLogger
    }
 
    /**
-    * Sets the current input row (0-based) being processed.
+    * Sets the current input row (0-based) being processed. Note that this could be a spreadsheet row or a d/b result
+    * set row.
     * 
-    * @param row the row to set
+    * @param row
+    *           the row to set
     */
    public void setRow( Integer row)
    {

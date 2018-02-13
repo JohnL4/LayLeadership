@@ -91,10 +91,7 @@ public class ActivityEngagement
             cal.clear();
             if (parsedEndDate.year == null)
             {
-               anAppLogger.warn( "Can't find year in activity end date \"%s\" at data row %d",
-                     anActivityEndYearString);
-//               logger.log( Level.WARNING, String.format( "Can't find year in activity end date \"%s\" at data row %d",
-//                     anActivityEndYearString));
+               anAppLogger.warn( "Can't find year in activity end date \"%s\"", anActivityEndYearString);
             }
             else
             {
