@@ -1,4 +1,4 @@
-package church.universityumc.excelconverter;
+package church.universityumc;
 
 public enum RowType
 {

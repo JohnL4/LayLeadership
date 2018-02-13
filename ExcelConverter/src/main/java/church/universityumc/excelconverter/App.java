@@ -51,6 +51,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import church.universityumc.ActivityEngagement;
 import church.universityumc.AppLogger;
 import church.universityumc.ChurchMember;
+import church.universityumc.RowType;
 
 /**
  * Hello world!

@@ -9,7 +9,20 @@
 
 * Roadmap
 
-** DONE Setup
+  GitHub doesn't format org-mode files very well (I'm glad it handles org-mode at all, though), so here's the short
+  version:
+
+  - [X] [[*Setup -- get the technology running, prove things are possible][Setup -- get the technology running, prove things are possible]]
+  - [-] [[*Read & Parse Excel generated from an ACS report][Read & Parse Excel generated from an ACS report]]
+    - [X] Basic member info
+    - [ ] Activities
+    - [ ] Skills
+    - [ ] Comments
+  - [ ] [[*Write out new spreadsheet in more-usable format][Write out new spreadsheet in more-usable format]]
+  - [ ] [[*Update external SQL database][Update external SQL database]]
+  - [ ] [[*Web app to maintain data in SQL database][Web app to maintain data in SQL database]]
+
+** DONE Setup -- get the technology running, prove things are possible
    CLOSED: [2018-01-28 Sun 13:04]
 
    - CLOSING NOTE [2018-02-12 Mon 13:04] \\

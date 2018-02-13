@@ -16,6 +16,11 @@ public class ActivityEngagement
    private ActivityRole role;
    private Date startDate, endDate;
    private boolean hasRotationDate;
+   
+   /**
+    * Where the data originally came from in the ACS spreadsheet.
+    */
+   private RowType dataSource;
 
 //   private Logger logger;
    
