@@ -1,13 +1,7 @@
 package church.universityumc;
 
-import java.lang.System.Logger;
-import java.lang.System.Logger.Level;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
-
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 
 /**
  * An activity a {@link ChurchMember} may engage in.  If this has associated dates, it's (obviously?) some
@@ -124,9 +118,7 @@ public class ActivityEngagement
       catch (java.text.ParseException exc)
       {
          StringBuilder msg = new StringBuilder( exc.getMessage());
-//         msg.append( " at data row ").append( aRow.getRowNum()); // TODO: +1?
-//         logger.log( Level.WARNING, msg);
-         anAppLogger.warn( msg.toString(), null);
+         anAppLogger.warn( msg.toString(), (Object[]) null);
       }
    }
 
