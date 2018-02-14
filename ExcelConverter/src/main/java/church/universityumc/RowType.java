@@ -43,9 +43,23 @@ public enum RowType
    ActivitiesHeader,
    
    /**
-    * A row describing a single activity.
+    * A row describing a single activity.  May be a {@link #Skill} in disguise (lack of dates may be the
+    * discriminant).
     */
    Activity, 
+   
+   /**
+    * A row describing a member's vocation.  Note that a row may be recognized as an {@link #Activity}, but actually
+    * may be a {@link #Vocation}.
+    */
+   Vocation, // TODO: figure out if these things ("Persnl Minstr 06 Vocat'l") really are vocations.
+   
+   /**
+    * A skill, as opposed to an {@link #Activity} (which has at least a start date) or a {@link #Vocation}
+    * (which might somehow explicitly identified as such -- so {@link #Skill} is kind of a fallback for
+    * {@link #Activity}s with no dates.
+    */
+   Skill,
    
    /**
     * A row summarizing the report somehow (e.g., by printing a total record count).

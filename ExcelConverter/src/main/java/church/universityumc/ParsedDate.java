@@ -70,11 +70,13 @@ public class ParsedDate
          date = parseDate( aDateSpecification);
          if (date == null)
          {
+            if (aDateSpecification == null || aDateSpecification.equals( ""))
+               throw new java.text.ParseException( "Unable to parse date from null or empty string", 0);
             String[] endYears = aDateSpecification.split( "\\D+");
             if (endYears.length == 0)
             {
                throw new java.text.ParseException(
-                     String.format( "Unable to find end years in \"%s\"", aDateSpecification), 
+                     String.format( "Unable to find years in \"%s\"", aDateSpecification), 
                      0); 
             }
             else
@@ -85,10 +87,8 @@ public class ParsedDate
                }
                catch (NumberFormatException exc)
                {
-                  throw new java.text.ParseException(
-                        String.format( "Unable to parse end year \"%s\" (element 2)", 
-                              aDateSpecification), 
-                        0);
+                  throw new java.text.ParseException( 
+                        String.format( "Unable to parse year \"%s\"", aDateSpecification), 0);
                }
          }
          else

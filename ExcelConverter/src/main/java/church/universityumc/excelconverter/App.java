@@ -52,6 +52,7 @@ import church.universityumc.ActivityEngagement;
 import church.universityumc.AppLogger;
 import church.universityumc.ChurchMember;
 import church.universityumc.RowType;
+import church.universityumc.Skill;
 
 /**
  * Hello world!
@@ -116,8 +117,8 @@ public class App
    public static void main( String[] args) throws IOException, ParseException, UnknownRowTypeException
    {
       Logger logger = System.getLogger( "church.universityumc");
-      logger.log( Level.WARNING, "test warning");
-      AppLogger.getInstance().warn( "test warning", (Object[])null);
+//      logger.log( Level.WARNING, "test warning");
+//      AppLogger.getInstance().warn( "test warning", (Object[])null);
       options = makeOptions();
       CommandLine cmdLine = parseCommandLine( args);
       if (cmdLine.hasOption( 'h')) showHelp();
@@ -281,11 +282,16 @@ public class App
                      currentChurchMember.addServiceHistory( parseActivity( row));
                }
                break;
+            case Vocation:
+               Skill skill = parseSkill( row);
+               break;
             case ActivitiesSectionMarker:
             case CommentsSectionMarker:
                break;
             case Comments:
                parseComments( row);
+               break;
+            case ReportSummary:
                break;
             default:
                AppLogger.getInstance().warn( "Unexpected row type: %s", rowType);
@@ -420,51 +426,13 @@ public class App
       String activityEndYearString = iter.next().getStringCellValue();
       String activityRole = iter.next().getStringCellValue();
       
-//      int activityEndYear;
-//      boolean hasEndYear;
-//      Date endDate;
-//      
-//      Matcher noRotationMatcher = NO_ROTATION_REGEX.matcher( activityEndYearString);
-//      if (noRotationMatcher.find())
-//      {
-//         hasEndYear = false;
-//         activityEndYear = 0;
-//         endDate = null;
-//      }
-//      else
-//      {
-//         hasEndYear = true;
-//         // First, try to parse as a normal date, just in case we can. Otherwise, we'll assume it's one
-//         // or more years separated by non-numeric characters (slash, comma, space, whatever).
-//         endDate = parseDate( activityEndYearString);
-//         if (endDate == null)
-//         {
-//            String[] endYears = activityEndYearString.split( "\\D+");
-//            if (endYears.length == 0)
-//               warn( "Unable to find end years in \"%s\" in row %d", activityEndYearString, aRow.getRowNum());
-//            else
-//               try
-//               {
-//                  // Assume last year is the true end year.
-//                  activityEndYear = Integer.parseInt( endYears[endYears.length - 1]);
-//                  Calendar cal = Calendar.getInstance();
-//                  cal.clear();
-//                  cal.set( Calendar.YEAR, activityEndYear);
-//                  cal.set( Calendar.DAY_OF_YEAR, cal.getActualMaximum( Calendar.DAY_OF_YEAR));
-//                  endDate = cal.getTime();
-//               }
-//               catch (NumberFormatException exc)
-//               {
-//                  warn( "Unable to parse end year \"%s\" (element 2) at row %d", activityEndYearString,
-//                        aRow.getRowNum());
-//               }
-//         }
-//      }
-//      // TODO: might need both an end year AND an end date in ActivityEngagement, since we might have only the year, and
-//      // a falsely-precise Date could be misleading.
-      
-//      return new ActivityEngagement( activityType, activityName, activityEndYearString, activityRole);
       return new ActivityEngagement( activityType, activityName, activityEndYearString, activityRole, AppLogger.getInstance());
+   }
+
+   private static Skill parseSkill( Row row)
+   {
+      // TODO Auto-generated method stub
+      return null;
    }
 
    /**
@@ -524,7 +492,10 @@ public class App
                   {
                      if (aCurrentSection == RowType.ActivitiesSectionMarker
                            || aCurrentSection == RowType.ActivitiesHeader)
-                        retval = RowType.Activity;
+                        if (cellValue.equals( "Persnl Minstr 06 Vocat'l"))
+                           retval = RowType.Vocation;
+                        else
+                           retval = RowType.Activity;
                      else
                         throw new UnknownRowTypeException( aRow.getRowNum());
                   }

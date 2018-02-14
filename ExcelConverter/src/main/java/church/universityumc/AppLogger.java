@@ -59,7 +59,7 @@ public class AppLogger
             .append(  callerSF.getLineNumber())
             .append( ")");
       }
-      System.getLogger( LOGGER_NAME).log( Level.WARNING, fmt.toString(), args);
+      System.getLogger( LOGGER_NAME).log( Level.WARNING, String.format( fmt.toString(), args));
    }
 
    public static AppLogger getInstance()
