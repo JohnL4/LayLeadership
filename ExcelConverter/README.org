@@ -38,14 +38,15 @@
 
     Well-developed, publicly-available language allowing non-hacky development that I'm most familiar with, and that
     other developers are most likely to be familiar with (I know everybody knows PHP or Ruby or Python, but I think Java
-    is really the most straightforward).  Has good libraries for Excel spreadsheet, SQL database, web API access.  All
-    of that edges out other possibilities, in my mind:
+    is really the most straightforward and is pretty widely known).  Has good libraries for Excel spreadsheet, SQL
+    database, web API access.  All of that edges out other possibilities, in my mind:
 
     - Python :: Good language, but I'm not as familiar with it as I am with Java.
     - Node.js :: I'm a big fan of strong, static typing, and I see Javascript as really a little too "cowboy".
     - C# :: Microsoft.  In spite of MS's recent "MS (loves) Linux" horsefeathers, I still don't like them.  In the long
             run, something more open and accorded first-class citizenship on more platforms (Apple, Linux) is going to
-            be better, I believe.
+            be better, I believe.  Microsoft has too much history with licensing and other legal tricks for me to really
+            trust something like Mono.
     - Perl :: Good language, but I was ready to move on 15 years ago.  Besides, line noise ain't my thing.
     - Go, Rust, D :: All wonderful languages, I have no doubt, but (a) intended for low-level system programming, and
                      (b) what kind of Excel-spreadsheet-readin' libraries do they have?
