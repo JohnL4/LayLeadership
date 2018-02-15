@@ -27,6 +27,12 @@ public class Skill
    {
       return name;
    }
+
+   public static Skill find( String aSkillname)
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
    
    
 }

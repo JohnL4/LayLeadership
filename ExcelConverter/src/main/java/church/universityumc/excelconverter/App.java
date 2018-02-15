@@ -60,6 +60,7 @@ import church.universityumc.Skill;
  */
 public class App
 {
+
    /**
     * Expected column header for expected columns. Used to allow a little flexibility in where the columns appear.
     */
@@ -70,10 +71,15 @@ public class App
       EMAIL = "Preferred E-mail", 
       DATE_JOINED = "Date Joined";
 
-   private static final String  ACTIVITIES        = "ACTIVITIES";
-   private static final String  COMMENTS          = "COMMENTS";
-   private static final String  CATEGORY          = "Category";
-   private static final Pattern NO_ROTATION_REGEX = Pattern.compile( "no rotation", Pattern.CASE_INSENSITIVE);
+   private static final String  ACTIVITIES               = "ACTIVITIES";
+   private static final String  COMMENTS                 = "COMMENTS";
+   private static final String  CATEGORY                 = "Category";
+   private static final Pattern NO_ROTATION_REGEX        = Pattern.compile( "no rotation", Pattern.CASE_INSENSITIVE);
+   
+   /**
+    * Identifies a row specifying a member's vocation, from the 2006 Personal Ministry Survey.
+    */
+   private static final String  PERSNL_MINSTR_06_VOCAT_L = "Persnl Minstr 06 Vocat'l";
 
    private static boolean headersInitialized;
 
@@ -429,10 +435,56 @@ public class App
       return new ActivityEngagement( activityType, activityName, activityEndYearString, activityRole, AppLogger.getInstance());
    }
 
-   private static Skill parseSkill( Row row)
+   /**
+    * Parse the given row as a {@Skill}.
+    * @param row
+    * @return
+    */
+   private static Skill parseSkill( Row aRow)
    {
-      // TODO Auto-generated method stub
-      return null;
+      Skill retval;
+      Iterator<Cell> iter = aRow.iterator();
+      
+      String category, elt1, elt2, elt3, elt4;
+      
+      category = nextOrNull( iter);
+      elt1 = nextOrNull( iter);
+      elt2 = nextOrNull( iter);
+      elt3 = nextOrNull( iter);
+      elt4 = nextOrNull( iter);
+      
+      switch (category)
+      {
+         case PERSNL_MINSTR_06_VOCAT_L:
+            StringBuilder skillnameSB = new StringBuilder( String.format( "<vocational category=\"%s\"", elt1));
+            if (elt2 != null)
+            {
+               skillnameSB.append( String.format( " subcategory=\"%s\"", elt2));
+               if (elt3 != null)
+                  skillnameSB.append( String.format( " subsubcategory=\"%s\"", elt3));
+            }
+            skillnameSB.append( "/>");
+            retval = Skill.find( skillnameSB.toString());
+            break;
+         default:
+            AppLogger.getInstance().warn( "Unexpected category in Skill row: \"%s\"", category);
+            retval = null;
+      }
+      return retval;
+   }
+
+   private static String nextOrNull( Iterator<Cell> iter)
+   {
+      String retval;
+      if (iter.hasNext())
+      {
+         retval = iter.next().getStringCellValue();
+         if (retval == null || retval.equals( "")) 
+            retval = null;
+      }
+      else
+         retval = null;
+      return retval;
    }
 
    /**
@@ -492,7 +544,7 @@ public class App
                   {
                      if (aCurrentSection == RowType.ActivitiesSectionMarker
                            || aCurrentSection == RowType.ActivitiesHeader)
-                        if (cellValue.equals( "Persnl Minstr 06 Vocat'l"))
+                        if (cellValue.equals( PERSNL_MINSTR_06_VOCAT_L))
                            retval = RowType.Vocation;
                         else
                            retval = RowType.Activity;
