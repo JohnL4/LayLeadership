@@ -15,10 +15,16 @@
   - [X] [[*Setup -- get the technology running, prove things are possible][Setup -- get the technology running, prove things are possible]]
   - [-] [[*Read & Parse Excel generated from an ACS report][Read & Parse Excel generated from an ACS report]]
     - [X] Basic member info
-    - [ ] Activities
-    - [ ] Skills
+    - [X] Activities
+    - [X] Skills
     - [ ] Comments
   - [ ] [[*Write out new spreadsheet in more-usable format][Write out new spreadsheet in more-usable format]]
+    - [ ] Probably requires going back over the internal d/b to make sure everything is shipshape
+      - [ ] Activity
+      - [ ] Skill
+      - [ ] ActivityRole
+      - [ ] ActivityType
+    - [ ] Actually write out spreadsheet, tab per table, probably
   - [ ] [[*Update external SQL database][Update external SQL database]]
   - [ ] [[*Web app to maintain data in SQL database][Web app to maintain data in SQL database]]
 
@@ -30,9 +36,10 @@
 
 *** Java
 
-    Well-developed, publicly-available language allowing non-hacky development that I'm most familiar with.  Has good
-    libraries for Excel spreadsheet, SQL database, web API access.  All of that edges out other possibilities, in my
-    mind:
+    Well-developed, publicly-available language allowing non-hacky development that I'm most familiar with, and that
+    other developers are most likely to be familiar with (I know everybody knows PHP or Ruby or Python, but I think Java
+    is really the most straightforward).  Has good libraries for Excel spreadsheet, SQL database, web API access.  All
+    of that edges out other possibilities, in my mind:
 
     - Python :: Good language, but I'm not as familiar with it as I am with Java.
     - Node.js :: I'm a big fan of strong, static typing, and I see Javascript as really a little too "cowboy".
@@ -43,6 +50,7 @@
     - Go, Rust, D :: All wonderful languages, I have no doubt, but (a) intended for low-level system programming, and
                      (b) what kind of Excel-spreadsheet-readin' libraries do they have?
     - C, C++ :: These languages are the reason Java exists.  Similar arguments as for Go, Rust, and D.
+    - PHP :: No.  Just no.  No language for which /<Language> the Right Way/ is required reading is a good idea.
 
 *** Maven
 
