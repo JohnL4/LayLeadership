@@ -459,9 +459,17 @@ public class App
             StringBuilder skillnameSB = new StringBuilder( String.format( "<vocational category=\"%s\"", elt1));
             if (elt2 != null)
             {
-               skillnameSB.append( String.format( " subcategory=\"%s\"", elt2));
-               if (elt3 != null)
-                  skillnameSB.append( String.format( " subsubcategory=\"%s\"", elt3));
+               if (elt2.equals( "Other"))
+               {
+                  if (elt3 != null)
+                     skillnameSB.append( String.format( " subcategory=\"%s\"", elt3));
+               }
+               else
+               {
+                  skillnameSB.append( String.format( " subcategory=\"%s\"", elt2));
+                  if (elt3 != null)
+                     skillnameSB.append( String.format( " subsubcategory=\"%s\"", elt3));
+               }
             }
             skillnameSB.append( "/>");
             retval = Skill.find( skillnameSB.toString());
