@@ -40,8 +40,7 @@ public class ActivityEngagement
          String anActivityType,
          String anActivityName,
          String anActivityEndYearString,
-         String anActivityRole,
-         AppLogger anAppLogger
+         String anActivityRole
          )
    {
       activityType = ActivityType.find( anActivityType);
@@ -78,7 +77,7 @@ public class ActivityEngagement
                cal.clear();
                if (parsedEndDate.year == null)
                {
-                  anAppLogger.warn( "Can't find year in activity end date \"%s\"", anActivityEndYearString);
+                  Log.warn( "Can't find year in activity end date \"%s\"", anActivityEndYearString);
                }
                else
                {
@@ -107,7 +106,7 @@ public class ActivityEngagement
          catch (java.text.ParseException exc)
          {
             StringBuilder msg = new StringBuilder( exc.getMessage());
-            anAppLogger.warn( msg.toString(), (Object[]) null);
+            Log.warn( msg.toString(), (Object[]) null);
          }
       }
    }

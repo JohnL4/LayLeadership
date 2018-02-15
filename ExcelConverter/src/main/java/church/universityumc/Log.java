@@ -8,39 +8,39 @@ import java.util.Optional;
  * For generating log messages, with context.
  *
  */
-public class AppLogger
+public class Log
 {
    private static final String LOGGER_NAME = "church.universityumc";
 
-   private static AppLogger instance;
+//   private static Log instance;
    
-   private ChurchMember member;
+   private static ChurchMember member;
    
-   private Integer row;
+   private static Integer row;
 
    /**
     * Sets the current {@link ChurchMember} being processed.
     * 
-    * @param member the member to set
+    * @param aMember the member to set
     */
-   public void setMember( ChurchMember member)
+   public static void setMember( ChurchMember aMember)
    {
-      this.member = member;
+      member = aMember;
    }
 
    /**
     * Sets the current input row (0-based) being processed. Note that this could be a spreadsheet row or a d/b result
     * set row.
     * 
-    * @param row
+    * @param aRow
     *           the row to set
     */
-   public void setRow( Integer row)
+   public static void setRow( Integer aRow)
    {
-      this.row = row;
+      row = aRow;
    }
    
-   public void warn(String aFormat,  Object ... args)
+   public static void warn(String aFormat,  Object ... args)
    {
       StringBuilder fmt = new StringBuilder( aFormat);
 
@@ -62,10 +62,10 @@ public class AppLogger
       System.getLogger( LOGGER_NAME).log( Level.WARNING, String.format( fmt.toString(), args));
    }
 
-   public static AppLogger getInstance()
-   {
-      if (instance == null)
-         instance = new AppLogger();
-      return instance;
-   }
+//   public static Log getInstance()
+//   {
+//      if (instance == null)
+//         instance = new Log();
+//      return instance;
+//   }
 }

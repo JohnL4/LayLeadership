@@ -49,7 +49,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import church.universityumc.ActivityEngagement;
-import church.universityumc.AppLogger;
+import church.universityumc.Log;
 import church.universityumc.ChurchMember;
 import church.universityumc.RowType;
 import church.universityumc.Skill;
@@ -252,7 +252,7 @@ public class App
       ChurchMember currentChurchMember = null;
       for (Row row : sheet) // Label makes 'continue' stmts a little more obvious.
       {
-         AppLogger.getInstance().setRow( row.getRowNum());
+         Log.setRow( row.getRowNum());
          RowType rowType = getRowType( row, workbook, previousSectionRowType); // TODO: don't use prev. row type; use a
                                                                         // concept of "what section are we in?". So,
                                                                         // it could be something (e.g., section
@@ -300,7 +300,7 @@ public class App
             case ReportSummary:
                break;
             default:
-               AppLogger.getInstance().warn( "Unexpected row type: %s", rowType);
+               Log.warn( "Unexpected row type: %s", rowType);
                break;
          }
          switch (rowType)
@@ -361,17 +361,18 @@ public class App
                      switch (cell.getCellTypeEnum())
                      {
                         case STRING:
+                           String cellValue = cell.getStringCellValue(); 
                            try
                            {
-                              if (cell.getStringCellValue() != null)
+                              if (cellValue != null && ! cellValue.equals(""))
                               {
-                                 member.setAge( Integer.parseInt( cell.getStringCellValue()));
+                                 member.setAge( Integer.parseInt( cellValue));
                                  member.setAgeAsOf( new Date());
                               }
                            }
                            catch (NumberFormatException exc)
                            {
-                              AppLogger.getInstance().warn( "NumberFormatException parsing age \"%s\"", cell.getStringCellValue());
+                              Log.warn( "NumberFormatException parsing age \"%s\"", cellValue);
                            }
                            break;
                         case NUMERIC:
@@ -379,7 +380,7 @@ public class App
                            member.setAgeAsOf( new Date());
                            break;
                         default:
-                           AppLogger.getInstance().warn( "Unexpected cell type (%s)", cell.getCellTypeEnum());
+                           Log.warn( "Unexpected cell type (%s)", cell.getCellTypeEnum());
                            break;
                      }
                      break;
@@ -399,7 +400,7 @@ public class App
                      }
                      break;
                   default:
-                     AppLogger.getInstance().warn( "Member header \"%s\" unhandled", header);
+                     Log.warn( "Member header \"%s\" unhandled", header);
                      break;
                }
             }
@@ -432,7 +433,7 @@ public class App
       String activityEndYearString = iter.next().getStringCellValue();
       String activityRole = iter.next().getStringCellValue();
       
-      return new ActivityEngagement( activityType, activityName, activityEndYearString, activityRole, AppLogger.getInstance());
+      return new ActivityEngagement( activityType, activityName, activityEndYearString, activityRole);
    }
 
    /**
@@ -475,7 +476,7 @@ public class App
             retval = Skill.find( skillnameSB.toString());
             break;
          default:
-            AppLogger.getInstance().warn( "Unexpected category in Skill row: \"%s\"", category);
+            Log.warn( "Unexpected category in Skill row: \"%s\"", category);
             retval = null;
       }
       return retval;
@@ -649,7 +650,7 @@ public class App
    /**
     * Log a message to stderr, followed by a newline.
     * 
-    * @deprecated Use {@link AppLogger} instead.
+    * @deprecated Use {@link Log} instead.
     * 
     * @param aFormat
     * @param args
