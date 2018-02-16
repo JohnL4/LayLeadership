@@ -253,67 +253,70 @@ public class App
       for (Row row : sheet) // Label makes 'continue' stmts a little more obvious.
       {
          Log.setRow( row.getRowNum());
-         RowType rowType = getRowType( row, workbook, previousSectionRowType); // TODO: don't use prev. row type; use a
-                                                                        // concept of "what section are we in?". So,
-                                                                        // it could be something (e.g., section
-                                                                        // marker) that was seen more than one row
-                                                                        // ago.
-         switch (rowType)
+         try
          {
-            case PageHeader:
-               break;
-            case MemberHeader:
-               if (memberHeaderColumnNumbers.size() == 0) buildMemberHeaderColumnNumbers( row);
-               break;
-            case Member:
-               if (currentChurchMember == null)
-               {}
-               else
-                  currentChurchMember.dumpText( System.out);
-               currentChurchMember = parseMember( row);
-               break;
-            case ActivitiesHeader:
-               buildActivitiesHeaderColumnNumbers( row);
-               break;
-            case Activity:
-               {
-                  ActivityEngagement activityEngagement = parseActivity( row);
-                  if (activityEngagement.getStartDate() == null)
-                  {
-                     // It's a skill?
-                     currentChurchMember.addSkill( activityEngagement.toSkill());
-                  }
+            RowType rowType = getRowType( row, workbook, previousSectionRowType);
+            switch (rowType)
+            {
+               case PageHeader:
+                  break;
+               case MemberHeader:
+                  if (memberHeaderColumnNumbers.size() == 0) buildMemberHeaderColumnNumbers( row);
+                  break;
+               case Member:
+                  if (currentChurchMember == null)
+                  {}
                   else
-                     // It's an activity engagement?
-                     currentChurchMember.addServiceHistory( parseActivity( row));
-               }
-               break;
-            case Vocation:
-               Skill skill = parseSkill( row);
-               break;
-            case ActivitiesSectionMarker:
-            case CommentsSectionMarker:
-               break;
-            case Comments:
-               parseComments( row);
-               break;
-            case ReportSummary:
-               break;
-            default:
-               Log.warn( "Unexpected row type: %s", rowType);
-               break;
+                     currentChurchMember.dumpText( System.out);
+                  currentChurchMember = parseMember( row);
+                  break;
+               case ActivitiesHeader:
+                  buildActivitiesHeaderColumnNumbers( row);
+                  break;
+               case Activity:
+                  {
+                     ActivityEngagement activityEngagement = parseActivity( row);
+                     if (activityEngagement.getStartDate() == null)
+                     {
+                        // It's a skill?
+                        currentChurchMember.addSkill( activityEngagement.toSkill());
+                     }
+                     else
+                        // It's an activity engagement?
+                        currentChurchMember.addServiceHistory( parseActivity( row));
+                  }
+                  break;
+               case Vocation:
+                  currentChurchMember.addSkill( parseSkill( row));
+                  break;
+               case ActivitiesSectionMarker:
+               case CommentsSectionMarker:
+                  break;
+               case Comments:
+                  currentChurchMember.addComment( parseComment( row));
+                  break;
+               case ReportSummary:
+                  break;
+               default:
+                  Log.warn( "Unexpected row type: %s", rowType);
+                  break;
+            }
+            switch (rowType)
+            {
+               // Important markers that can affect the processing of following rows.  Really, this should be more
+               // of a state machine ("currentState = ...").
+               case MemberHeader:
+               case ActivitiesSectionMarker:
+               case CommentsSectionMarker:
+                  previousSectionRowType = rowType;
+                  break;
+               default:
+                  break;
+            }
          }
-         switch (rowType)
+         catch (Exception exc)
          {
-            // Important markers that can affect the processing of following rows.  Really, this should be more
-            // of a state machine ("currentState = ...").
-            case MemberHeader:
-            case ActivitiesSectionMarker:
-            case CommentsSectionMarker:
-               previousSectionRowType = rowType;
-               break;
-            default:
-               break;
+            Log.warn( exc);
          }
       }
       return churchMembers;
@@ -501,10 +504,26 @@ public class App
     * 
     * @param aRow
     */
-   private static void parseComments( Row aRow)
+   private static Comment parseComment( Row aRow)
    {
-      // TODO Auto-generated method stub
-
+      Iterator<Cell> iter = aRow.iterator();
+      
+      String commentDate = nextOrNull( iter);
+      String commentLevel = nextOrNull( iter);
+      String commentType = nextOrNull( iter);
+      String commentText = nextOrNull( iter);
+      
+      Comment comment;
+      try
+      {
+         comment = new Comment( parseDate( commentDate), commentLevel, commentType, commentText);
+      }
+      catch (IllegalArgumentException exc)
+      {
+         Log.warn( exc);
+         comment = null;
+      }
+      return comment;
    }
 
    private static RowType getRowType( Row aRow, Workbook aWorkbook, RowType aCurrentSection)

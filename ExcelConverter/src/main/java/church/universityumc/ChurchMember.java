@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import church.universityumc.excelconverter.Comment;
+
 /** 
  * A member of the congregation.
  *
@@ -174,5 +176,11 @@ public class ChurchMember
    public void dumpText(PrintStream out) {
 	   // TODO Auto-generated method stub
 
+   }
+
+   public void addComment( Comment aParseComment)
+   {
+      // TODO Auto-generated method stub
+      
    }
 }

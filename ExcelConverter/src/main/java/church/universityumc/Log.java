@@ -40,7 +40,7 @@ public class Log
       row = aRow;
    }
    
-   public static void warn(String aFormat,  Object ... args)
+   public static void warn(String aFormat,  Object... args)
    {
       StringBuilder fmt = new StringBuilder( aFormat);
 
@@ -60,6 +60,11 @@ public class Log
             .append( ")");
       }
       System.getLogger( LOGGER_NAME).log( Level.WARNING, String.format( fmt.toString(), args));
+   }
+
+   public static void warn( Exception anException)
+   {
+      warn( anException.getMessage());
    }
 
 //   public static Log getInstance()
