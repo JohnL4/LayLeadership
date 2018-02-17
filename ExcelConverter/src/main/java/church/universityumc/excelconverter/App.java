@@ -122,9 +122,11 @@ public class App
 
    public static void main( String[] args) throws IOException, ParseException, UnknownRowTypeException
    {
-      Logger logger = System.getLogger( "church.universityumc");
+//      Logger logger = System.getLogger( "church.universityumc");
 //      logger.log( Level.WARNING, "test warning");
 //      AppLogger.getInstance().warn( "test warning", (Object[])null);
+      Log.warn( "testing warning");
+      Log.debug( "test debug");
       options = makeOptions();
       CommandLine cmdLine = parseCommandLine( args);
       if (cmdLine.hasOption( 'h')) showHelp();
@@ -316,6 +318,7 @@ public class App
          }
          catch (Exception exc)
          {
+            Log.debug( exc);
             Log.warn( exc);
          }
       }
