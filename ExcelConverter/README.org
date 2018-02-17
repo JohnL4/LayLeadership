@@ -118,3 +118,35 @@
   After this is done, you can zip up the generated jar file plus the dependencies and you /should/ have a complete,
   executable package.
   
+* Logger Format
+
+** How to activate
+
+   Logging properties are in the file ~logging.properties~.
+
+   Specify as ~-Djava.util.logging.config.file=./logging.properties~ option to ~java~ command (on the command line)
+   /before/ the ~-jar excel-converter-1.0-SNAPSHOT.jar~ part.
+
+*** TODO Add this logging.properties file to pom.xml to make sure it winds up in the ~target~ output directory
+
+** Technical details
+   
+  ~String.format()~ call with the following arguments:
+
+  | *1*  | *2*    | *3*    | *4*   | *5*     | *6*    |
+  | date | source | logger | level | message | thrown |
+
+  Format looks a lot like the old ~printf(3)~ C call:
+  
+  : [%1$tF %1$tT.%1$tL %3$s %4$-7s] %5$s%n
+
+  ~n$~ refers to the n-th argument to ~format()~.
+
+  ~tF~ formats dates as Y-m-d.
+
+  ~tT~ formats dates (times) as H:M:S.
+
+  ~tL~ formats millisecond parts of times as 999 (with leading zeros).
+
+  ~n~ is a newline character (line terminator for whatever the current platform is)
+  
