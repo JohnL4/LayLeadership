@@ -64,5 +64,10 @@ public enum RowType
    /**
     * A row summarizing the report somehow (e.g., by printing a total record count).
     */
-   ReportSummary;
+   ReportSummary, 
+   
+   /**
+    * An empty row (no data).
+    */
+   EmptyRow;
 }
