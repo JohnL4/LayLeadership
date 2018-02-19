@@ -11,14 +11,12 @@ import java.util.Map;
 public class Skill
 {
    private String _name;
-//   private SkillSource _source; // TODO: fill in.
    
    private static Map<String,Skill> __allSkills = new HashMap<String,Skill>();
 
    public Skill( String aName /* , SkillSource aSource */)
    {
       _name = aName;
-//      _source = aSource;
    }
 
    /**
@@ -30,11 +28,6 @@ public class Skill
       return _name;
    }
    
-//   public SkillSource getSource()
-//   {
-//      return _source;
-//   }
-
    public static Skill find( String aSkillName)
    {
       Skill retval = __allSkills.get( aSkillName);
@@ -46,5 +39,8 @@ public class Skill
       return retval;
    }
    
-   
+   public String toString()
+   {
+      return getName();
+   }
 }

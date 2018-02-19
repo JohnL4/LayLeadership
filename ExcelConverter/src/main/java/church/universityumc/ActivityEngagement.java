@@ -198,5 +198,15 @@ public class ActivityEngagement
       return retval;
    }
    
-   
+   public String toString()
+   {
+      StringBuilder retval = new StringBuilder(
+            String.format( "%s (%s), %tD - ", getActivity().getName(), getActivityType().getName(), getStartDate()));
+      if (hasRotationDate())
+         retval.append( String.format( "%tD", getEndDate()));
+      else
+         retval.append( "(no end date)");
+      retval.append( ")");
+      return retval.toString();
+   }
 }

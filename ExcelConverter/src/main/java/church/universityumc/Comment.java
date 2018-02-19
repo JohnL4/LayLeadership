@@ -24,7 +24,6 @@ public class Comment
     * @throws EnumResolutionException if one of comment level or comment type can't be mapped to an enum value.
     */
    public Comment( Date aCommentDate, String aCommentLevel, String aCommentType, String aCommentText) 
-         throws EnumResolutionException
    {
       _commentDate = aCommentDate;
       _commentLevel = CommentLevel.forString( aCommentLevel);
@@ -62,5 +61,10 @@ public class Comment
    public String getText()
    {
       return _commentText;
+   }
+   
+   public String toString()
+   {
+      return String.format( "%tD %s (%s)", getDate(), getType(), getLevel());
    }
 }

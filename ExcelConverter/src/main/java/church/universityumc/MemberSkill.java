@@ -20,4 +20,9 @@ public class MemberSkill
       _skill = aSkill;
       _source = aSkillSource;
    }
+   
+   public String toString()
+   {
+      return String.format( "%s (%s)", _skill, _source);
+   }
 }

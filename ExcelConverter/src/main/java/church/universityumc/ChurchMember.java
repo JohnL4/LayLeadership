@@ -19,11 +19,11 @@ public class ChurchMember
     * One year later, that member will be one year older.
     */
    private Date _ageAsOf;
-   
+
    private int                            _yearJoined;
    private String                         _phone;
    private String                         _email;
-   private StringBuilder                         _biography;
+   private StringBuilder                  _biography;
    private Collection<Interest>           _interests;
    private Collection<MemberSkill>        _skills;
    private Collection<ActivityEngagement> _serviceHistory;
@@ -190,10 +190,23 @@ public class ChurchMember
 
    public void addComment( Comment aComment)
    {
+      if (aComment == null)
+         return;
       if (_comments == null)
          _comments = new ArrayList<Comment>();
       _comments.add( aComment);
       if (aComment.getType() == CommentType.Biography)
          addBiography( aComment.getText());
    }
+   
+   public Collection<Comment> getComments()
+   {
+      return _comments; // TODO: readonly Collection?
+   }
+   
+   public String toString()
+   {
+      return getName();
+   }
+   
 }

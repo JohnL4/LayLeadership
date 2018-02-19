@@ -5,7 +5,15 @@ import java.util.regex.Pattern;
 
 public enum CommentLevel
 {
-   Individual;
+   /**
+    * The comments applies to an individual (probably the current {@link ChurchMember}).
+    */
+   Individual,
+   
+   /**
+    * The level at which this comment applies is unknown.
+    */
+   Unknown;
 
    private static final Pattern INDIVIDUAL_RE = Pattern.compile( "individual", Pattern.CASE_INSENSITIVE);
 
@@ -13,14 +21,16 @@ public enum CommentLevel
     * Returns the enum constant corresponding to the given string (which may or may not match the enum member name).
     * @param aString
     * @return
-    * @throws EnumResolutionException If the given string cannot be mapped to an enum member.
     */
-   public static CommentLevel forString( String aString) throws EnumResolutionException
+   public static CommentLevel forString( String aString)
    {
       Matcher matcher = INDIVIDUAL_RE.matcher( aString);
       if (matcher.matches())
          return Individual;
       else
-         throw new EnumResolutionException( String.format( "No CommentLevel for \"%s\"", aString));
+      {
+         Log.warn( "Unknown comment level for \"%s\"", aString);
+         return Unknown;
+      }
    }
 }

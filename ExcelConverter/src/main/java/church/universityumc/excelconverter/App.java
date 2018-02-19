@@ -226,6 +226,33 @@ public class App
          throws IOException, UnknownRowTypeException
    {
       Collection<ChurchMember> churchMembers = buildChurchMembers( anInfileName);
+      for (ChurchMember member : churchMembers)
+      {
+         System.out.printf( "%s%n", member);
+         if (member.getServiceHistory() != null)
+         {
+            for (ActivityEngagement act : member.getServiceHistory())
+            {
+               System.out.printf( "    %s%n", act);
+            }
+         }
+         if (member.getSkills() != null)
+         {
+            System.out.printf( "    --------%n");
+            for (MemberSkill skill : member.getSkills())
+            {
+               System.out.printf( "    %s%n", skill);
+            }
+         }
+         if (member.getComments() != null)
+         {
+            System.out.printf( "    --------%n");
+            for (Comment comment : member.getComments())
+            {
+               System.out.printf( "    %s%n", comment);
+            }
+         }
+      }
    }
 
    private static void updateDatabase( String anInfileName, String aJdbcConnectionString)
@@ -527,15 +554,7 @@ public class App
       String commentText = nextOrNull( iter);
       
       Comment comment;
-      try
-      {
-         comment = new Comment( parseDate( commentDate), commentLevel, commentType, commentText);
-      }
-      catch (EnumResolutionException exc)
-      {
-         Log.warn( exc);
-         comment = null;
-      }
+      comment = new Comment( parseDate( commentDate), commentLevel, commentType, commentText);
       return comment;
    }
 

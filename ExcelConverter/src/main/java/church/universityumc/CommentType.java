@@ -5,7 +5,15 @@ import java.util.regex.Pattern;
 
 public enum CommentType
 {
-   Biography;
+   /**
+    * The comment is a biographical note.
+    */
+   Biography,
+   
+   /**
+    * It is unknown what kind of comment this is.
+    */
+   Unknown;
 
    private static final Pattern BIOGRAPHICAL_RE = Pattern.compile( "biography", Pattern.CASE_INSENSITIVE);
 
@@ -14,14 +22,16 @@ public enum CommentType
     * 
     * @param aString
     * @return
-    * @throws EnumResolutionException If the given string cannot be mapped to an enum member.
     */
-   public static CommentType forString( String aString) throws EnumResolutionException
+   public static CommentType forString( String aString)
    {
       Matcher matcher = BIOGRAPHICAL_RE.matcher( aString);
       if (matcher.matches())
          return Biography;
       else
-         throw new EnumResolutionException( String.format( "No CommentType for \"%s\"", aString));
+      {
+         Log.warn( "Unkown comment type for \"%s\"", aString);
+         return Unknown;
+      }
    }
 }
