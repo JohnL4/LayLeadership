@@ -13,17 +13,17 @@
   version:
 
   - [X] [[*Setup -- get the technology running, prove things are possible][Setup -- get the technology running, prove things are possible]]
-  - [-] [[*Read & Parse Excel generated from an ACS report][Read & Parse Excel generated from an ACS report]]
+  - [X] [[*Read & Parse Excel generated from an ACS report][Read & Parse Excel generated from an ACS report]]
     - [X] Basic member info
     - [X] Activities
     - [X] Skills
-    - [ ] Comments
-  - [ ] [[*Write out new spreadsheet in more-usable format][Write out new spreadsheet in more-usable format]]
-    - [ ] Probably requires going back over the internal d/b to make sure everything is shipshape
-      - [ ] Activity
-      - [ ] Skill
-      - [ ] ActivityRole
-      - [ ] ActivityType
+    - [X] Comments
+  - [-] [[*Write out new spreadsheet in more-usable format][Write out new spreadsheet in more-usable format]]
+    - [X] Probably requires going back over the internal d/b to make sure everything is shipshape
+      - [X] Activity
+      - [X] Skill
+      - [X] ActivityRole
+      - [X] ActivityType
     - [ ] Actually write out spreadsheet, tab per table, probably
   - [ ] [[*Update external SQL database][Update external SQL database]]
   - [ ] [[*Web app to maintain data in SQL database][Web app to maintain data in SQL database]]
@@ -75,12 +75,14 @@
       Pending issues I discover while running the whole shebang for real.
     Name, phone, etc.
 
-*** IN-PROGRESS Member activities
-
+*** DONE Member activities
+    CLOSED: [2018-02-19 Mon 00:15]
+    - CLOSING NOTE [2018-02-19 Mon 00:15]
     Past and present committees, skills survey data, etc.
 
-*** RESEARCH-TODO Member comments
-
+*** DONE RESEARCH-TODO Member comments
+    CLOSED: [2018-02-19 Mon 00:15]
+    - CLOSING NOTE [2018-02-19 Mon 00:15]
     As far as I can tell right now, this is only general biographical info, from the member's initial introduction to
     the church during the "new member" moments.
 
