@@ -66,8 +66,9 @@
     If we take the route of having data on a central server somewhere (as opposed to somebody's individual PC), I
     nominate AWS as the most stable and cheapest solution.  This is something I'm currently researching, 
 
-** IN-PROGRESS Read & Parse Excel generated from an ACS report
-
+** DONE Read & Parse Excel generated from an ACS report
+   CLOSED: [2018-02-19 Mon 00:17]
+   - CLOSING NOTE [2018-02-19 Mon 00:17]
 *** DONE Basic church member info
     CLOSED: [2018-02-07 Wed 13:13]
 
@@ -80,7 +81,7 @@
     - CLOSING NOTE [2018-02-19 Mon 00:15]
     Past and present committees, skills survey data, etc.
 
-*** DONE RESEARCH-TODO Member comments
+*** DONE Member comments
     CLOSED: [2018-02-19 Mon 00:15]
     - CLOSING NOTE [2018-02-19 Mon 00:15]
     As far as I can tell right now, this is only general biographical info, from the member's initial introduction to
