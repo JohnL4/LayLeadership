@@ -1,11 +1,9 @@
 package church.universityumc;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-
-import church.universityumc.excelconverter.Comment;
 
 /** 
  * A member of the congregation.
@@ -13,36 +11,37 @@ import church.universityumc.excelconverter.Comment;
  */
 public class ChurchMember
 {
-   private String name;
-   private long age;
+   private String _name;
+   private long _age;
    
    /**
     * The date the member's {@link age} is "as of", meaning that age is correct as of the indicated date.
     * One year later, that member will be one year older.
     */
-   private Date ageAsOf;
+   private Date _ageAsOf;
    
-   private int yearJoined;
-   private String phone;
-   private String email;
-   private String biography;
-   private Collection<Interest> interests;
-   private Collection<Skill> skills;
-   private Collection<ActivityEngagement> serviceHistory;
-   private Collection<Contact> contactHistory;
-
+   private int                            _yearJoined;
+   private String                         _phone;
+   private String                         _email;
+   private StringBuilder                         _biography;
+   private Collection<Interest>           _interests;
+   private Collection<MemberSkill>        _skills;
+   private Collection<ActivityEngagement> _serviceHistory;
+   private Collection<Contact>            _contactHistory;
+   private Collection<Comment>            _comments;
+   
    /**
     * In whatever format it comes from ACS in, probably "First Last".
     * @return
     */
    public String getName()
    {
-      return name;
+      return _name;
    }
 
    public void setName( String aName)
    {
-      name = aName;
+      _name = aName;
    }
 
    /**
@@ -51,12 +50,12 @@ public class ChurchMember
     */
    public long getAge()
    {
-      return age;
+      return _age;
    }
 
    public void setAge( long anAge)
    {
-      age = anAge;
+      _age = anAge;
    }
 
    /**
@@ -66,12 +65,12 @@ public class ChurchMember
     */
    public Date getAgeAsOf()
    {
-      return ageAsOf;
+      return _ageAsOf;
    }
 
    public void setAgeAsOf( Date aAgeAsOf)
    {
-      ageAsOf = aAgeAsOf;
+      _ageAsOf = aAgeAsOf;
    }
 
    /**
@@ -80,42 +79,48 @@ public class ChurchMember
     */
    public int getYearJoined()
    {
-      return yearJoined;
+      return _yearJoined;
    }
 
    public void setYearJoined( int aYearJoined)
    {
-      yearJoined = aYearJoined;
+      _yearJoined = aYearJoined;
    }
 
    public String getPhone()
    {
-      return phone;
+      return _phone;
    }
 
    public void setPhone( String aPhone)
    {
-      phone = aPhone;
+      _phone = aPhone;
    }
 
    public String getEmail()
    {
-      return email;
+      return _email;
    }
 
    public void setEmail( String aEmail)
    {
-      email = aEmail;
+      _email = aEmail;
    }
 
    public String getBiography()
    {
-      return biography;
+      return _biography.toString();
    }
    
-   public void addBiography( String aBiography)
+   private void addBiography( String aBiography)
    {
-      // TODO: implement.
+      if (aBiography == null || aBiography.length() == 0)
+         return;
+      if (_biography == null)
+         _biography = new StringBuilder();
+      if (_biography.length() > 0)
+         _biography.append( "\n");
+      _biography.append( aBiography);
    }
 
    /**
@@ -124,21 +129,23 @@ public class ChurchMember
     */
    public Collection<Interest> getInterests()
    {
-      return interests;
+      return _interests;
    }
 
    /**
     * The member's skills (may or may not match with {@link #getInterests()}).
     * @return
     */
-   public Collection<Skill> getSkills()
+   public Collection<MemberSkill> getSkills()
    {
-      return skills;
+      return _skills;
    }
    
-   public void addSkill( Skill aSkill)
+   public void addSkill( MemberSkill aMemberSkill)
    {
-      // TODO: implement
+      if (_skills == null)
+         _skills = new ArrayList<MemberSkill>();
+      _skills.add( aMemberSkill);
    }
 
    /**
@@ -147,12 +154,14 @@ public class ChurchMember
     */
    public Collection<ActivityEngagement> getServiceHistory()
    {
-      return serviceHistory;
+      return _serviceHistory;
    }
    
    public void addServiceHistory( ActivityEngagement anEngagement)
    {
-      // TODO: implement
+      if (_serviceHistory == null)
+         _serviceHistory = new ArrayList<ActivityEngagement>();
+      _serviceHistory.add( anEngagement);
    }
 
    /**
@@ -161,12 +170,13 @@ public class ChurchMember
     */
    public Collection<Contact> getContactHistory()
    {
-      return contactHistory;
+      return _contactHistory;
    }
    
    public void addContactHistory( Contact aContact)
    {
       // TODO: implement
+      throw new UnimplementedException();
    }
 
    /**
@@ -178,9 +188,12 @@ public class ChurchMember
 
    }
 
-   public void addComment( Comment aParseComment)
+   public void addComment( Comment aComment)
    {
-      // TODO Auto-generated method stub
-      
+      if (_comments == null)
+         _comments = new ArrayList<Comment>();
+      _comments.add( aComment);
+      if (aComment.getType() == CommentType.Biography)
+         addBiography( aComment.getText());
    }
 }

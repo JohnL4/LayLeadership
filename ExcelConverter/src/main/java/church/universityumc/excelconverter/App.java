@@ -50,9 +50,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import church.universityumc.ActivityEngagement;
 import church.universityumc.Log;
+import church.universityumc.MemberSkill;
 import church.universityumc.ChurchMember;
+import church.universityumc.Comment;
+import church.universityumc.EnumResolutionException;
 import church.universityumc.RowType;
 import church.universityumc.Skill;
+import church.universityumc.SkillSource;
 
 /**
  * Hello world!
@@ -270,6 +274,7 @@ public class App
                   else
                      currentChurchMember.dumpText( System.out);
                   currentChurchMember = parseMember( row);
+                  churchMembers.add( currentChurchMember);
                   break;
                case ActivitiesHeader:
                   buildActivitiesHeaderColumnNumbers( row);
@@ -280,16 +285,21 @@ public class App
                      if (activityEngagement.getStartDate() == null)
                      {
                         // It's a skill?
-                        currentChurchMember.addSkill( activityEngagement.toSkill());
+                        MemberSkill memberSkill = new MemberSkill( activityEngagement.toSkill(), SkillSource.UndatedEngagement); 
+                        currentChurchMember.addSkill( memberSkill);
                      }
                      else
                         // It's an activity engagement?
-                        currentChurchMember.addServiceHistory( parseActivity( row));
+                        currentChurchMember.addServiceHistory( activityEngagement);
                   }
                   break;
                case Vocation:
-                  currentChurchMember.addSkill( parseSkill( row));
+               {
+                  Skill skill = parseSkill( row);
+                  MemberSkill memberSkill = new MemberSkill( skill, SkillSource.PersonalMinistrySurvey2006);
+                  currentChurchMember.addSkill( memberSkill);
                   break;
+               }
                case ActivitiesSectionMarker:
                case CommentsSectionMarker:
                   break;
@@ -462,6 +472,7 @@ public class App
       switch (category)
       {
          case PERSNL_MINSTR_06_VOCAT_L:
+            // TODO: include skill source
             StringBuilder skillnameSB = new StringBuilder( String.format( "<vocational category=\"%s\"", elt1));
             if (elt2 != null)
             {
@@ -520,7 +531,7 @@ public class App
       {
          comment = new Comment( parseDate( commentDate), commentLevel, commentType, commentText);
       }
-      catch (IllegalArgumentException exc)
+      catch (EnumResolutionException exc)
       {
          Log.warn( exc);
          comment = null;

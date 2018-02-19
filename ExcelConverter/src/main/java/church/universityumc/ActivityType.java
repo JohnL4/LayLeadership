@@ -10,17 +10,17 @@ import java.util.stream.Collectors;
 
 public class ActivityType
 {
-   private String name;
+   private String _name;
    
    /**
     * The year the activity starts; transient data available after a {@link #find} op, not stored as part of the {@link ActivityType}.
     */
-   private Integer startYear;
+   private Integer _startYear;
    
    /**
     * The month the activity starts; transient data available after a {@link #find} op, not stored as part of the {@link ActivityType}.
     */
-   private Integer startMonth;
+   private Integer _startMonth;
 
    /**
     * Canonical name for a committee activity type (special case).
@@ -47,15 +47,15 @@ public class ActivityType
    }
    
    /**
-    * Map from {@link #name} to {@link ActivityType}, in-memory repository.
+    * Map from {@link #_name} to {@link ActivityType}, in-memory repository.
     */
-   private static Map<String,ActivityType> allActivityTypes = new HashMap<String,ActivityType>();
+   private static Map<String,ActivityType> __allActivityTypes = new HashMap<String,ActivityType>();
    
    private ActivityType(String anActivityType) {
-      name = anActivityType;
+      _name = anActivityType;
    }
    
-   public String getName() { return name; }
+   public String getName() { return _name; }
    
    /**
     * The year the activity starts; transient data available after a {@link #find} op, not stored as part of the {@link ActivityType}.
@@ -63,7 +63,7 @@ public class ActivityType
     */
    public Integer getStartYear()
    {
-      return startYear;
+      return _startYear;
    }
 
    /**
@@ -71,7 +71,7 @@ public class ActivityType
     */
    public void setStartYear( Integer startYear)
    {
-      this.startYear = startYear;
+      this._startYear = startYear;
    }
 
    /**
@@ -82,7 +82,7 @@ public class ActivityType
     */
    public Integer getStartMonth()
    {
-      return startMonth;
+      return _startMonth;
    }
 
    /**
@@ -90,13 +90,17 @@ public class ActivityType
     */
    public void setStartMonth( Integer startMonth)
    {
-      this.startMonth = startMonth;
+      this._startMonth = startMonth;
    }
 
    /**
-    * Parses given string into a true activity type and a start date for the activity. Start date is not a part of the
-    * activity type, but, because of the way we store data in ACS, may be part of the activity type specification. It
-    * will not be stored; this data must be transferred into an {@link ActivityEngagement} object.
+    * Parses given string into a true activity type and a start date for the activity. Also updates repository of known
+    * activity types ({@link #__allActivityTypes}).
+    * <p>
+    * Start date is not a part of the activity type, but, because of the way we store data in ACS, may be part of the
+    * activity type specification. It will not be stored; this data must be transferred into an
+    * {@link ActivityEngagement} object.
+    * </p>
     * 
     * @param anActivityType
     * @return {@link ActivityType} with start year and month set from input string.
@@ -140,14 +144,14 @@ public class ActivityType
       if (committeeMatcher.matches()) // Scan entire string for match, not part (we want a more-or-less exact match).
          activityType = COMMITTEE_TYPE_NAME;
       
-      retval = allActivityTypes.get( activityType);
+      retval = __allActivityTypes.get( activityType);
       if (retval == null)
       {
          retval = new ActivityType( activityType);
-         allActivityTypes.put( activityType, retval);
+         __allActivityTypes.put( activityType, retval);
       }
-      retval.startYear = year;
-      retval.startMonth = monthNum;
+      retval._startYear = year;
+      retval._startMonth = monthNum;
 
       return retval;
    }

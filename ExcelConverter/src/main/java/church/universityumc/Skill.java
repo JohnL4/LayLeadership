@@ -10,13 +10,15 @@ import java.util.Map;
  */
 public class Skill
 {
-   private String name;
+   private String _name;
+//   private SkillSource _source; // TODO: fill in.
    
-   private static Map<String,Skill> allSkills = new HashMap<String,Skill>();
+   private static Map<String,Skill> __allSkills = new HashMap<String,Skill>();
 
-   public Skill( String aName)
+   public Skill( String aName /* , SkillSource aSource */)
    {
-      this.name = aName;
+      _name = aName;
+//      _source = aSource;
    }
 
    /**
@@ -25,13 +27,23 @@ public class Skill
     */
    public String getName()
    {
-      return name;
+      return _name;
    }
+   
+//   public SkillSource getSource()
+//   {
+//      return _source;
+//   }
 
-   public static Skill find( String aSkillname)
+   public static Skill find( String aSkillName)
    {
-      // TODO Auto-generated method stub
-      return null;
+      Skill retval = __allSkills.get( aSkillName);
+      if (retval == null)
+      {
+         retval = new Skill( aSkillName);
+         __allSkills.put( aSkillName, retval);
+      }
+      return retval;
    }
    
    
