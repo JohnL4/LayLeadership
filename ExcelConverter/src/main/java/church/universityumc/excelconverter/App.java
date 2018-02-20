@@ -66,7 +66,8 @@ public class App
 {
 
    /**
-    * Expected column header for expected columns. Used to allow a little flexibility in where the columns appear.
+    * Expected column header for expected columns describing {@link ChurchMember}s. Used to allow a little flexibility
+    * in where the columns appear.
     */
    private static final String           
       NAME = "Name", 
@@ -75,9 +76,18 @@ public class App
       EMAIL = "Preferred E-mail", 
       DATE_JOINED = "Date Joined";
 
+   /**
+    * Column headers for Activity sections.
+    */
+   private static final String
+      CATEGORY = "Category",
+      ELEMENT_1 = "Element 1",
+      ELEMENT_2 = "Element 2",
+      ELEMENT_3 = "Element 3",
+      ELEMENT_4 = "Element 4";
+
    private static final String  ACTIVITIES               = "ACTIVITIES";
    private static final String  COMMENTS                 = "COMMENTS";
-   private static final String  CATEGORY                 = "Category";
    private static final Pattern NO_ROTATION_REGEX        = Pattern.compile( "no rotation", Pattern.CASE_INSENSITIVE);
    
    /**
@@ -90,7 +100,8 @@ public class App
    /**
     * Map from String column header to column index corresponding to header.
     */
-   private static Map<String, Integer>   memberHeaderColumnNumbers = new HashMap<String, Integer>();
+   private static Map<String, Integer> memberHeaderColumnNumbers   = new HashMap<String, Integer>();
+   private static Map<String, Integer> activityHeaderColumnNumbers = new HashMap<String, Integer>();
 
    private static final SimpleDateFormat SIMPLE_DATE_FORMAT         = new SimpleDateFormat();
    private static final SimpleDateFormat SIMPLE_DATE_FORMAT_SLASHES = new SimpleDateFormat( "M/d/y");
@@ -458,7 +469,12 @@ public class App
     */
    private static void buildActivitiesHeaderColumnNumbers( Row aRow)
    {
-      // We don't actually need column headers.
+      if (activityHeaderColumnNumbers.isEmpty())
+      {
+         // Iterate across and get indexes for each header pos'n.
+         for (Cell cell : aRow)
+            activityHeaderColumnNumbers.put( cell.getStringCellValue(), cell.getColumnIndex());
+      }
    }
 
    /**
@@ -468,12 +484,12 @@ public class App
     */
    private static ActivityEngagement parseActivity( Row aRow) // TODO: this needs to be a variety of things: ActivityEngagement, Skill, etc.
    {
-      Iterator<Cell> iter = aRow.cellIterator();
+      // Iterator<Cell> iter = aRow.cellIterator();
       
-      String activityType = iter.next().getStringCellValue();
-      String activityName = iter.next().getStringCellValue();
-      String activityEndYearString = iter.next().getStringCellValue();
-      String activityRole = iter.next().getStringCellValue();
+      String activityType = aRow.getCell( activityHeaderColumnNumbers.get( CATEGORY)).getStringCellValue();
+      String activityName = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_1)).getStringCellValue();
+      String activityEndYearString = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_2)).getStringCellValue();
+      String activityRole = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_3)).getStringCellValue();
       
       return new ActivityEngagement( activityType, activityName, activityEndYearString, activityRole);
    }
@@ -486,15 +502,15 @@ public class App
    private static Skill parseSkill( Row aRow)
    {
       Skill retval;
-      Iterator<Cell> iter = aRow.iterator();
+//      Iterator<Cell> iter = aRow.iterator();
       
       String category, elt1, elt2, elt3, elt4;
       
-      category = nextOrNull( iter);
-      elt1 = nextOrNull( iter);
-      elt2 = nextOrNull( iter);
-      elt3 = nextOrNull( iter);
-      elt4 = nextOrNull( iter);
+      category = aRow.getCell( activityHeaderColumnNumbers.get( CATEGORY)).getStringCellValue();
+      elt1 = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_1)).getStringCellValue();
+      elt2 = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_2)).getStringCellValue();
+      elt3 = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_3)).getStringCellValue();
+      elt4 = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_4)).getStringCellValue();
       
       switch (category)
       {
@@ -525,14 +541,22 @@ public class App
       return retval;
    }
 
+   /**
+    * Returns the next non-empty string cell value or null if there are no more values.
+    * @param iter
+    * @return
+    */
    private static String nextOrNull( Iterator<Cell> iter)
    {
       String retval;
       if (iter.hasNext())
       {
-         retval = iter.next().getStringCellValue();
-         if (retval == null || retval.equals( "")) 
-            retval = null;
+         do
+         {
+            retval = iter.next().getStringCellValue();
+            if (retval == null || retval.equals( "")) retval = null;
+         }
+         while (iter.hasNext() && retval == null);
       }
       else
          retval = null;
