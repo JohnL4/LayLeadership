@@ -527,7 +527,7 @@ public class App
                else
                {
                   skillnameSB.append( String.format( " subcategory=\"%s\"", elt2));
-                  if (elt3 != null)
+                  if (elt3 != null && ! elt3.isEmpty())
                      skillnameSB.append( String.format( " subsubcategory=\"%s\"", elt3));
                }
             }
