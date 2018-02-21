@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,6 +47,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.WorkbookUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import church.universityumc.ActivityEngagement;
@@ -120,8 +122,13 @@ public class App
       options.addOption(
             Option.builder()
             .longOpt( "dump")
-            .desc( "dump input to stdout, in no particular format")
+            .desc( "dump input to console, in no particular format")
             .build());
+      options.addOption( Option.builder()
+            .longOpt( "parse")
+            .desc( "parse input and dump to console in a somewhat structured form")
+            .build()
+            );
       options.addOption( Option.builder()
             .longOpt( "xlsx")
             .desc( "output to specified .xlsx file")
@@ -146,17 +153,18 @@ public class App
       if (cmdLine.hasOption( 'f'))
       {
          infileName = cmdLine.getOptionValue( 'f');
-         if (cmdLine.hasOption( "dump")) dumpToStdout( infileName);
+         if (cmdLine.hasOption( "dump")) dumpToConsole( infileName);
+         Collection<ChurchMember> churchMembers = buildChurchMembers( infileName);
          if (cmdLine.hasOption( "xlsx"))
          {
             String outfileName = cmdLine.getOptionValue( "xlsx");
-            dumpToExcelFile( infileName, outfileName);
+            dumpToExcelFile( churchMembers, outfileName);
          }
          if (cmdLine.hasOption( "db"))
          {
             String jdbcConnectionString = cmdLine.getOptionValue( "db");
             // Magical JDBC connection
-            updateDatabase( infileName, jdbcConnectionString);
+            updateDatabase( churchMembers, jdbcConnectionString);
          }
       }
       System.out.println( "Done.");
@@ -176,7 +184,7 @@ public class App
       helpFormatter.printHelp( "java -jar <this-jar-file>", overview, options, "", false);
    }
 
-   private static void dumpToStdout( String anInfileName) throws IOException
+   private static void dumpToConsole( String anInfileName) throws IOException
    {
       Workbook workbook = readFile( anInfileName);
       for (Sheet sheet : workbook) // For all sheets in the workbook...
@@ -227,16 +235,8 @@ public class App
             }
    }
 
-   private static Font getCellFont( Workbook workbook, Cell cell)
+   private static void dumpToConsole( Collection<ChurchMember> churchMembers)
    {
-      Font font = workbook.getFontAt( cell.getCellStyle().getFontIndex());
-      return font;
-   }
-
-   private static void dumpToExcelFile( String anInfileName, String anOutfileName)
-         throws IOException, UnknownRowTypeException
-   {
-      Collection<ChurchMember> churchMembers = buildChurchMembers( anInfileName);
       for (ChurchMember member : churchMembers)
       {
          System.out.printf( "%s%n", member);
@@ -266,10 +266,99 @@ public class App
       }
    }
 
-   private static void updateDatabase( String anInfileName, String aJdbcConnectionString)
-         throws IOException, UnknownRowTypeException
+   private static Font getCellFont( Workbook workbook, Cell cell)
    {
-      Collection<ChurchMember> churchMembers = buildChurchMembers( anInfileName);
+      Font font = workbook.getFontAt( cell.getCellStyle().getFontIndex());
+      return font;
+   }
+
+   private static void dumpToExcelFile( Collection<ChurchMember> aChurchMembersColl, String anOutfileName)
+         throws IOException
+   {
+      Workbook workbook = new XSSFWorkbook();
+      Sheet membersSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Members"));
+      
+      createRow( membersSheet, new String[] {"Name", "Age", "Phone", "Email", "Date Joined"}, EnumSet.of( FontStyle.Bold));
+      
+      // Iterate through members, writing details to tab
+      for (ChurchMember member : aChurchMembersColl)
+      {
+         createMemberDetailRow( membersSheet, member);
+      }
+      
+      // Create Activities sheet
+      // Write header line
+      // Iterate through members again, writing member name and activities and comments
+      
+      // Create "Other Data" sheet
+      // Write headers (Activities, Activity Types, Roles, Skill Categories, Skill Subcategories, Skill subsubcategories,
+      // Comment levels, Comment types)
+      // Iterate through each of the above classes of supporting info and write them vertically.
+      
+      // Write workbook to file.
+      FileOutputStream out = new FileOutputStream( anOutfileName);
+      workbook.write( out);
+      out.close();
+   }
+
+   /**
+    * Creates a row after existing rows and writes the given strings to it, using the given font styles.
+    * @param aSheet
+    * @param aStringv
+    * @param aFontStyleSet TODO: This should be a true CellStyle, not a bunch of flags for bold, italic.
+    * @return the created row
+    */
+   private static Row createRow( Sheet aSheet, String[] aStringv, EnumSet<FontStyle> aFontStyleSet)
+   {
+      Log.setMember( null);
+      Log.setRow( -1);
+      
+      final EnumSet<FontStyle> specialStyles = EnumSet.of( FontStyle.Bold, FontStyle.Italic);
+      
+      EnumSet<FontStyle> fontStyles = aFontStyleSet;
+      if (fontStyles == null) {}
+      else
+      {
+         fontStyles.retainAll( specialStyles);
+         if (fontStyles.size() > 0)
+            Log.warn( "Special styles unimplemented");
+      }
+      int maxRow = aSheet.getLastRowNum();
+      Row row = aSheet.createRow( maxRow+1);
+      int colNum = 0;
+      for (String cellValue : aStringv)
+      {
+         row.createCell( colNum).setCellValue( cellValue);
+         colNum++;
+      }
+      return row;
+   }
+
+   private static Row createMemberDetailRow( Sheet aSheet, ChurchMember aMember)
+   {
+      Row row = createRow( aSheet, new String[] {aMember.getName()}, null);
+      Cell cell;
+      
+      // TODO: dates etc.
+      cell = row.createCell( row.getLastCellNum(), CellType.NUMERIC);
+      cell.setCellValue( aMember.getAge());
+      
+      cell = row.createCell( row.getLastCellNum());
+      cell.setCellValue( aMember.getPhone());
+      
+      cell = row.createCell( row.getLastCellNum());
+      cell.setCellValue( aMember.getEmail());
+      
+      cell = row.createCell( row.getLastCellNum(), CellType.NUMERIC); // Also should work for full dates.
+      cell.setCellValue( aMember.getYearJoined()); // TODO: this really should be a date, because we get full dates on input.
+      // TODO: final style for date formatting (one style for all these join dates)
+      
+      return row;
+   }
+
+   private static void updateDatabase( Collection<ChurchMember> aChurchMembersColl, String aJdbcConnectionString)
+         throws IOException
+   {
 
    }
 
