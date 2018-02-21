@@ -1,5 +1,8 @@
 target/
 .DS_Store
 *~
-*.xls#
+*/*.xls#
+*/*.xlsx#
+*/*.xls
+*/*.xlsx
 README.html
