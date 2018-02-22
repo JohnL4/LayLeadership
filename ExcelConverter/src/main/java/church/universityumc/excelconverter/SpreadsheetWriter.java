@@ -18,6 +18,7 @@ import church.universityumc.ActivityEngagement;
 import church.universityumc.ChurchMember;
 import church.universityumc.Comment;
 import church.universityumc.Log;
+import church.universityumc.MemberSkill;
 
 /**
  * Writes internal data to a spreadsheet.
@@ -28,48 +29,12 @@ public class SpreadsheetWriter
          throws IOException
    {
       Workbook workbook = new XSSFWorkbook();
+      
       Sheet membersSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Members"));
-      
-      createRow( membersSheet, new String[] {"Name", "Age", "Phone", "Email", "Date Joined"}, EnumSet.of( FontStyle.Bold));
-      
-      for (ChurchMember member : aChurchMembersColl)
-      {
-         createMemberDetailRow( membersSheet, member);
-      }
+      writeMembersSheet( membersSheet, aChurchMembersColl);
       
       Sheet activitiesSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Activities and Comments"));
-      createRow( activitiesSheet, 
-            new String[] 
-                  { 
-                        "Member Name", 
-                        "Activity Type", // Could be "Comment" 
-                        "Start Date", // Could be date of Comment 
-                        "End Date",
-                        "Role", // Comment level 
-                        "Activity, Skill or Comment" 
-                  }
-            , null);
-   
-      // Iterate through members again, writing member name and activities and comments
-      for (ChurchMember member : aChurchMembersColl)
-      {
-         if (member.getServiceHistory() == null) {}
-         else
-         {
-            for (ActivityEngagement activityEngagement : member.getServiceHistory())
-            {
-               createActivityDetailRow(  activitiesSheet, member, activityEngagement);
-            }
-         }
-         if (member.getComments() == null) {}
-         else
-         {
-            for (Comment comment : member.getComments())
-            {
-               createCommentDetailRow( activitiesSheet, member, comment);
-            }
-         }
-      }
+      writeActivitiesSheet( activitiesSheet, aChurchMembersColl);
       
       // Create "Other Data" sheet
       // Write headers (Activities, Activity Types, Roles, Skill Categories, Skill Subcategories, Skill subsubcategories,
@@ -81,7 +46,69 @@ public class SpreadsheetWriter
       workbook.write( out);
       out.close();
    }
+
+   private void writeMembersSheet( Sheet aMembersSheet, Collection<ChurchMember> aChurchMembersColl)
+   {
+      String[] memberHeaders = new String[] {"Name", "Age", "Phone", "Email", "Date Joined"}; 
+      createRow( aMembersSheet, memberHeaders, EnumSet.of( FontStyle.Bold));
+      
+      for (ChurchMember member : aChurchMembersColl)
+      {
+         createMemberDetailRow( aMembersSheet, member);
+      }
+      for (int i = 0; i < memberHeaders.length; i++)
+      {
+         aMembersSheet.autoSizeColumn( i);
+      }
+   }
    
+   private void writeActivitiesSheet( Sheet anActivitiesSheet, Collection<ChurchMember> aChurchMembersColl)
+   {
+      String[] activitiesHeaders = new String[] 
+            { 
+                  "Member Name", 
+                  "Activity Type", // Could be "Comment" 
+                  "Start Date", // Could be date of Comment 
+                  "End Date",
+                  "Role", // Comment level 
+                  "Activity, Skill or Comment" 
+            }; 
+      createRow( anActivitiesSheet, activitiesHeaders, null);
+   
+      // Iterate through members again, writing member name and activities and comments
+      for (ChurchMember member : aChurchMembersColl)
+      {
+         if (member.getServiceHistory() == null) {}
+         else
+         {
+            for (ActivityEngagement activityEngagement : member.getServiceHistory())
+            {
+               createActivityDetailRow(  anActivitiesSheet, member, activityEngagement);
+            }
+         }
+         if (member.getSkills() == null) {}
+         else
+         {
+            for (MemberSkill skill : member.getSkills())
+            {
+               createSkillRow( anActivitiesSheet, member, skill);
+            }
+         }
+         if (member.getComments() == null) {}
+         else
+         {
+            for (Comment comment : member.getComments())
+            {
+               createCommentDetailRow( anActivitiesSheet, member, comment);
+            }
+         }
+      }
+      for (int i = 0; i < activitiesHeaders.length; i++)
+      {
+         anActivitiesSheet.autoSizeColumn( i);
+      }
+   }
+
    /**
     * Creates a row after existing rows and writes the given strings to it, using the given font styles.
     * @param aSheet
@@ -155,9 +182,36 @@ public class SpreadsheetWriter
       return row;
    }
 
+   private Row createSkillRow( Sheet aSheet, ChurchMember aMember, MemberSkill aSkill)
+   {
+      Row row = createRow( aSheet,
+            new String[]
+                  {
+                        aMember.getName(),
+                        "SKILL",
+                        "",
+                        "",
+                        aSkill.getSource().toString(),
+                        aSkill.getSkill().getName()
+                  },
+            null);
+      return row;
+   }
+
    private  Row createCommentDetailRow( Sheet aSheet, ChurchMember aMember, Comment aComment)
    {
-      // TODO Auto-generated method stub
-      return null;
+      Date commentDate = aComment.getDate();
+      Row row = createRow( aSheet,
+            new String[] 
+                  {
+                        aMember.getName(),
+                        "COMMENT",
+                        commentDate == null ? "" : commentDate.toString(),
+                        "",
+                        aComment.getLevel().toString(),
+                        aComment.getText()
+                  },
+            null);
+      return row;
    }
 }
