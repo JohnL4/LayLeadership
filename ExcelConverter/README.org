@@ -127,8 +127,8 @@
 
    Logging properties are in the file ~logging.properties~.
 
-   Specify as ~-Djava.util.logging.config.file=./logging.properties~ option to ~java~ command (on the command line)
-   /before/ the ~-jar excel-converter-1.0-SNAPSHOT.jar~ part.
+   Specify as ~-Djava.util.logging.config.file=./logging.properties~ (or whatever the path to your logging config file
+   is) option to ~java~ command (on the command line) /before/ the ~-jar excel-converter-1.0-SNAPSHOT.jar~ part.
 
 *** TODO Add this logging.properties file to pom.xml to make sure it winds up in the ~target~ output directory
 
