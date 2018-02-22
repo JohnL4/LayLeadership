@@ -10,7 +10,7 @@
 * Roadmap
 
   (Note: See the various project boards, including the one for the Excel converter at
-  https://github.com/JohnL4/LayLeadership/projects/1.)
+  [[https://github.com/JohnL4/LayLeadership/projects/1][https://github.com/JohnL4/LayLeadership/projects/1]].)
 
   GitHub doesn't format org-mode files very well (I'm glad it handles org-mode at all, though), so here's the short
   version:
