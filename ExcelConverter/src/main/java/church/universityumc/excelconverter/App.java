@@ -280,15 +280,44 @@ public class App
       
       createRow( membersSheet, new String[] {"Name", "Age", "Phone", "Email", "Date Joined"}, EnumSet.of( FontStyle.Bold));
       
-      // Iterate through members, writing details to tab
       for (ChurchMember member : aChurchMembersColl)
       {
          createMemberDetailRow( membersSheet, member);
       }
       
-      // Create Activities sheet
-      // Write header line
+      Sheet activitiesSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Activities and Comments"));
+      createRow( activitiesSheet, 
+            new String[] 
+                  { 
+                        "Member Name", 
+                        "Activity Type", // Could be "Comment" 
+                        "Start Date", // Could be date of Comment 
+                        "End Date",
+                        "Role", // Comment level 
+                        "Activity, Skill or Comment" 
+                  }
+            , null);
+
       // Iterate through members again, writing member name and activities and comments
+      for (ChurchMember member : aChurchMembersColl)
+      {
+         if (member.getServiceHistory() == null) {}
+         else
+         {
+            for (ActivityEngagement activityEngagement : member.getServiceHistory())
+            {
+               createActivityDetailRow(  activitiesSheet, member, activityEngagement);
+            }
+         }
+         if (member.getComments() == null) {}
+         else
+         {
+            for (Comment comment : member.getComments())
+            {
+               createCommentDetailRow( activitiesSheet, member, comment);
+            }
+         }
+      }
       
       // Create "Other Data" sheet
       // Write headers (Activities, Activity Types, Roles, Skill Categories, Skill Subcategories, Skill subsubcategories,
@@ -354,6 +383,30 @@ public class App
       // TODO: final style for date formatting (one style for all these join dates)
       
       return row;
+   }
+
+   private static Row createActivityDetailRow( Sheet aSheet, ChurchMember aMember, ActivityEngagement anActivityEngagement)
+   {
+      Date startDate = anActivityEngagement.getStartDate();
+      Date endDate = anActivityEngagement.hasRotationDate() ? anActivityEngagement.getEndDate() : null;
+      Row row = createRow( aSheet, 
+            new String[] 
+                  {
+                        aMember.getName(),
+                        anActivityEngagement.getActivityType().getName(),
+                        startDate == null ? "" : startDate.toString(),
+                        endDate == null ? "" : endDate.toString(),
+                        anActivityEngagement.getRole().getName(),
+                        anActivityEngagement.getActivity().getName()
+                  }, 
+            null);
+      return row;
+   }
+
+   private static Row createCommentDetailRow( Sheet aSheet, ChurchMember aMember, Comment aComment)
+   {
+      // TODO Auto-generated method stub
+      return null;
    }
 
    private static void updateDatabase( Collection<ChurchMember> aChurchMembersColl, String aJdbcConnectionString)
