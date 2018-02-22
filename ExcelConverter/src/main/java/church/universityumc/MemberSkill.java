@@ -21,6 +21,22 @@ public class MemberSkill
       _source = aSkillSource;
    }
    
+   /**
+    * @return the skill
+    */
+   public Skill getSkill()
+   {
+      return _skill;
+   }
+
+   /**
+    * @return the source
+    */
+   public SkillSource getSource()
+   {
+      return _source;
+   }
+
    public String toString()
    {
       return String.format( "%s (%s)", _skill, _source);
