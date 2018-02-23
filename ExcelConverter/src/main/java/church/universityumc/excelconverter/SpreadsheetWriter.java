@@ -1,5 +1,6 @@
 package church.universityumc.excelconverter;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
@@ -37,12 +38,19 @@ public class SpreadsheetWriter
       writeActivitiesSheet( activitiesSheet, aChurchMembersColl);
       
       // Create "Other Data" sheet
+      Sheet dataSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Supporting Data"));
       // Write headers (Activities, Activity Types, Roles, Skill Categories, Skill Subcategories, Skill subsubcategories,
       // Comment levels, Comment types)
       // Iterate through each of the above classes of supporting info and write them vertically.
       
       // Write workbook to file.
-      FileOutputStream out = new FileOutputStream( anOutfileName);
+      File outFile = new File( anOutfileName);
+      if (outFile.exists())
+      {
+         Log.debug( "Deleting file \"%s\" before writing", anOutfileName);
+         outFile.delete();
+      }
+      FileOutputStream out = new FileOutputStream( outFile);
       workbook.write( out);
       out.close();
    }
