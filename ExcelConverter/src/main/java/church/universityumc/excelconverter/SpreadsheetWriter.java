@@ -110,8 +110,11 @@ public class SpreadsheetWriter
    }
 
    /**
-    * Creates a row after existing rows and writes the given strings to it, using the given font styles.
+    * Creates a row at the given row number and writes the given strings to it, using the given font styles.
+    * <p>
+    * We require an explicit row number because
     * @param aSheet
+    * @param aRowNum 
     * @param aStringv
     * @param aFontStyleSet TODO: This should be a true CellStyle, not a bunch of flags for bold, italic.
     * @return the created row
@@ -131,8 +134,9 @@ public class SpreadsheetWriter
          if (fontStyles.size() > 0)
             Log.warn( "Special styles unimplemented");
       }
-      int maxRow = aSheet.getLastRowNum();
-      Row row = aSheet.createRow( maxRow+1);
+      int physRowCount = aSheet.getPhysicalNumberOfRows();
+      int nextRow = physRowCount;
+      Row row = aSheet.createRow( nextRow);
       int colNum = 0;
       for (String cellValue : aStringv)
       {
