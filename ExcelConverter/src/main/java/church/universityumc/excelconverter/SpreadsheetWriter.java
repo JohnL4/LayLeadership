@@ -162,7 +162,11 @@ public class SpreadsheetWriter
       cell.setCellValue( aMember.getEmail());
       
       cell = row.createCell( row.getLastCellNum(), CellType.NUMERIC); // Also should work for full dates.
-      cell.setCellValue( aMember.getYearJoined()); // TODO: this really should be a date, because we get full dates on input.
+      Date dateJoined = aMember.getDateJoined();
+      if (dateJoined == null)
+         ;
+      else
+         cell.setCellValue( dateJoined.toString()); // TODO: this really should be a date, because we get full dates on input.
       // TODO: final style for date formatting (one style for all these join dates)
       
       return row;

@@ -454,12 +454,7 @@ public class App
                      break;
                   case DATE_JOINED:
                      Date joinDate = parseDate( cell.getStringCellValue());
-                     if (joinDate != null)
-                     {
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTime( joinDate);
-                        member.setYearJoined( cal.get( Calendar.YEAR));
-                     }
+                     member.setDateJoined( joinDate);
                      break;
                   default:
                      Log.warn( "Member header \"%s\" unhandled", header);

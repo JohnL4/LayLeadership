@@ -20,15 +20,15 @@ public class ChurchMember
     */
    private Date _ageAsOf;
 
-   private int                            _yearJoined;
-   private String                         _phone;
-   private String                         _email;
-   private StringBuilder                  _biography;
-   private Collection<Interest>           _interests;
-   private Collection<MemberSkill>        _skills;
-   private Collection<ActivityEngagement> _serviceHistory;
-   private Collection<Contact>            _contactHistory;
-   private Collection<Comment>            _comments;
+   private Date                           dateJoined;
+   private String                         phone;
+   private String                         email;
+   private StringBuilder                  biography;
+   private Collection<Interest>           interests;
+   private Collection<MemberSkill>        skills;
+   private Collection<ActivityEngagement> serviceHistory;
+   private Collection<Contact>            contactHistory;
+   private Collection<Comment>            comments;
    
    /**
     * In whatever format it comes from ACS in, probably "First Last".
@@ -73,54 +73,58 @@ public class ChurchMember
       _ageAsOf = aAgeAsOf;
    }
 
+
    /**
-    * The year the member joined our congregation.
-    * @return
+    * @return the date the member joined our congregation
     */
-   public int getYearJoined()
+   public Date getDateJoined()
    {
-      return _yearJoined;
+      return dateJoined;
    }
 
-   public void setYearJoined( int aYearJoined)
+   /**
+    * @param aDateJoined 
+    * @see {@link #getDateJoined()}
+    */
+   public void setDateJoined( Date aDateJoined)
    {
-      _yearJoined = aYearJoined;
+      dateJoined = aDateJoined;
    }
 
    public String getPhone()
    {
-      return _phone;
+      return phone;
    }
 
    public void setPhone( String aPhone)
    {
-      _phone = aPhone;
+      phone = aPhone;
    }
 
    public String getEmail()
    {
-      return _email;
+      return email;
    }
 
    public void setEmail( String aEmail)
    {
-      _email = aEmail;
+      email = aEmail;
    }
 
    public String getBiography()
    {
-      return _biography.toString();
+      return biography.toString();
    }
    
    private void addBiography( String aBiography)
    {
       if (aBiography == null || aBiography.length() == 0)
          return;
-      if (_biography == null)
-         _biography = new StringBuilder();
-      if (_biography.length() > 0)
-         _biography.append( "\n");
-      _biography.append( aBiography);
+      if (biography == null)
+         biography = new StringBuilder();
+      if (biography.length() > 0)
+         biography.append( "\n");
+      biography.append( aBiography);
    }
 
    /**
@@ -129,7 +133,7 @@ public class ChurchMember
     */
    public Collection<Interest> getInterests()
    {
-      return _interests;
+      return interests;
    }
 
    /**
@@ -138,14 +142,14 @@ public class ChurchMember
     */
    public Collection<MemberSkill> getSkills()
    {
-      return _skills;
+      return skills;
    }
    
    public void addSkill( MemberSkill aMemberSkill)
    {
-      if (_skills == null)
-         _skills = new ArrayList<MemberSkill>();
-      _skills.add( aMemberSkill);
+      if (skills == null)
+         skills = new ArrayList<MemberSkill>();
+      skills.add( aMemberSkill);
    }
 
    /**
@@ -154,14 +158,14 @@ public class ChurchMember
     */
    public Collection<ActivityEngagement> getServiceHistory()
    {
-      return _serviceHistory;
+      return serviceHistory;
    }
    
    public void addServiceHistory( ActivityEngagement anEngagement)
    {
-      if (_serviceHistory == null)
-         _serviceHistory = new ArrayList<ActivityEngagement>();
-      _serviceHistory.add( anEngagement);
+      if (serviceHistory == null)
+         serviceHistory = new ArrayList<ActivityEngagement>();
+      serviceHistory.add( anEngagement);
    }
 
    /**
@@ -170,7 +174,7 @@ public class ChurchMember
     */
    public Collection<Contact> getContactHistory()
    {
-      return _contactHistory;
+      return contactHistory;
    }
    
    public void addContactHistory( Contact aContact)
@@ -192,16 +196,16 @@ public class ChurchMember
    {
       if (aComment == null)
          return;
-      if (_comments == null)
-         _comments = new ArrayList<Comment>();
-      _comments.add( aComment);
+      if (comments == null)
+         comments = new ArrayList<Comment>();
+      comments.add( aComment);
       if (aComment.getType() == CommentType.Biography)
          addBiography( aComment.getText());
    }
    
    public Collection<Comment> getComments()
    {
-      return _comments; // TODO: readonly Collection?
+      return comments; // TODO: readonly Collection?
    }
    
    public String toString()
