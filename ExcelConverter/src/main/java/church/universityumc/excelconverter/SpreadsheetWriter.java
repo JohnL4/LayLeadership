@@ -4,22 +4,30 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.function.Consumer;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
 import org.apache.poi.ss.util.WorkbookUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import church.universityumc.Activity;
 import church.universityumc.ActivityEngagement;
+import church.universityumc.ActivityRole;
+import church.universityumc.ActivityType;
 import church.universityumc.ChurchMember;
 import church.universityumc.Comment;
 import church.universityumc.Log;
 import church.universityumc.MemberSkill;
+import church.universityumc.Skill;
 
 /**
  * Writes internal data to a spreadsheet.
@@ -39,6 +47,8 @@ public class SpreadsheetWriter
       
       // Create "Other Data" sheet
       Sheet dataSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Supporting Data"));
+      writeDataSheet( dataSheet);
+      
       // Write headers (Activities, Activity Types, Roles, Skill Categories, Skill Subcategories, Skill subsubcategories,
       // Comment levels, Comment types)
       // Iterate through each of the above classes of supporting info and write them vertically.
@@ -115,6 +125,109 @@ public class SpreadsheetWriter
       {
          anActivitiesSheet.autoSizeColumn( i);
       }
+   }
+
+   /**
+    * Write the supporting-data sheet.  In columns: {@link Activity}s, {@link ActivityType}s, 
+    * {@link ActivityRole}s, {@link Skill}s.
+    * @param aSheet
+    */
+   private void writeDataSheet( Sheet aSheet)
+   {
+      int rowNum = 0;
+      int colNum = 0;
+
+      writeActivityDataColumn( aSheet, 0, colNum++);
+      writeActivityTypeDataColumn( aSheet, 0, colNum++);
+      writeActivityRoleDataColumn( aSheet, 0, colNum++);
+      writeSkillDataColumn( aSheet, 0, colNum++);
+   }
+
+   private void writeActivityDataColumn( Sheet aSheet, int aRowNum, int aColNum)
+   {
+      writeCell( aSheet, aRowNum++, aColNum, "Activity");
+      Iterator<Activity> iter = 
+            Activity.getAll().stream()
+            .sorted( new Comparator<Activity>() {
+               public int compare(Activity a, Activity b) {
+                  return a.getName().compareToIgnoreCase( b.getName());
+               }
+            })
+            .iterator();
+      while( iter.hasNext())
+      {
+         writeCell( aSheet, aRowNum++, aColNum, iter.next().getName());
+      }
+      aSheet.autoSizeColumn( aColNum);
+   }
+
+   private void writeActivityTypeDataColumn( Sheet aSheet, int aRowNum, int aColNum)
+   {
+      writeCell( aSheet, aRowNum++, aColNum, "Activity Type");
+      Iterator<ActivityType> iter =
+            ActivityType.getAll().stream()
+            .sorted( new Comparator<ActivityType>() {
+               @Override
+               public int compare( ActivityType arg0, ActivityType arg1)
+               {
+                  return arg0.getName().compareToIgnoreCase( arg1.getName());
+               }
+            })
+            .iterator();
+      while (iter.hasNext())
+         writeCell( aSheet, aRowNum++, aColNum, iter.next().getName());
+      aSheet.autoSizeColumn( aColNum);
+   }
+
+   private void writeActivityRoleDataColumn( Sheet aSheet, int aRowNum, int aColNum)
+   {
+      writeCell( aSheet, aRowNum++, aColNum, "Activity Role");
+      Iterator<ActivityRole> iter =
+            ActivityRole.getAll().stream()
+            .sorted( new Comparator<ActivityRole>() {
+               @Override
+               public int compare( ActivityRole arg0, ActivityRole arg1)
+               {
+                  return arg0.getName().compareToIgnoreCase( arg1.getName());
+               }})
+            .iterator();
+      while (iter.hasNext())
+         writeCell( aSheet, aRowNum++, aColNum, iter.next().getName());
+      aSheet.autoSizeColumn( aColNum);
+      
+   }
+
+   private void writeSkillDataColumn( Sheet aSheet, int aRowNum, int aColNum)
+   {
+      writeCell( aSheet, aRowNum++, aColNum, "Skill");
+      Iterator<Skill> iter = 
+            Skill.getAll().stream()
+            .sorted( new Comparator<Skill>() {
+               @Override
+               public int compare( Skill arg0, Skill arg1)
+               {
+                  return arg0.getName().compareToIgnoreCase( arg1.getName());
+               }})
+            .iterator();
+      while (iter.hasNext())
+         writeCell( aSheet, aRowNum++, aColNum, iter.next().getName());
+      aSheet.autoSizeColumn( aColNum);
+   }
+
+   /**
+    * Write the given string into the indicated cell (0-based indexes) of the given sheet.
+    * @param aSheet
+    * @param aRowNum
+    * @param aColNum
+    * @param aString
+    */
+   private void writeCell( Sheet aSheet, int aRowNum, int aColNum, String aString)
+   {
+      Row row = aSheet.getRow( aRowNum);
+      if (row == null)
+            row = aSheet.createRow( aRowNum);
+      Cell cell = row.getCell( aColNum, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+      cell.setCellValue( aString);
    }
 
    /**

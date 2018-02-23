@@ -1,5 +1,7 @@
 package church.universityumc;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +13,7 @@ public class Activity
 {
    private String name;
 
-   private static Map<String,Activity> __allActivities = new HashMap<String,Activity>();
+   private static Map<String,Activity> allActivities = new HashMap<String,Activity>();
    
    private Activity( String aName)
    {
@@ -32,12 +34,21 @@ public class Activity
     */
    public static Activity find( String anActivityName)
    {
-      Activity retval = __allActivities.get( anActivityName);
+      Activity retval = allActivities.get( anActivityName);
       if (retval == null)
       {
          retval = new Activity( anActivityName);
-         __allActivities.put( anActivityName, retval);
+         allActivities.put( anActivityName, retval);
       }
       return retval;
+   }
+
+   /**
+    * Returns all Activities that have been "found" so far, in no particular order.
+    * @return
+    */
+   public static Collection<Activity> getAll()
+   {
+      return Collections.unmodifiableCollection( allActivities.values());
    }
 }

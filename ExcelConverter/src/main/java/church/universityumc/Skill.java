@@ -1,6 +1,9 @@
 package church.universityumc;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -12,7 +15,7 @@ public class Skill
 {
    private String _name;
    
-   private static Map<String,Skill> __allSkills = new HashMap<String,Skill>();
+   private static Map<String,Skill> allSkills = new HashMap<String,Skill>();
 
    public Skill( String aName /* , SkillSource aSource */)
    {
@@ -30,11 +33,11 @@ public class Skill
    
    public static Skill find( String aSkillName)
    {
-      Skill retval = __allSkills.get( aSkillName);
+      Skill retval = allSkills.get( aSkillName);
       if (retval == null)
       {
          retval = new Skill( aSkillName);
-         __allSkills.put( aSkillName, retval);
+         allSkills.put( aSkillName, retval);
       }
       return retval;
    }
@@ -42,5 +45,10 @@ public class Skill
    public String toString()
    {
       return getName();
+   }
+
+   public static Collection<Skill> getAll()
+   {
+      return Collections.unmodifiableCollection( allSkills.values());
    }
 }

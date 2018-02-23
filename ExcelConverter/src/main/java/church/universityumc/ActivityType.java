@@ -1,7 +1,9 @@
 package church.universityumc;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -49,7 +51,7 @@ public class ActivityType
    /**
     * Map from {@link #_name} to {@link ActivityType}, in-memory repository.
     */
-   private static Map<String,ActivityType> __allActivityTypes = new HashMap<String,ActivityType>();
+   private static Map<String,ActivityType> allActivityTypes = new HashMap<String,ActivityType>();
    
    private ActivityType(String anActivityType) {
       _name = anActivityType;
@@ -95,7 +97,7 @@ public class ActivityType
 
    /**
     * Parses given string into a true activity type and a start date for the activity. Also updates repository of known
-    * activity types ({@link #__allActivityTypes}).
+    * activity types ({@link #allActivityTypes}).
     * <p>
     * Start date is not a part of the activity type, but, because of the way we store data in ACS, may be part of the
     * activity type specification. It will not be stored; this data must be transferred into an
@@ -144,15 +146,20 @@ public class ActivityType
       if (committeeMatcher.matches()) // Scan entire string for match, not part (we want a more-or-less exact match).
          activityType = COMMITTEE_TYPE_NAME;
       
-      retval = __allActivityTypes.get( activityType);
+      retval = allActivityTypes.get( activityType);
       if (retval == null)
       {
          retval = new ActivityType( activityType);
-         __allActivityTypes.put( activityType, retval);
+         allActivityTypes.put( activityType, retval);
       }
       retval._startYear = year;
       retval._startMonth = monthNum;
 
       return retval;
+   }
+
+   public static Collection<ActivityType> getAll()
+   {
+      return Collections.unmodifiableCollection( allActivityTypes.values());
    }
 }
