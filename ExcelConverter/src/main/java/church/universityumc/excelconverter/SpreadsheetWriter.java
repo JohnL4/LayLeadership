@@ -85,6 +85,8 @@ public class SpreadsheetWriter
       String[] activitiesHeaders = new String[] 
             { 
                   "Member Name", 
+                  "Age",
+                  "Date Joined",
                   "Activity Type", // Could be "Comment" 
                   "Start Date", // Could be date of Comment 
                   "End Date",
@@ -101,7 +103,8 @@ public class SpreadsheetWriter
          {
             for (ActivityEngagement activityEngagement : member.getServiceHistory())
             {
-               createActivityDetailRow(  anActivitiesSheet, member, activityEngagement);
+               Row row = createActivityPrefixRow( anActivitiesSheet, member);
+               appendActivityDetailRow(  row, member, activityEngagement);
             }
          }
          if (member.getSkills() == null) {}
@@ -109,7 +112,8 @@ public class SpreadsheetWriter
          {
             for (MemberSkill skill : member.getSkills())
             {
-               createSkillRow( anActivitiesSheet, member, skill);
+               Row row = createActivityPrefixRow( anActivitiesSheet, member);
+               appendSkillRow( row, member, skill);
             }
          }
          if (member.getComments() == null) {}
@@ -117,7 +121,8 @@ public class SpreadsheetWriter
          {
             for (Comment comment : member.getComments())
             {
-               createCommentDetailRow( anActivitiesSheet, member, comment);
+               Row row = createActivityPrefixRow( anActivitiesSheet, member);
+               appendCommentDetailRow( row, member, comment);
             }
          }
       }
@@ -242,7 +247,7 @@ public class SpreadsheetWriter
     */
    private  Row createRow( Sheet aSheet, String[] aStringv, EnumSet<FontStyle> aFontStyleSet)
    {
-      Log.setMember( null);
+      Log.setMember( null); // TODO: move this somewhere else, higher in the call tree
       Log.setRow( -1);
       
       final EnumSet<FontStyle> specialStyles = EnumSet.of( FontStyle.Bold, FontStyle.Italic);
@@ -265,6 +270,39 @@ public class SpreadsheetWriter
          colNum++;
       }
       return row;
+   }
+   
+   /**
+    * Creates a row on the "Activities" sheet (given) having info common to the various types of rows on this sheet.
+    * @param aSheet
+    * @param aMember
+    * @return The created row
+    */
+   private Row createActivityPrefixRow( Sheet aSheet, ChurchMember aMember)
+   {
+      Row row = createRow( aSheet, new String[] {aMember.getName()}, null);
+      Cell cell;
+      
+      cell = row.createCell( row.getLastCellNum(), CellType.NUMERIC);
+      cell.setCellValue( aMember.getAge());
+      
+      cell = row.createCell( row.getLastCellNum(), CellType.NUMERIC);
+      if (aMember.getDateJoined() == null)
+         ;
+      else
+         cell.setCellValue( aMember.getDateJoined().toString());
+      
+      return row;
+   }
+
+   private void appendToRow( Row aRow, String[] aStringv)
+   {
+      int colNum = aRow.getLastCellNum();
+      for (String cellValue : aStringv)
+      {
+         aRow.createCell( colNum).setCellValue( cellValue);
+         colNum++;
+      }
    }
    
    private  Row createMemberDetailRow( Sheet aSheet, ChurchMember aMember)
@@ -293,54 +331,45 @@ public class SpreadsheetWriter
       return row;
    }
 
-   private  Row createActivityDetailRow( Sheet aSheet, ChurchMember aMember, ActivityEngagement anActivityEngagement)
+   private void appendActivityDetailRow( Row aRow, ChurchMember aMember, ActivityEngagement anActivityEngagement)
    {
       Date startDate = anActivityEngagement.getStartDate();
       Date endDate = anActivityEngagement.hasRotationDate() ? anActivityEngagement.getEndDate() : null;
-      Row row = createRow( aSheet, 
+      appendToRow( aRow, 
             new String[] 
                   {
-                        aMember.getName(),
                         anActivityEngagement.getActivityType().getName(),
                         startDate == null ? "" : startDate.toString(),
                         endDate == null ? "" : endDate.toString(),
                         anActivityEngagement.getRole().getName(),
                         anActivityEngagement.getActivity().getName()
-                  }, 
-            null);
-      return row;
+                  }); 
    }
 
-   private Row createSkillRow( Sheet aSheet, ChurchMember aMember, MemberSkill aSkill)
+   private void appendSkillRow( Row aRow, ChurchMember aMember, MemberSkill aSkill)
    {
-      Row row = createRow( aSheet,
+      appendToRow( aRow,
             new String[]
                   {
-                        aMember.getName(),
                         "SKILL",
                         "",
                         "",
                         aSkill.getSource().toString(),
                         aSkill.getSkill().getName()
-                  },
-            null);
-      return row;
+                  });
    }
 
-   private  Row createCommentDetailRow( Sheet aSheet, ChurchMember aMember, Comment aComment)
+   private void appendCommentDetailRow( Row aRow, ChurchMember aMember, Comment aComment)
    {
       Date commentDate = aComment.getDate();
-      Row row = createRow( aSheet,
+      appendToRow( aRow,
             new String[] 
                   {
-                        aMember.getName(),
                         "COMMENT",
                         commentDate == null ? "" : commentDate.toString(),
                         "",
                         aComment.getLevel().toString(),
                         aComment.getText()
-                  },
-            null);
-      return row;
+                  });
    }
 }
