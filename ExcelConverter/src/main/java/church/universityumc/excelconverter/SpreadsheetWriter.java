@@ -37,37 +37,32 @@ public class SpreadsheetWriter
    public void dumpToExcelFile( Collection<ChurchMember> aChurchMembersColl, String anOutfileName)
          throws IOException
    {
-      Workbook workbook = new XSSFWorkbook();
-      
-      Sheet membersSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Members"));
-      writeMembersSheet( membersSheet, aChurchMembersColl);
-      
-      Sheet activitiesSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Activities and Comments"));
-      writeActivitiesSheet( activitiesSheet, aChurchMembersColl);
-      
-      // Create "Other Data" sheet
-      Sheet dataSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Supporting Data"));
-      writeDataSheet( dataSheet);
-      
-      // Write headers (Activities, Activity Types, Roles, Skill Categories, Skill Subcategories, Skill subsubcategories,
-      // Comment levels, Comment types)
-      // Iterate through each of the above classes of supporting info and write them vertically.
-      
-      // Write workbook to file.
-      File outFile = new File( anOutfileName);
-      if (outFile.exists())
+      try (Workbook workbook = new XSSFWorkbook())
       {
-         Log.debug( "Deleting file \"%s\" before writing", anOutfileName);
-         outFile.delete();
+         Sheet activitiesSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Filterable"));
+         writeActivitiesSheet( activitiesSheet, aChurchMembersColl);
+
+         Sheet membersSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Member Info"));
+         writeMembersSheet( membersSheet, aChurchMembersColl);
+
+         Sheet dataSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Supporting Data"));
+         writeDataSheet( dataSheet);
+
+         File outFile = new File( anOutfileName);
+         if (outFile.exists())
+         {
+            Log.debug( "Deleting file \"%s\" before writing", anOutfileName);
+            outFile.delete();
+         }
+         FileOutputStream out = new FileOutputStream( outFile);
+         workbook.write( out);
+         out.close();
       }
-      FileOutputStream out = new FileOutputStream( outFile);
-      workbook.write( out);
-      out.close();
    }
 
    private void writeMembersSheet( Sheet aMembersSheet, Collection<ChurchMember> aChurchMembersColl)
    {
-      String[] memberHeaders = new String[] {"Name", "Age", "Phone", "Email", "Date Joined"}; 
+      String[] memberHeaders = new String[] {"Name", "Phone", "Email"}; 
       createRow( aMembersSheet, memberHeaders, EnumSet.of( FontStyle.Bold));
       
       for (ChurchMember member : aChurchMembersColl)
@@ -310,23 +305,11 @@ public class SpreadsheetWriter
       Row row = createRow( aSheet, new String[] {aMember.getName()}, null);
       Cell cell;
       
-      // TODO: dates etc.
-      cell = row.createCell( row.getLastCellNum(), CellType.NUMERIC);
-      cell.setCellValue( aMember.getAge());
-      
       cell = row.createCell( row.getLastCellNum());
       cell.setCellValue( aMember.getPhone());
       
       cell = row.createCell( row.getLastCellNum());
       cell.setCellValue( aMember.getEmail());
-      
-      cell = row.createCell( row.getLastCellNum(), CellType.NUMERIC); // Also should work for full dates.
-      Date dateJoined = aMember.getDateJoined();
-      if (dateJoined == null)
-         ;
-      else
-         cell.setCellValue( dateJoined.toString()); // TODO: this really should be a date, because we get full dates on input.
-      // TODO: final style for date formatting (one style for all these join dates)
       
       return row;
    }
