@@ -11,7 +11,9 @@ import java.util.Iterator;
 import java.util.function.Consumer;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -34,13 +36,22 @@ import church.universityumc.Skill;
  */
 public class SpreadsheetWriter
 {
+   /**
+    * The style to use for all dates in the workbook.
+    */
+   private CellStyle dateStyle;
+   
    public void dumpToExcelFile( Collection<ChurchMember> aChurchMembersColl, String anOutfileName)
          throws IOException
    {
       try (Workbook workbook = new XSSFWorkbook())
       {
-         Sheet activitiesSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Filterable"));
-         writeActivitiesSheet( activitiesSheet, aChurchMembersColl);
+         CellStyle dateStyle = workbook.createCellStyle();
+         CreationHelper creationHelper = workbook.getCreationHelper();
+         dateStyle.setDataFormat( creationHelper.createDataFormat().getFormat( "M/D/YYYY"));
+
+         Sheet activitiesSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Filter"));
+         writeFilterSheet( activitiesSheet, aChurchMembersColl);
 
          Sheet membersSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Member Info"));
          writeMembersSheet( membersSheet, aChurchMembersColl);
@@ -75,7 +86,14 @@ public class SpreadsheetWriter
       }
    }
    
-   private void writeActivitiesSheet( Sheet anActivitiesSheet, Collection<ChurchMember> aChurchMembersColl)
+   /**
+    * Writes the data that's meant to be "filterable", for searching for members that meet certain criteria.
+    * Examples are: have a certain skill, are in a certain age range, recently joined the church, etc.
+    * 
+    * @param anSheet
+    * @param aChurchMembersColl
+    */
+   private void writeFilterSheet( Sheet anSheet, Collection<ChurchMember> aChurchMembersColl)
    {
       String[] activitiesHeaders = new String[] 
             { 
@@ -88,9 +106,9 @@ public class SpreadsheetWriter
                   "Role", // Comment level 
                   "Activity, Skill or Comment" 
             }; 
-      createRow( anActivitiesSheet, activitiesHeaders, null);
-   
-      // Iterate through members again, writing member name and activities and comments
+      
+      createRow( anSheet, activitiesHeaders, null);
+
       for (ChurchMember member : aChurchMembersColl)
       {
          if (member.getServiceHistory() == null) {}
@@ -98,7 +116,7 @@ public class SpreadsheetWriter
          {
             for (ActivityEngagement activityEngagement : member.getServiceHistory())
             {
-               Row row = createActivityPrefixRow( anActivitiesSheet, member);
+               Row row = createActivityPrefixRow( anSheet, member);
                appendActivityDetailRow(  row, member, activityEngagement);
             }
          }
@@ -107,7 +125,7 @@ public class SpreadsheetWriter
          {
             for (MemberSkill skill : member.getSkills())
             {
-               Row row = createActivityPrefixRow( anActivitiesSheet, member);
+               Row row = createActivityPrefixRow( anSheet, member);
                appendSkillRow( row, member, skill);
             }
          }
@@ -116,14 +134,14 @@ public class SpreadsheetWriter
          {
             for (Comment comment : member.getComments())
             {
-               Row row = createActivityPrefixRow( anActivitiesSheet, member);
+               Row row = createActivityPrefixRow( anSheet, member);
                appendCommentDetailRow( row, member, comment);
             }
          }
       }
       for (int i = 0; i < activitiesHeaders.length; i++)
       {
-         anActivitiesSheet.autoSizeColumn( i);
+         anSheet.autoSizeColumn( i);
       }
    }
 
@@ -285,7 +303,10 @@ public class SpreadsheetWriter
       if (aMember.getDateJoined() == null)
          ;
       else
-         cell.setCellValue( aMember.getDateJoined().toString());
+      {
+         cell.setCellValue( aMember.getDateJoined());
+         cell.setCellStyle( dateStyle);
+      }
       
       return row;
    }
@@ -300,6 +321,17 @@ public class SpreadsheetWriter
       }
    }
    
+   private void appendToRow( Row aRow, Date[] aDatev)
+   {
+      int colNum = aRow.getLastCellNum();
+      for (Date date : aDatev)
+      {
+         Cell cell = aRow.createCell( colNum++);
+         cell.setCellValue( date);
+         cell.setCellStyle( dateStyle);
+      }
+   }
+
    private  Row createMemberDetailRow( Sheet aSheet, ChurchMember aMember)
    {
       Row row = createRow( aSheet, new String[] {aMember.getName()}, null);
@@ -321,9 +353,17 @@ public class SpreadsheetWriter
       appendToRow( aRow, 
             new String[] 
                   {
-                        anActivityEngagement.getActivityType().getName(),
-                        startDate == null ? "" : startDate.toString(),
-                        endDate == null ? "" : endDate.toString(),
+                        anActivityEngagement.getActivityType().getName()
+                  });
+      appendToRow( aRow,
+            new Date[]
+                  {
+                        startDate,
+                        endDate
+                  });
+      appendToRow( aRow,
+            new String[]
+                  {
                         anActivityEngagement.getRole().getName(),
                         anActivityEngagement.getActivity().getName()
                   }); 
@@ -348,8 +388,16 @@ public class SpreadsheetWriter
       appendToRow( aRow,
             new String[] 
                   {
-                        "COMMENT",
-                        commentDate == null ? "" : commentDate.toString(),
+                        "COMMENT"
+                  });
+      appendToRow( aRow,
+            new Date[]
+                  {
+                        commentDate
+                  });
+      appendToRow( aRow,
+            new String[]
+                  {
                         "",
                         aComment.getLevel().toString(),
                         aComment.getText()
