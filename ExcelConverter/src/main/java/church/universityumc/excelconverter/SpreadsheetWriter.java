@@ -10,6 +10,7 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.function.Consumer;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -46,8 +47,8 @@ public class SpreadsheetWriter
    {
       try (Workbook workbook = new XSSFWorkbook())
       {
-         CellStyle dateStyle = workbook.createCellStyle();
          CreationHelper creationHelper = workbook.getCreationHelper();
+         CellStyle dateStyle = workbook.createCellStyle();
          dateStyle.setDataFormat( creationHelper.createDataFormat().getFormat( "M/D/YYYY"));
 
          Sheet activitiesSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Filter"));
@@ -90,10 +91,10 @@ public class SpreadsheetWriter
     * Writes the data that's meant to be "filterable", for searching for members that meet certain criteria.
     * Examples are: have a certain skill, are in a certain age range, recently joined the church, etc.
     * 
-    * @param anSheet
+    * @param aSheet
     * @param aChurchMembersColl
     */
-   private void writeFilterSheet( Sheet anSheet, Collection<ChurchMember> aChurchMembersColl)
+   private void writeFilterSheet( Sheet aSheet, Collection<ChurchMember> aChurchMembersColl)
    {
       String[] activitiesHeaders = new String[] 
             { 
@@ -107,7 +108,7 @@ public class SpreadsheetWriter
                   "Activity, Skill or Comment" 
             }; 
       
-      createRow( anSheet, activitiesHeaders, null);
+      createRow( aSheet, activitiesHeaders, null);
 
       for (ChurchMember member : aChurchMembersColl)
       {
@@ -116,7 +117,7 @@ public class SpreadsheetWriter
          {
             for (ActivityEngagement activityEngagement : member.getServiceHistory())
             {
-               Row row = createActivityPrefixRow( anSheet, member);
+               Row row = createActivityPrefixRow( aSheet, member);
                appendActivityDetailRow(  row, member, activityEngagement);
             }
          }
@@ -125,7 +126,7 @@ public class SpreadsheetWriter
          {
             for (MemberSkill skill : member.getSkills())
             {
-               Row row = createActivityPrefixRow( anSheet, member);
+               Row row = createActivityPrefixRow( aSheet, member);
                appendSkillRow( row, member, skill);
             }
          }
@@ -134,14 +135,14 @@ public class SpreadsheetWriter
          {
             for (Comment comment : member.getComments())
             {
-               Row row = createActivityPrefixRow( anSheet, member);
+               Row row = createActivityPrefixRow( aSheet, member);
                appendCommentDetailRow( row, member, comment);
             }
          }
       }
       for (int i = 0; i < activitiesHeaders.length; i++)
       {
-         anSheet.autoSizeColumn( i);
+         aSheet.autoSizeColumn( i);
       }
    }
 
@@ -299,7 +300,7 @@ public class SpreadsheetWriter
       cell = row.createCell( row.getLastCellNum(), CellType.NUMERIC);
       cell.setCellValue( aMember.getAge());
       
-      cell = row.createCell( row.getLastCellNum(), CellType.NUMERIC);
+      cell = row.createCell( row.getLastCellNum());
       if (aMember.getDateJoined() == null)
          ;
       else
@@ -327,8 +328,13 @@ public class SpreadsheetWriter
       for (Date date : aDatev)
       {
          Cell cell = aRow.createCell( colNum++);
-         cell.setCellValue( date);
-         cell.setCellStyle( dateStyle);
+         if (date == null)
+            ;
+         else
+         {
+            cell.setCellValue( date);
+            cell.setCellStyle( dateStyle);
+         }
       }
    }
 
