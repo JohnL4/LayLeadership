@@ -37,6 +37,11 @@ import church.universityumc.Skill;
  */
 public class SpreadsheetWriter
 {
+   /**
+    * The style to use for all dates in the workbook.
+    */
+   private CellStyle dateStyle;
+   
    public void dumpToExcelFile( Collection<ChurchMember> aChurchMembersColl, String anOutfileName)
          throws IOException
    {
@@ -301,27 +306,10 @@ public class SpreadsheetWriter
       else
       {
          cell.setCellValue( aMember.getDateJoined());
-         setDateFormat( cell);
+         cell.setCellStyle( dateStyle);
       }
       
       return row;
-   }
-
-   /**
-    * Set a date format into the given cell.  Apparently, we can't just use a static {@link CellStyle}; it 
-    * has to be instantiated for every cell?
-    * 
-    * @param cell
-    */
-   private void setDateFormat( Cell cell)
-   {
-      Sheet sheet = cell.getSheet();
-      Workbook wb = sheet.getWorkbook();
-      CreationHelper ch = wb.getCreationHelper();
-      CellStyle style = wb.createCellStyle();
-      style.setDataFormat( ch.createDataFormat().getFormat( "m/d/yyyy"));
-
-      cell.setCellStyle( style);
    }
 
    private void appendToRow( Row aRow, String[] aStringv)
@@ -345,8 +333,7 @@ public class SpreadsheetWriter
          else
          {
             cell.setCellValue( date);
-            setDateFormat( cell);
-
+            cell.setCellStyle( dateStyle);
          }
       }
    }
