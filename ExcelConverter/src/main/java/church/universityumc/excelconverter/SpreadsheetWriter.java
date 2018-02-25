@@ -48,7 +48,7 @@ public class SpreadsheetWriter
       try (Workbook workbook = new XSSFWorkbook())
       {
          CreationHelper creationHelper = workbook.getCreationHelper();
-         CellStyle dateStyle = workbook.createCellStyle();
+         dateStyle = workbook.createCellStyle();
          dateStyle.setDataFormat( creationHelper.createDataFormat().getFormat( "M/D/YYYY"));
 
          Sheet activitiesSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Filter"));
