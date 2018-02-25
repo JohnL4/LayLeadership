@@ -90,20 +90,21 @@ public class SpreadsheetWriter
       }
    }
 
-   private void writeMembersSheet( Sheet aMembersSheet, Collection<ChurchMember> aChurchMembersColl)
+   private void writeMembersSheet( Sheet aSheet, Collection<ChurchMember> aChurchMembersColl)
    {
       String[] memberHeaders = new String[] {"Name", "Phone", "Email"}; 
-      Row row = createRow( aMembersSheet, memberHeaders, EnumSet.of( FontStyle.Bold));
+      Row row = createRow( aSheet, memberHeaders, EnumSet.of( FontStyle.Bold));
       row.setRowStyle( headerStyle);
       
       for (ChurchMember member : aChurchMembersColl)
       {
-         createMemberDetailRow( aMembersSheet, member);
+         createMemberDetailRow( aSheet, member);
       }
       for (int i = 0; i < memberHeaders.length; i++)
       {
-         aMembersSheet.autoSizeColumn( i);
+         aSheet.autoSizeColumn( i);
       }
+      aSheet.createFreezePane( 0, 1);
    }
    
    /**
@@ -164,6 +165,7 @@ public class SpreadsheetWriter
       {
          aSheet.autoSizeColumn( i);
       }
+      aSheet.createFreezePane( 0, 1);
    }
 
    /**
@@ -182,6 +184,7 @@ public class SpreadsheetWriter
       
       Row row = aSheet.getRow( 0);
       row.setRowStyle( headerStyle);
+      aSheet.createFreezePane( 0, 1);
    }
 
    private void writeActivityDataColumn( Sheet aSheet, int aRowNum, int aColNum)
