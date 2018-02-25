@@ -15,6 +15,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -42,6 +44,16 @@ public class SpreadsheetWriter
     */
    private CellStyle dateStyle;
    
+   /**
+    * The style to be applied to header rows.
+    */
+   private CellStyle headerStyle;
+   
+   /**
+    * The bold-face font for the workbook.
+    */
+   private Font boldFont;
+
    public void dumpToExcelFile( Collection<ChurchMember> aChurchMembersColl, String anOutfileName)
          throws IOException
    {
@@ -51,6 +63,12 @@ public class SpreadsheetWriter
          dateStyle = workbook.createCellStyle();
          dateStyle.setDataFormat( creationHelper.createDataFormat().getFormat( "M/D/YYYY"));
 
+         boldFont = workbook.createFont();
+         boldFont.setBold( true);
+         headerStyle = workbook.createCellStyle();
+         headerStyle.setFont( boldFont);
+         headerStyle.setAlignment( HorizontalAlignment.CENTER);
+         
          Sheet activitiesSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Filter"));
          writeFilterSheet( activitiesSheet, aChurchMembersColl);
 
@@ -75,7 +93,8 @@ public class SpreadsheetWriter
    private void writeMembersSheet( Sheet aMembersSheet, Collection<ChurchMember> aChurchMembersColl)
    {
       String[] memberHeaders = new String[] {"Name", "Phone", "Email"}; 
-      createRow( aMembersSheet, memberHeaders, EnumSet.of( FontStyle.Bold));
+      Row row = createRow( aMembersSheet, memberHeaders, EnumSet.of( FontStyle.Bold));
+      row.setRowStyle( headerStyle);
       
       for (ChurchMember member : aChurchMembersColl)
       {
@@ -108,7 +127,8 @@ public class SpreadsheetWriter
                   "Activity, Skill or Comment" 
             }; 
       
-      createRow( aSheet, activitiesHeaders, null);
+      Row headerRow = createRow( aSheet, activitiesHeaders, null);
+      headerRow.setRowStyle( headerStyle);
 
       for (ChurchMember member : aChurchMembersColl)
       {
@@ -153,13 +173,15 @@ public class SpreadsheetWriter
     */
    private void writeDataSheet( Sheet aSheet)
    {
-      int rowNum = 0;
       int colNum = 0;
 
       writeActivityDataColumn( aSheet, 0, colNum++);
       writeActivityTypeDataColumn( aSheet, 0, colNum++);
       writeActivityRoleDataColumn( aSheet, 0, colNum++);
       writeSkillDataColumn( aSheet, 0, colNum++);
+      
+      Row row = aSheet.getRow( 0);
+      row.setRowStyle( headerStyle);
    }
 
    private void writeActivityDataColumn( Sheet aSheet, int aRowNum, int aColNum)
