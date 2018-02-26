@@ -8,8 +8,34 @@ import javax.xml.bind.annotation.XmlType;
 public class VocationalSkill
 {
    @XmlAttribute
-   public String category, subcategory, subsubcategory;
+   public String category, subcategory;
    
+   /**
+    * No-arg constructor for deserialization.
+    */
+   public VocationalSkill() {}
+   
+   /**
+    * If subcategory is "Other", subsubcategory becomes subcategory.  Otherwise, subsubcategory is ignored.
+    * 
+    * @param aCategory
+    * @param aSubcategory
+    * @param aSubsubcategory
+    */
+   public VocationalSkill( String aCategory, String aSubcategory, String aSubsubcategory)
+   {
+      category = aCategory;
+      if (aSubcategory.equalsIgnoreCase( "Other"))
+         subcategory = aSubsubcategory;
+      else
+         subcategory = aSubcategory;
+      if (subcategory.equals(""))
+         subcategory = null;
+   }
+   
+   /**
+    * For debugging and whatnot.
+    */
    public String toString()
    {
       StringBuilder sb = new StringBuilder(super.toString());
@@ -24,10 +50,6 @@ public class VocationalSkill
          else
          {
             sb.append( String.format( ", subcategory=%s", subcategory));
-            if (subsubcategory == null)
-               ;
-            else
-               sb.append( String.format( ", subsubcategory=%s", subsubcategory));
          }
       }
       sb.append( "]");

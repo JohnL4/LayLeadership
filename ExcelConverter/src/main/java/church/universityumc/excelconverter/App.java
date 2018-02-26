@@ -60,6 +60,7 @@ import church.universityumc.MemberSkill;
 import church.universityumc.ChurchMember;
 import church.universityumc.Comment;
 import church.universityumc.EnumResolutionException;
+import church.universityumc.InferredSkill;
 import church.universityumc.RowType;
 import church.universityumc.Skill;
 import church.universityumc.SkillSource;
@@ -114,6 +115,14 @@ public class App
    private static final SimpleDateFormat SIMPLE_DATE_FORMAT_SLASHES = new SimpleDateFormat( "M/d/y");
    private static final Calendar         CALENDAR                   = Calendar.getInstance();
 
+   private static JAXBContext  vocationalSkillJaxbContext;
+   private static Marshaller   vocationalSkillMarshaller;
+   private static Unmarshaller vocationalSkillUnmarshaller;   
+   
+   private static JAXBContext inferredSkillJaxbContext;
+   public static Marshaller   inferredSkillMarshaller; // public for access from ActivityEngagement.toSkill();
+   public static Unmarshaller inferredSkillUnmarshaller;
+   
    private static Options options;
 
    private static Options makeOptions()
@@ -158,6 +167,19 @@ public class App
       options = makeOptions();
       CommandLine cmdLine = parseCommandLine( args);
       if (cmdLine.hasOption( 'h')) showHelp();
+
+      vocationalSkillJaxbContext = JAXBContext.newInstance( VocationalSkill.class);
+      vocationalSkillMarshaller = vocationalSkillJaxbContext.createMarshaller();
+      vocationalSkillMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, false);
+      vocationalSkillMarshaller.setProperty( Marshaller.JAXB_FRAGMENT, true);
+      vocationalSkillUnmarshaller = vocationalSkillJaxbContext.createUnmarshaller();
+
+      inferredSkillJaxbContext = JAXBContext.newInstance( InferredSkill.class);
+      inferredSkillMarshaller = inferredSkillJaxbContext.createMarshaller();
+      inferredSkillMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, false);
+      inferredSkillMarshaller.setProperty( Marshaller.JAXB_FRAGMENT, true);
+      inferredSkillUnmarshaller = inferredSkillJaxbContext.createUnmarshaller();
+      
       String infileName = "test.xls";
       if (cmdLine.hasOption( 'f'))
       {
@@ -178,48 +200,37 @@ public class App
       }
       if (cmdLine.hasOption( "jaxb"))
       {
-         VocationalSkill vskill = new VocationalSkill();
+         VocationalSkill vskill = new VocationalSkill("Category Name", "<\"B & O\" Railroad>", "");
 
-//         vskill.setCategory( "Category Name");
-//         vskill.setSubcategory( "Subcategory Name");
-//         vskill.setSubsubcategory( "Subsubcategory Name");
-         
-         vskill.category = "Category Name";
-         vskill.subcategory = "Subcategory Name";
-         vskill.subsubcategory = "<\"B & O\" Railroad>";
-
-         JAXBContext jaxbContext = JAXBContext.newInstance( VocationalSkill.class);
-         
-         Marshaller marshaller = jaxbContext.createMarshaller();
-         marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, false);
-         marshaller.setProperty( Marshaller.JAXB_FRAGMENT, true);
-         
          System.out.println( "Marshall...");
          System.out.printf( "%s -->%n", vskill);
          StringWriter sw = new StringWriter();
-         marshaller.marshal(vskill, sw);
+         vocationalSkillMarshaller.marshal(vskill, sw);
          String elt1 = sw.toString();
          System.out.println( elt1);
          
-         vskill.subsubcategory = null;
+         vskill.subcategory = null;
          System.out.printf( "%s -->%n", vskill);
          sw = new StringWriter();
-         marshaller.marshal(vskill, sw);
+         vocationalSkillMarshaller.marshal(vskill, sw);
          String elt2 = sw.toString();
          System.out.println( elt2);
          
-         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-         
          System.out.println( "Unmarshall...");
          StringReader sr = new StringReader(elt1);
-         Object vskillObj = unmarshaller.unmarshal( sr);
+         Object vskillObj = vocationalSkillUnmarshaller.unmarshal( sr);
          vskill = (VocationalSkill) vskillObj;
          System.out.println( vskill);
          
          sr = new StringReader( elt2);
-         vskillObj = unmarshaller.unmarshal( sr);
+         vskillObj = vocationalSkillUnmarshaller.unmarshal( sr);
          vskill = (VocationalSkill) vskillObj;
          System.out.println( vskill);
+         
+         System.out.println( "Test InferredSkill...");
+         ActivityEngagement ae = new ActivityEngagement( "Activity Type", "Activity Name", "", "Activity Role");
+         Skill iskill = ae.toSkill();
+         System.out.println( iskill);
       }
       System.out.println( "Done.");
    }
@@ -559,11 +570,11 @@ public class App
     * Parse the given row as a {@Skill}.
     * @param row
     * @return
+    * @throws JAXBException 
     */
-   private static Skill parseSkill( Row aRow)
+   private static Skill parseSkill( Row aRow) throws JAXBException
    {
       Skill retval;
-//      Iterator<Cell> iter = aRow.iterator();
       
       String category, elt1, elt2, elt3, elt4;
       
@@ -576,24 +587,10 @@ public class App
       switch (category)
       {
          case PERSNL_MINSTR_06_VOCAT_L:
-            // TODO: include skill source
-            StringBuilder skillnameSB = new StringBuilder( String.format( "<vocational category=\"%s\"", elt1));
-            if (elt2 != null)
-            {
-               if (elt2.equals( "Other"))
-               {
-                  if (elt3 != null)
-                     skillnameSB.append( String.format( " subcategory=\"%s\"", elt3));
-               }
-               else
-               {
-                  skillnameSB.append( String.format( " subcategory=\"%s\"", elt2));
-                  if (elt3 != null && ! elt3.isEmpty())
-                     skillnameSB.append( String.format( " subsubcategory=\"%s\"", elt3));
-               }
-            }
-            skillnameSB.append( "/>");
-            retval = Skill.find( skillnameSB.toString());
+            VocationalSkill vskill = new VocationalSkill( elt1, elt2, elt3);
+            StringWriter sw = new StringWriter();
+            vocationalSkillMarshaller.marshal( vskill, sw);
+            retval = Skill.find( sw.toString());
             break;
          default:
             Log.warn( "Unexpected category in Skill row: \"%s\"", category);

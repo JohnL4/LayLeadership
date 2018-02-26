@@ -1,7 +1,12 @@
 package church.universityumc;
 
+import java.io.StringWriter;
 import java.util.Calendar;
 import java.util.Date;
+
+import javax.xml.bind.JAXBException;
+
+import church.universityumc.excelconverter.App;
 
 /**
  * An activity a {@link ChurchMember} may engage in.  If this has associated dates, it's (obviously?) some
@@ -11,11 +16,11 @@ import java.util.Date;
  */
 public class ActivityEngagement
 {
-   private ActivityType _activityType;
-   private Activity     _activity;
-   private ActivityRole _role;
-   private Date         _startDate, _endDate;
-   private boolean      _hasRotationDate;
+   private ActivityType activityType;
+   private Activity     activity;
+   private ActivityRole role;
+   private Date         startDate, endDate;
+   private boolean      hasRotationDate;
    
    /**
     * This constructor is intended to build an {@link ActivityEngagement} from fields read directly from the
@@ -38,36 +43,36 @@ public class ActivityEngagement
          String anActivityRole
          )
    {
-      _activityType = ActivityType.find( anActivityType);
-      _activity = Activity.find( anActivityName);
-      _role = ActivityRole.find( anActivityRole);
+      activityType = ActivityType.find( anActivityType);
+      activity = Activity.find( anActivityName);
+      role = ActivityRole.find( anActivityRole);
       
       initStartDate();
       initEndDate( anActivityEndYearString);
-      if (_endDate != null && _startDate != null && _endDate.before( _startDate))
-         Log.warn( "created ActivityEngagement, but end-date (%tc) < start-date (%tc)", _endDate, _startDate);
+      if (endDate != null && startDate != null && endDate.before( startDate))
+         Log.warn( "created ActivityEngagement, but end-date (%tc) < start-date (%tc)", endDate, startDate);
    }
 
    /**
-    * Initialize {@link #_startDate} from {@link #_activityType}.
+    * Initialize {@link #startDate} from {@link #activityType}.
     */
    private void initStartDate()
    {
-      if (_activityType.getStartYear() == null)
-         _startDate = null;
+      if (activityType.getStartYear() == null)
+         startDate = null;
       else
       {
          Calendar cal = Calendar.getInstance();
          cal.clear();
-         cal.set( Calendar.YEAR, _activityType.getStartYear());
-         if (_activityType.getStartMonth() != null) cal.set( Calendar.MONTH, _activityType.getStartMonth());
+         cal.set( Calendar.YEAR, activityType.getStartYear());
+         if (activityType.getStartMonth() != null) cal.set( Calendar.MONTH, activityType.getStartMonth());
          // Assume day doesn't need to be set because of the .clear() call above.
-         _startDate = cal.getTime();
+         startDate = cal.getTime();
       }
    }
 
    /**
-    * Initialize {@link #_endDate} and {@link #_hasRotationDate} from given end-year string, after {@link #_startDate}
+    * Initialize {@link #endDate} and {@link #hasRotationDate} from given end-year string, after {@link #startDate}
     * has already been set.
     * 
     * @param anActivityEndYearString
@@ -83,11 +88,11 @@ public class ActivityEngagement
             ParsedDate parsedEndDate = new ParsedDate( anActivityEndYearString);
             if (parsedEndDate.explicitNone)
             {
-               _hasRotationDate = false;
+               hasRotationDate = false;
             }
             else
             {
-               _hasRotationDate = true;
+               hasRotationDate = true;
                Calendar cal = Calendar.getInstance();
                cal.clear();
                if (parsedEndDate.year == null)
@@ -100,8 +105,8 @@ public class ActivityEngagement
                   {
                      // We don't have a full date, but we do have at least a year.
                      cal.set( Calendar.YEAR, parsedEndDate.year);
-                     if (_activityType.getStartMonth() == null 
-                           || parsedEndDate.year.equals( _activityType.getStartYear()))
+                     if (activityType.getStartMonth() == null 
+                           || parsedEndDate.year.equals( activityType.getStartYear()))
                      {
                         // No start month OR end year == start year (so a month boundary would be meaningless); assume
                         // calendar year boundaries -- last day of current year.
@@ -110,7 +115,7 @@ public class ActivityEngagement
                      else
                      {
                         // Last day of previous month.
-                        cal.set( Calendar.MONTH, _activityType.getStartMonth());
+                        cal.set( Calendar.MONTH, activityType.getStartMonth());
                         cal.roll( Calendar.MONTH, false);
                         cal.set( Calendar.DAY_OF_MONTH, cal.getActualMaximum( Calendar.DAY_OF_MONTH));
                      }
@@ -121,7 +126,7 @@ public class ActivityEngagement
                   }
                   else
                      cal.setTime( parsedEndDate.date);
-                  _endDate = cal.getTime();
+                  endDate = cal.getTime();
                }
             }
          }
@@ -138,7 +143,7 @@ public class ActivityEngagement
     */
    public ActivityType getActivityType()
    {
-      return _activityType;
+      return activityType;
    }
 
    /**
@@ -146,7 +151,7 @@ public class ActivityEngagement
     */
    public Activity getActivity()
    {
-      return _activity;
+      return activity;
    }
 
    /**
@@ -154,7 +159,7 @@ public class ActivityEngagement
     */
    public ActivityRole getRole()
    {
-      return _role;
+      return role;
    }
 
    /**
@@ -162,7 +167,7 @@ public class ActivityEngagement
     */
    public Date getStartDate()
    {
-      return _startDate;
+      return startDate;
    }
 
    /**
@@ -170,7 +175,7 @@ public class ActivityEngagement
     */
    public Date getEndDate()
    {
-      return _endDate;
+      return endDate;
    }
 
    /**
@@ -178,7 +183,7 @@ public class ActivityEngagement
     */
    public boolean hasRotationDate()
    {
-      return _hasRotationDate;
+      return hasRotationDate;
    }
 
    /**
@@ -186,15 +191,16 @@ public class ActivityEngagement
     * description/definition of a skill).
     * 
     * @return may be null
+    * @throws JAXBException 
     */
-   public Skill toSkill()
+   public Skill toSkill() throws JAXBException
    {
-      // TODO: escape/encode attributes for XML
-      String skillName = String.format( "<skill type=\"%s\" activity=\"%s\" role=\"%s\"/>",
-            _activityType.getName(), _activity.getName(), _role.getName());
+      InferredSkill iskill = new InferredSkill( activityType.getName(), activity.getName(), role.getName());
+      StringWriter sw = new StringWriter();
+      App.inferredSkillMarshaller.marshal( iskill, sw);
+      String skillName = sw.toString();
       Log.warn( "Turning ActivityEngagement into Skill \"%s\", which is probably a Bad Idea", skillName);
       Skill retval = Skill.find( skillName);
-      // TODO: source?
       return retval;
    }
    
