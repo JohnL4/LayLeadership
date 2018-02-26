@@ -21,13 +21,13 @@
     - [X] Activities
     - [X] Skills
     - [X] Comments
-  - [-] [[*Write out new spreadsheet in more-usable format][Write out new spreadsheet in more-usable format]]
+  - [X] [[*Write out new spreadsheet in more-usable format][Write out new spreadsheet in more-usable format]]
     - [X] Probably requires going back over the internal d/b to make sure everything is shipshape
       - [X] Activity
       - [X] Skill
       - [X] ActivityRole
       - [X] ActivityType
-    - [ ] Actually write out spreadsheet, tab per table, probably
+    - [X] Actually write out spreadsheet, tab per table, probably
   - [ ] [[*Update external SQL database][Update external SQL database]]
   - [ ] [[*Web app to maintain data in SQL database][Web app to maintain data in SQL database]]
 
@@ -156,3 +156,10 @@
 
   ~n~ is a newline character (line terminator for whatever the current platform is)
   
+* XML
+
+  XML schema definition ~vocationalSkill.xsd~ generated with ~schemagen~ tool included in JDK 9.
+
+  In future releases of the JDK (10, 11, ...) this tool will probably be removed (as will the ~javax.xml.bind~ package
+  and, possibly, associated packages).  Read the ~pom.xml~ for tips on recovering a reference to those libraries.
+

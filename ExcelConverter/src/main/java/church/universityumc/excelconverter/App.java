@@ -2,6 +2,8 @@ package church.universityumc.excelconverter;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.StackWalker.StackFrame;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
@@ -20,6 +22,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -56,6 +63,7 @@ import church.universityumc.EnumResolutionException;
 import church.universityumc.RowType;
 import church.universityumc.Skill;
 import church.universityumc.SkillSource;
+import church.universityumc.VocationalSkill;
 
 /**
  * Hello world!
@@ -136,10 +144,14 @@ public class App
             .desc( "update given SQL database, using specified JDBC connection string")
             .hasArg()
             .build());
+      options.addOption( Option.builder()
+            .longOpt( "jaxb")
+            .desc( "play around with JAXB -- Java Architecture to XML Bindings")
+            .build());
       return options;
    }
 
-   public static void main( String[] args) throws IOException, ParseException, UnknownRowTypeException
+   public static void main( String[] args) throws IOException, ParseException, UnknownRowTypeException, JAXBException
    {
 //      Log.warn( "test warning");
 //      Log.debug( "test debug");
@@ -163,6 +175,51 @@ public class App
             // Magical JDBC connection
             updateDatabase( churchMembers, jdbcConnectionString);
          }
+      }
+      if (cmdLine.hasOption( "jaxb"))
+      {
+         VocationalSkill vskill = new VocationalSkill();
+
+//         vskill.setCategory( "Category Name");
+//         vskill.setSubcategory( "Subcategory Name");
+//         vskill.setSubsubcategory( "Subsubcategory Name");
+         
+         vskill.category = "Category Name";
+         vskill.subcategory = "Subcategory Name";
+         vskill.subsubcategory = "<\"B & O\" Railroad>";
+
+         JAXBContext jaxbContext = JAXBContext.newInstance( VocationalSkill.class);
+         
+         Marshaller marshaller = jaxbContext.createMarshaller();
+         marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, false);
+         marshaller.setProperty( Marshaller.JAXB_FRAGMENT, true);
+         
+         System.out.println( "Marshall...");
+         System.out.printf( "%s -->%n", vskill);
+         StringWriter sw = new StringWriter();
+         marshaller.marshal(vskill, sw);
+         String elt1 = sw.toString();
+         System.out.println( elt1);
+         
+         vskill.subsubcategory = null;
+         System.out.printf( "%s -->%n", vskill);
+         sw = new StringWriter();
+         marshaller.marshal(vskill, sw);
+         String elt2 = sw.toString();
+         System.out.println( elt2);
+         
+         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+         
+         System.out.println( "Unmarshall...");
+         StringReader sr = new StringReader(elt1);
+         Object vskillObj = unmarshaller.unmarshal( sr);
+         vskill = (VocationalSkill) vskillObj;
+         System.out.println( vskill);
+         
+         sr = new StringReader( elt2);
+         vskillObj = unmarshaller.unmarshal( sr);
+         vskill = (VocationalSkill) vskillObj;
+         System.out.println( vskill);
       }
       System.out.println( "Done.");
    }

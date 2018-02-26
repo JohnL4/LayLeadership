@@ -29,6 +29,29 @@
     	<artifactId>poi-ooxml</artifactId>
     	<version>3.17</version>
     </dependency>
+    <!-- JAXB dependencies called out here:  https://stackoverflow.com/q/48204141/370611
+         and here:  http://openjdk.java.net/jeps/320#Java-EE-modules
+    -->
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-core</artifactId>
+      <version>2.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>2.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>javax.activation-api</artifactId>
+      <version>1.2.0</version>
+    </dependency>
   </dependencies>
   <build>
     <pluginManagement>

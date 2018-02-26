@@ -4,3 +4,4 @@ llc-sample.xls*
 .~lock.*#
 /#*#
 /.#*
+src/**/*.class
