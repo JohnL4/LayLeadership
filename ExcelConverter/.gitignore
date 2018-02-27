@@ -5,3 +5,4 @@ llc-sample.xls*
 /#*#
 /.#*
 src/**/*.class
+pom.xml.orig
