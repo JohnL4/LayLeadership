@@ -92,6 +92,9 @@
             </archive>
           </configuration>
           <executions>
+            <!-- (1) Doesn't work (still needs explicit invocation); and (2) Not sure a single executable jar is the
+                 right approach anyway, because we still need external files like logging.properties and maybe some
+                 .BAT/shell scripts.
             <execution>
               <id>make-assembly</id>
               <phase>package</phase>
@@ -99,6 +102,7 @@
                 <goal>single</goal>
               </goals>
             </execution>
+            -->
           </executions>
         </plugin>
       </plugins>
