@@ -109,6 +109,10 @@
 
 * Build, Run
 
+  Copy Dependencies (really, only needs to be done the first time or when you change dependencies)
+
+  : mvn dependency:copy-dependencies
+
   Test:
 
   : mvn test
@@ -117,13 +121,23 @@
 
   : mvn package
 
-  Copy Dependencies (really, only needs to be done the first time or when you change dependencies)
-
-  : mvn dependency:copy-dependencies
-
   After this is done, you can zip up the generated jar file plus the dependencies and you /should/ have a complete,
   executable package.
-  
+
+  : mvn package assembly:single
+
+  Should generate an executable jar with all dependencies, so you can deploy and run it simply with
+  ~java -jar <jarFileName>~ (no zipping/unzipping required).
+
+  Note that this doesn't (yet) handle logging configuration, so you'll have to extract the logging
+  properties manually from the jar file to use it:
+
+  : jar xvf <jarFileName> logging.properties
+  : java -Djava.util.logging.config.file=logging.properties -jar <jarFileName> [options]
+
+  (Note also that jar files are really just zip archives, so you can use any unzipping tool to
+  extract the logging.properties file, if you happen not to have the ~jar~ command.)
+
 * Logger Format
 
 ** How to activate
