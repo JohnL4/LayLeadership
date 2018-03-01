@@ -1,4 +1,5 @@
-* Convert AccessACS Excel Output To A More-Usable Format
+#+TITLE: Convert AccessACS Excel Output to a More Usable Format
+* Convert AccessACS Excel Output To A More Usable Format
 
   The problem is that AccessACS (our church info system) spits out reports in Excel format that are
   (sort of) readable by humans, but not very useful for computers.  For example, we get a church
@@ -109,34 +110,34 @@
 
 * Build, Run
 
-  Copy Dependencies (really, only needs to be done the first time or when you change dependencies)
+  _Copy Dependencies_ (really, only needs to be done the first time or when you change dependencies)
 
   : mvn dependency:copy-dependencies
 
-  Test:
+  _Test:_
 
   : mvn test
 
-  Build (also runs unit tests):
+  _Build_ (also runs unit tests):
 
   : mvn package
 
-  After this is done, you can zip up the generated jar file plus the dependencies and you /should/ have a complete,
-  executable package.
+  Output goes to ~target~ directory, and you can run it from, for testing (or from your IDE, whatever).
 
   : mvn package assembly:single
 
-  Should generate an executable jar with all dependencies, so you can deploy and run it simply with
-  ~java -jar <jarFileName>~ (no zipping/unzipping required).
+  Should generate a zip file with all dependencies, so you can distribute just that zip.  User unzips and runs main jar
+  with the command given below.
 
-  Note that this doesn't (yet) handle logging configuration, so you'll have to extract the logging
-  properties manually from the jar file to use it:
+  TODO: might need to do something similar with a source distributable (? maybe?) so the mvn ~release~ plugin will do
+  the right thing.
 
-  : jar xvf <jarFileName> logging.properties
+  _Run:_
+
   : java -Djava.util.logging.config.file=logging.properties -jar <jarFileName> [options]
 
-  (Note also that jar files are really just zip archives, so you can use any unzipping tool to
-  extract the logging.properties file, if you happen not to have the ~jar~ command.)
+  Note the -D logging config option gives problems in PowerShell.  You can leave it out, but the logging will only use
+  default config.
 
 * Logger Format
 
