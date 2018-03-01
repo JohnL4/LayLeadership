@@ -1,5 +1,5 @@
 #+TITLE: Convert AccessACS Excel Output to a More Usable Format
-* Convert AccessACS Excel Output To A More Usable Format
+* Overview
 
   The problem is that AccessACS (our church info system) spits out reports in Excel format that are
   (sort of) readable by humans, but not very useful for computers.  For example, we get a church
@@ -110,15 +110,19 @@
 
 * Build, Run
 
-  _Copy Dependencies_ (really, only needs to be done the first time or when you change dependencies)
+** Copy Dependencies
+
+  (Really, only needs to be done the first time or when you change dependencies)
 
   : mvn dependency:copy-dependencies
 
-  _Test:_
+** Test
 
   : mvn test
 
-  _Build_ (also runs unit tests):
+** Build
+
+   (Also runs unit tests)
 
   : mvn package
 
@@ -132,7 +136,7 @@
   TODO: might need to do something similar with a source distributable (? maybe?) so the mvn ~release~ plugin will do
   the right thing.
 
-  _Run:_
+** Run
 
   : java -Djava.util.logging.config.file=logging.properties -jar <jarFileName> [options]
 
