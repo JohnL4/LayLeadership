@@ -18,6 +18,7 @@
         <include>LICENSE*</include>
         -->
         <include>NOTICE*</include>
+        <include>sample input.xlsx</include>
         <include>logging.properties</include>
       </includes>
     </fileSet>
