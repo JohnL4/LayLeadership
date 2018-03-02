@@ -108,6 +108,11 @@
    
    I propose to use the Amazon Serverless Application Model (RDS, Lambda, Cognito, API Gateway).
 
+* Expected input
+
+  This program expects input in the form of a spreadsheet with a layout matching the sample input
+  distributed with it.
+
 * Build, Run
 
 ** Copy Dependencies
@@ -143,6 +148,21 @@
   Note the -D logging config option gives problems in PowerShell.  You can leave it out, but the logging will only use
   default config.
 
+*** To actually convert spreadsheets
+
+    1. Make sure you have at least the Java Runtime Environment (JRE) installed.  You can get it at
+       https://java.com.  (Don't worry if your browser doesn't run it; modern browsers don't run any
+       plugins by default, as a security measure.)
+
+    2. Go to a shell window ("command prompt" on Windows) and type the following at the command
+       prompt:
+    
+    #+BEGIN_SRC bash
+    java -jar /path/to/excel-converter-1.0-SNAPSHOT.jar -f "original input.xlsx" --xlsx "reformatted output.xlsx"
+    #+END_SRC
+
+    If you're on Windows, use backslashes (\) instead of forward slashes.
+    
 * Logger Format
 
 ** How to activate
