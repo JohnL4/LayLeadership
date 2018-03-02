@@ -3,6 +3,8 @@ package church.universityumc.excelconverter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
@@ -21,6 +23,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.WorkbookUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -182,6 +185,7 @@ public class SpreadsheetWriter
       delta = writeActivityTypeDataColumn( aSheet, 0, colNum++);
       delta = writeActivityRoleDataColumn( aSheet, 0, colNum++);
       delta = writeSkillDataColumn( aSheet, 0, colNum++);
+      delta = writeRunDataColumn( aSheet, 0, colNum++);
       
       Row row = aSheet.getRow( 0);
       row.setRowStyle( headerStyle);
@@ -193,9 +197,11 @@ public class SpreadsheetWriter
     * @param aSheet
     * @param aRowNum
     * @param aColNum
+    * @return Number of rows and columns written.
     */
    private RowColumnDelta writeActivityDataColumn( Sheet aSheet, int aRowNum, int aColNum)
    {
+      int initialRowNum = aRowNum;
       writeCell( aSheet, aRowNum++, aColNum, "Activity");
       Iterator<Activity> iter = 
             Activity.getAll().stream()
@@ -210,6 +216,8 @@ public class SpreadsheetWriter
          writeCell( aSheet, aRowNum++, aColNum, iter.next().getName());
       }
       aSheet.autoSizeColumn( aColNum);
+      RowColumnDelta retval = new RowColumnDelta( aRowNum - initialRowNum, 1);
+      return retval;
    }
 
    /**
@@ -217,9 +225,11 @@ public class SpreadsheetWriter
     * @param aSheet
     * @param aRowNum
     * @param aColNum
+    * @return Number of rows and columns written.
     */
    private RowColumnDelta writeActivityTypeDataColumn( Sheet aSheet, int aRowNum, int aColNum)
    {
+      int initialRowNum = aRowNum;
       writeCell( aSheet, aRowNum++, aColNum, "Activity Type");
       Iterator<ActivityType> iter =
             ActivityType.getAll().stream()
@@ -234,6 +244,8 @@ public class SpreadsheetWriter
       while (iter.hasNext())
          writeCell( aSheet, aRowNum++, aColNum, iter.next().getName());
       aSheet.autoSizeColumn( aColNum);
+      RowColumnDelta retval = new RowColumnDelta( aRowNum - initialRowNum, 1);
+      return retval;
    }
 
    /**
@@ -241,9 +253,11 @@ public class SpreadsheetWriter
     * @param aSheet
     * @param aRowNum
     * @param aColNum
+    * @return Number of rows and columns written.
     */
    private RowColumnDelta writeActivityRoleDataColumn( Sheet aSheet, int aRowNum, int aColNum)
    {
+      int initialRowNum = aRowNum;
       writeCell( aSheet, aRowNum++, aColNum, "Activity Role");
       Iterator<ActivityRole> iter =
             ActivityRole.getAll().stream()
@@ -257,7 +271,8 @@ public class SpreadsheetWriter
       while (iter.hasNext())
          writeCell( aSheet, aRowNum++, aColNum, iter.next().getName());
       aSheet.autoSizeColumn( aColNum);
-      
+      RowColumnDelta retval = new RowColumnDelta( aRowNum - initialRowNum, 1);
+      return retval;
    }
 
    /**
@@ -265,9 +280,11 @@ public class SpreadsheetWriter
     * @param aSheet
     * @param aRowNum
     * @param aColNum
+    * @return Number of rows and columns written.
     */
    private RowColumnDelta writeSkillDataColumn( Sheet aSheet, int aRowNum, int aColNum)
    {
+      int initialRowNum = aRowNum;
       writeCell( aSheet, aRowNum++, aColNum, "Skill");
       Iterator<Skill> iter = 
             Skill.getAll().stream()
@@ -281,6 +298,8 @@ public class SpreadsheetWriter
       while (iter.hasNext())
          writeCell( aSheet, aRowNum++, aColNum, iter.next().getName());
       aSheet.autoSizeColumn( aColNum);
+      RowColumnDelta retval = new RowColumnDelta( aRowNum - initialRowNum, 1);
+      return retval;
    }
 
    /**
@@ -288,12 +307,54 @@ public class SpreadsheetWriter
     * @param aSheet
     * @param aRowNum
     * @param aColNum
+    * @return Number of rows and columns written.
     */
    private RowColumnDelta writeRunDataColumn( Sheet aSheet, int aRowNum, int aColNum)
    {
+      int initialRowNum = aRowNum;
+      writeCell( aSheet, aRowNum++, aColNum, "Run Info");
       
+      writeCell( aSheet, aRowNum, aColNum, "Run Date");
+      writeCell( aSheet, aRowNum++, aColNum+1, new Date());
+      
+      writeCell( aSheet, aRowNum, aColNum, "By user");
+      writeCell( aSheet, aRowNum++, aColNum+1, System.getProperty( "user.name"));
+      
+      writeCell( aSheet, aRowNum, aColNum, "On machine");
+      try
+      {
+         writeCell( aSheet, aRowNum, aColNum+1, InetAddress.getLocalHost().getHostName());
+      }
+      catch (UnknownHostException exc)
+      {
+         Log.warn( exc);
+         writeCell( aSheet, aRowNum, aColNum+1, "(unknown)");
+      }
+      aRowNum++;
+      aSheet.autoSizeColumn( aColNum);
+      aSheet.autoSizeColumn( aColNum + 1);
+      aSheet.addMergedRegion( new CellRangeAddress( initialRowNum, initialRowNum, aColNum, aColNum+1));
+      RowColumnDelta retval = new RowColumnDelta( aRowNum - initialRowNum, 1);
+      return retval;
    }
    
+   /**
+    * Write the given Date into the indicated cell (0-based indexes) of the given sheet.
+    * @param aSheet
+    * @param aRowNum
+    * @param aColNum
+    * @param aDate
+    */
+   private void writeCell( Sheet aSheet, int aRowNum, int aColNum, Date aDate)
+   {
+      Row row = aSheet.getRow( aRowNum);
+      if (row == null)
+            row = aSheet.createRow( aRowNum);
+      Cell cell = row.getCell( aColNum, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+      cell.setCellValue( aDate);
+      cell.setCellStyle( dateStyle);
+   }
+
    /**
     * Write the given string into the indicated cell (0-based indexes) of the given sheet.
     * @param aSheet
