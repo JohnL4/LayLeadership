@@ -176,18 +176,25 @@ public class SpreadsheetWriter
    private void writeDataSheet( Sheet aSheet)
    {
       int colNum = 0;
+      RowColumnDelta delta;
 
-      writeActivityDataColumn( aSheet, 0, colNum++);
-      writeActivityTypeDataColumn( aSheet, 0, colNum++);
-      writeActivityRoleDataColumn( aSheet, 0, colNum++);
-      writeSkillDataColumn( aSheet, 0, colNum++);
+      delta = writeActivityDataColumn( aSheet, 0, colNum++);
+      delta = writeActivityTypeDataColumn( aSheet, 0, colNum++);
+      delta = writeActivityRoleDataColumn( aSheet, 0, colNum++);
+      delta = writeSkillDataColumn( aSheet, 0, colNum++);
       
       Row row = aSheet.getRow( 0);
       row.setRowStyle( headerStyle);
       aSheet.createFreezePane( 0, 1);
    }
 
-   private void writeActivityDataColumn( Sheet aSheet, int aRowNum, int aColNum)
+   /**
+    * Write the "Activities" (names) column of the supporting-data sheet.
+    * @param aSheet
+    * @param aRowNum
+    * @param aColNum
+    */
+   private RowColumnDelta writeActivityDataColumn( Sheet aSheet, int aRowNum, int aColNum)
    {
       writeCell( aSheet, aRowNum++, aColNum, "Activity");
       Iterator<Activity> iter = 
@@ -205,7 +212,13 @@ public class SpreadsheetWriter
       aSheet.autoSizeColumn( aColNum);
    }
 
-   private void writeActivityTypeDataColumn( Sheet aSheet, int aRowNum, int aColNum)
+   /**
+    * Write the "Activity Types" column of the supporting-data sheet.
+    * @param aSheet
+    * @param aRowNum
+    * @param aColNum
+    */
+   private RowColumnDelta writeActivityTypeDataColumn( Sheet aSheet, int aRowNum, int aColNum)
    {
       writeCell( aSheet, aRowNum++, aColNum, "Activity Type");
       Iterator<ActivityType> iter =
@@ -223,7 +236,13 @@ public class SpreadsheetWriter
       aSheet.autoSizeColumn( aColNum);
    }
 
-   private void writeActivityRoleDataColumn( Sheet aSheet, int aRowNum, int aColNum)
+   /**
+    * Write the "Activity Roles" column of the supporting-data sheet.
+    * @param aSheet
+    * @param aRowNum
+    * @param aColNum
+    */
+   private RowColumnDelta writeActivityRoleDataColumn( Sheet aSheet, int aRowNum, int aColNum)
    {
       writeCell( aSheet, aRowNum++, aColNum, "Activity Role");
       Iterator<ActivityRole> iter =
@@ -241,7 +260,13 @@ public class SpreadsheetWriter
       
    }
 
-   private void writeSkillDataColumn( Sheet aSheet, int aRowNum, int aColNum)
+   /**
+    * Write the "Skills" column of the supporting-data sheet.
+    * @param aSheet
+    * @param aRowNum
+    * @param aColNum
+    */
+   private RowColumnDelta writeSkillDataColumn( Sheet aSheet, int aRowNum, int aColNum)
    {
       writeCell( aSheet, aRowNum++, aColNum, "Skill");
       Iterator<Skill> iter = 
@@ -258,6 +283,17 @@ public class SpreadsheetWriter
       aSheet.autoSizeColumn( aColNum);
    }
 
+   /**
+    * Write the "Run Info" column of the supporting-data sheet.
+    * @param aSheet
+    * @param aRowNum
+    * @param aColNum
+    */
+   private RowColumnDelta writeRunDataColumn( Sheet aSheet, int aRowNum, int aColNum)
+   {
+      
+   }
+   
    /**
     * Write the given string into the indicated cell (0-based indexes) of the given sheet.
     * @param aSheet
