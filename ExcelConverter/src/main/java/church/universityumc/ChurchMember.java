@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 /** 
  * A member of the congregation.
@@ -11,15 +12,15 @@ import java.util.Date;
  */
 public class ChurchMember
 {
-   private String _name;
-   private long _age;
+   private String lastName, fullName;
    
    /**
     * The date the member's {@link age} is "as of", meaning that age is correct as of the indicated date.
     * One year later, that member will be one year older.
     */
-   private Date _ageAsOf;
+   private Date ageAsOf;
 
+   private long                           age;
    private Date                           dateJoined;
    private String                         phone;
    private String                         email;
@@ -30,18 +31,50 @@ public class ChurchMember
    private Collection<Contact>            contactHistory;
    private Collection<Comment>            comments;
    
+   private static final Pattern NAME_SPLITTER = Pattern.compile( ",?\\s+");
+   
+   // I think "the 10th" is enough, don't you?
+   private static final Pattern SUFFIX_RE = Pattern.compile( "Jr\\.?|Sr\\.?|III?|I?VI?I?I?|I?X", Pattern.CASE_INSENSITIVE);
+   
    /**
-    * In whatever format it comes from ACS in, probably "First Last".
+    * The member's original full name, as received from AccessACS.
     * @return
     */
-   public String getName()
+   public String getFullName()
    {
-      return _name;
+      return fullName;
    }
 
-   public void setName( String aName)
+   /**
+    * Parses given full name to get {@link #lastName}. In the absence of well-known suffixes, the last name is
+    * recognized as the last white-separated word, otherwise it's the last word before any suffixes.
+    * 
+    * @param aFullName
+    */
+   public void setFullName(String aFullName)
    {
-      _name = aName;
+      fullName = aFullName;
+      
+      String[] nameParts = NAME_SPLITTER.split( aFullName);
+      int n = nameParts.length;
+      int i = n-1;
+      while( i >= 0 && SUFFIX_RE.matcher( nameParts[i]).matches())
+         i--;
+      if (i < 0)
+         // The entire name is all suffixes? Ok, so be it.
+         lastName = aFullName;
+      else
+         lastName = nameParts[i];
+   }
+
+   public String getLastName()
+   {
+      return lastName;
+   }
+
+   public void setLastName( String lastName)
+   {
+      this.lastName = lastName;
    }
 
    /**
@@ -50,12 +83,12 @@ public class ChurchMember
     */
    public long getAge()
    {
-      return _age;
+      return age;
    }
 
    public void setAge( long anAge)
    {
-      _age = anAge;
+      age = anAge;
    }
 
    /**
@@ -65,12 +98,12 @@ public class ChurchMember
     */
    public Date getAgeAsOf()
    {
-      return _ageAsOf;
+      return ageAsOf;
    }
 
    public void setAgeAsOf( Date aAgeAsOf)
    {
-      _ageAsOf = aAgeAsOf;
+      ageAsOf = aAgeAsOf;
    }
 
 
@@ -210,7 +243,7 @@ public class ChurchMember
    
    public String toString()
    {
-      return getName();
+      return getFullName();
    }
    
 }

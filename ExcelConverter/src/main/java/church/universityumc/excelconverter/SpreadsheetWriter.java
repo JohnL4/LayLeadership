@@ -95,7 +95,7 @@ public class SpreadsheetWriter
 
    private void writeMembersSheet( Sheet aSheet, Collection<ChurchMember> aChurchMembersColl)
    {
-      String[] memberHeaders = new String[] {"Name", "Phone", "Email"}; 
+      String[] memberHeaders = new String[] {"Last Name", "Full Name", "Phone", "Email"}; 
       Row row = createRow( aSheet, memberHeaders, EnumSet.of( FontStyle.Bold));
       row.setRowStyle( headerStyle);
       
@@ -121,7 +121,8 @@ public class SpreadsheetWriter
    {
       String[] activitiesHeaders = new String[] 
             { 
-                  "Member Name", 
+                  "Last Name",
+                  "Full Name", 
                   "Age",
                   "Date Joined",
                   "Activity Type", // Could be "Comment" 
@@ -416,7 +417,7 @@ public class SpreadsheetWriter
     */
    private Row createActivityPrefixRow( Sheet aSheet, ChurchMember aMember)
    {
-      Row row = createRow( aSheet, new String[] {aMember.getName()}, null);
+      Row row = createRow( aSheet, new String[] {aMember.getLastName(), aMember.getFullName()}, null);
       Cell cell;
       
       cell = row.createCell( row.getLastCellNum(), CellType.NUMERIC);
@@ -462,7 +463,7 @@ public class SpreadsheetWriter
 
    private  Row createMemberDetailRow( Sheet aSheet, ChurchMember aMember)
    {
-      Row row = createRow( aSheet, new String[] {aMember.getName()}, null);
+      Row row = createRow( aSheet, new String[] {aMember.getLastName(), aMember.getFullName()}, null);
       Cell cell;
       
       cell = row.createCell( row.getLastCellNum());

@@ -485,7 +485,7 @@ public class App
                switch (header)
                {
                   case NAME:
-                     member.setName( cell.getStringCellValue());
+                     member.setFullName( cell.getStringCellValue());
                      break;
                   case AGE:
                      switch (cell.getCellTypeEnum())
