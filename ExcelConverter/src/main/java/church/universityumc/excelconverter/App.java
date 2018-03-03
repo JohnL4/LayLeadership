@@ -380,6 +380,11 @@ public class App
                   break;
                case PageHeader:
                   break;
+               case ReportSummary:
+                  break;
+               case ActivitiesSectionMarker:
+               case CommentsSectionMarker:
+                  break;
                case MemberHeader:
                   if (memberHeaderColumnNumbers.size() == 0) buildMemberHeaderColumnNumbers( row);
                   break;
@@ -415,13 +420,8 @@ public class App
                   currentChurchMember.addSkill( memberSkill);
                   break;
                }
-               case ActivitiesSectionMarker:
-               case CommentsSectionMarker:
-                  break;
                case Comments:
                   currentChurchMember.addComment( parseComment( row));
-                  break;
-               case ReportSummary:
                   break;
                default:
                   Log.warn( "Unexpected row type: %s", rowType);

@@ -7,13 +7,52 @@
   <version>1.0-SNAPSHOT</version>
   <name>excel-converter</name>
   <url>http://maven.apache.org</url>
+
+  <properties>
+    <junit.version>3.8.1</junit.version>
+    <junit.jupiter.version>5.1.0</junit.jupiter.version>
+    <junit.vintage.version>5.1.0</junit.vintage.version>
+    <junit.platform.version>1.1.0</junit.platform.version>
+  </properties>
+  
   <dependencies>
+
+    <!-- JUnit dependencies from junit5-maven-consume at https://github.com/junit-team/junit5-samples -->
+    
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!--
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <version>${junit.vintage.version}</version>
+      <scope>test</scope>
+    </dependency>
+    -->
+    <!-- Only required to run tests in an IDE that bundles an older version -->
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-launcher</artifactId>
+      <version>${junit.platform.version}</version>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
     	<groupId>org.apache.poi</groupId>
     	<artifactId>poi</artifactId>
@@ -55,6 +94,7 @@
   </dependencies>
   <build>
     <pluginManagement>
+
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -64,6 +104,37 @@
             <target>9</target>
           </configuration>
         </plugin>
+
+        <!-- surfire 2.19.1 plugin configured following junit5-maven-consumer -->
+	<plugin>
+	  <artifactId>maven-surefire-plugin</artifactId>
+	  <version>2.19.1</version>
+	  <configuration>
+	    <includes>
+	      <include>**/Test*.java</include>
+	      <include>**/*Test.java</include>
+	      <include>**/*Tests.java</include>
+	      <include>**/*TestCase.java</include>
+	    </includes>
+	    <properties>
+	      <!-- <includeTags>fast</includeTags> -->
+	      <!-- <excludeTags>slow</excludeTags> -->
+	      <!--
+		  <configurationParameters>
+		  junit.jupiter.conditions.deactivate = *
+		  </configurationParameters>
+	      -->
+	    </properties>
+	  </configuration>
+	  <dependencies>
+	    <dependency>
+	      <groupId>org.junit.platform</groupId>
+	      <artifactId>junit-platform-surefire-provider</artifactId>
+	      <version>${junit.platform.version}</version>
+	    </dependency>
+	  </dependencies>
+	</plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
@@ -77,6 +148,7 @@
             </archive>
           </configuration>
         </plugin>
+        
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
@@ -109,6 +181,7 @@
             -->
           </executions>
         </plugin>
+        
       </plugins>
     </pluginManagement>
   </build>
