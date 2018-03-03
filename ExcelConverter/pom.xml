@@ -4,9 +4,13 @@
   <groupId>church.universityumc.excelconverter</groupId>
   <artifactId>excel-converter</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT-2</version>
+  <version>1.0</version>
   <name>excel-converter</name>
-  <url>http://maven.apache.org</url>
+  <description>
+    Converts input spreadsheet from AcessACS into a more usable format for filtering for members with certain
+    characteristics.
+  </description>
+  <url>https://github.com/JohnL4/LayLeadership</url>
 
   <properties>
     <junit.version>3.8.1</junit.version>
@@ -186,5 +190,4 @@
       </plugins>
     </pluginManagement>
   </build>
-  <description>Converts input spreadsheet from AcessACS into a more usable format for filtering for members with certain characteristics.</description>
 </project>
