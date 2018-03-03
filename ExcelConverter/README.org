@@ -91,7 +91,8 @@
     As far as I can tell right now, this is only general biographical info, from the member's initial introduction to
     the church during the "new member" moments.
 
-** TODO Write out new spreadsheet in more-usable format
+** DONE Write out new spreadsheet in more-usable format
+   CLOSED: [2018-03-01 Thu 23:02]
 
    Allow searching and filtering and maybe sorting.
 
@@ -172,7 +173,8 @@
    Specify as ~-Djava.util.logging.config.file=./logging.properties~ (or whatever the path to your logging config file
    is) option to ~java~ command (on the command line) /before/ the ~-jar excel-converter-1.0-SNAPSHOT.jar~ part.
 
-*** TODO Add this logging.properties file to pom.xml to make sure it winds up in the ~target~ output directory
+*** DONE Add this logging.properties file to pom.xml to make sure it winds up in the ~target~ output directory
+    CLOSED: [2018-03-01 Thu 23:02]
 
 ** Technical details
    
