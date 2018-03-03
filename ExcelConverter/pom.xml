@@ -156,10 +156,12 @@
           <configuration>
             <descriptorRefs>
               <!-- <descriptorRef>bin</descriptorRef> -->
+              <!-- <descriptorRef>src</descriptorRef> -->
             </descriptorRefs>
             <descriptors>
               <!-- <descriptor>src/main/assembly/executable-jar-with-dependencies.xml</descriptor> -->
               <descriptor>src/main/assembly/bin.xml</descriptor>
+              <descriptor>src/main/assembly/src.xml</descriptor>
             </descriptors>
             <archive>
               <manifest>
