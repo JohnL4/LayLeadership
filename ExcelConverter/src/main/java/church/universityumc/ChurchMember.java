@@ -55,16 +55,21 @@ public class ChurchMember
    {
       fullName = aFullName;
       
-      String[] nameParts = NAME_SPLITTER.split( aFullName);
-      int n = nameParts.length;
-      int i = n-1;
-      while( i >= 0 && SUFFIX_RE.matcher( nameParts[i]).matches())
-         i--;
-      if (i < 0)
-         // The entire name is all suffixes? Ok, so be it.
+      if (aFullName == null || aFullName.length() == 0)
          lastName = aFullName;
       else
-         lastName = nameParts[i];
+      {
+         String[] nameParts = NAME_SPLITTER.split( aFullName);
+         int n = nameParts.length;
+         int i = n - 1;
+         while (i >= 0 && SUFFIX_RE.matcher( nameParts[i]).matches())
+            i--;
+         if (i < 0)
+            // The entire name is all suffixes? Ok, so be it.
+            lastName = aFullName;
+         else
+            lastName = nameParts[i];
+      }
    }
 
    public String getLastName()
