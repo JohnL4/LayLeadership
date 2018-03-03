@@ -11,6 +11,15 @@
   perspective, without fear of being sued.  Probably not a giant concern for charitable organizations such as churches,
   but, just to be safe, I've picked the most permissive license I see.  Enjoy. :) )
 
+* Components
+
+** ExcelConverter
+
+   Produces a spreadsheet usable for filtering for congregation members who might be a good fit for
+   whatever activity is being recruited for (e.g., a committee).
+
+   Explore the ~ExcelConverter~ folder for more info, including its own README.
+
 * Design/implementation process
 
   Just a quick note to say this should be an iterative process, with lots of changes (big and little) along the way, as
