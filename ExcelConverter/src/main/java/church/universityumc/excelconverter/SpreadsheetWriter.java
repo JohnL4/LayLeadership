@@ -34,6 +34,7 @@ import church.universityumc.ActivityType;
 import church.universityumc.ChurchMember;
 import church.universityumc.Comment;
 import church.universityumc.Log;
+import church.universityumc.MemberData;
 import church.universityumc.MemberSkill;
 import church.universityumc.Skill;
 
@@ -57,7 +58,7 @@ public class SpreadsheetWriter
     */
    private Font boldFont;
 
-   public void dumpToExcelFile( Collection<ChurchMember> aChurchMembersColl, String anOutfileName)
+   public void dumpToExcelFile( MemberData aMemberData, String anOutfileName)
          throws IOException
    {
       try (Workbook workbook = new XSSFWorkbook())
@@ -73,13 +74,13 @@ public class SpreadsheetWriter
          headerStyle.setAlignment( HorizontalAlignment.CENTER);
          
          Sheet activitiesSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Filter"));
-         writeFilterSheet( activitiesSheet, aChurchMembersColl);
+         writeFilterSheet( activitiesSheet, aMemberData);
 
          Sheet membersSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Member Info"));
-         writeMembersSheet( membersSheet, aChurchMembersColl);
+         writeMembersSheet( membersSheet, aMemberData);
 
          Sheet dataSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Supporting Data"));
-         writeDataSheet( dataSheet);
+         writeDataSheet( dataSheet, aMemberData);
 
          File outFile = new File( anOutfileName);
          if (outFile.exists())
@@ -93,13 +94,13 @@ public class SpreadsheetWriter
       }
    }
 
-   private void writeMembersSheet( Sheet aSheet, Collection<ChurchMember> aChurchMembersColl)
+   private void writeMembersSheet( Sheet aSheet, MemberData aMemberData)
    {
       String[] memberHeaders = new String[] {"Last Name", "Full Name", "Phone", "Email"}; 
       Row row = createRow( aSheet, memberHeaders, EnumSet.of( FontStyle.Bold));
       row.setRowStyle( headerStyle);
       
-      for (ChurchMember member : aChurchMembersColl)
+      for (ChurchMember member : aMemberData.getMembers())
       {
          createMemberDetailRow( aSheet, member);
       }
@@ -115,9 +116,9 @@ public class SpreadsheetWriter
     * Examples are: have a certain skill, are in a certain age range, recently joined the church, etc.
     * 
     * @param aSheet
-    * @param aChurchMembersColl
+    * @param aMemberData
     */
-   private void writeFilterSheet( Sheet aSheet, Collection<ChurchMember> aChurchMembersColl)
+   private void writeFilterSheet( Sheet aSheet, MemberData aMemberData)
    {
       String[] activitiesHeaders = new String[] 
             { 
@@ -135,7 +136,7 @@ public class SpreadsheetWriter
       Row headerRow = createRow( aSheet, activitiesHeaders, null);
       headerRow.setRowStyle( headerStyle);
 
-      for (ChurchMember member : aChurchMembersColl)
+      for (ChurchMember member : aMemberData.getMembers())
       {
          if (member.getServiceHistory() == null) {}
          else
@@ -177,7 +178,7 @@ public class SpreadsheetWriter
     * {@link ActivityRole}s, {@link Skill}s.
     * @param aSheet
     */
-   private void writeDataSheet( Sheet aSheet)
+   private void writeDataSheet( Sheet aSheet, MemberData aMemberData)
    {
       int colNum = 0;
       RowColumnDelta delta;
@@ -186,7 +187,7 @@ public class SpreadsheetWriter
       delta = writeActivityTypeDataColumn( aSheet, 0, colNum++);
       delta = writeActivityRoleDataColumn( aSheet, 0, colNum++);
       delta = writeSkillDataColumn( aSheet, 0, colNum++);
-      delta = writeRunDataColumn( aSheet, 0, colNum++);
+      delta = writeRunDataColumn( aSheet, aMemberData, 0, colNum++);
       
       Row row = aSheet.getRow( 0);
       row.setRowStyle( headerStyle);
@@ -310,12 +311,12 @@ public class SpreadsheetWriter
     * @param aColNum
     * @return Number of rows and columns written.
     */
-   private RowColumnDelta writeRunDataColumn( Sheet aSheet, int aRowNum, int aColNum)
+   private RowColumnDelta writeRunDataColumn( Sheet aSheet, MemberData aMemberData, int aRowNum, int aColNum)
    {
       int initialRowNum = aRowNum;
       writeCell( aSheet, aRowNum++, aColNum, "Run Info");
       
-      writeCell( aSheet, aRowNum, aColNum, "Run Date");
+      writeCell( aSheet, aRowNum, aColNum, "Run date");
       writeCell( aSheet, aRowNum++, aColNum+1, new Date());
       
       writeCell( aSheet, aRowNum, aColNum, "By user");
@@ -332,6 +333,8 @@ public class SpreadsheetWriter
          writeCell( aSheet, aRowNum, aColNum+1, "(unknown)");
       }
       aRowNum++;
+      writeCell( aSheet, aRowNum, aColNum, "ACS run date");
+      writeCell( aSheet, aRowNum++, aColNum+1, aMemberData.getAcsRunDate());
       aSheet.autoSizeColumn( aColNum);
       aSheet.autoSizeColumn( aColNum + 1);
       aSheet.addMergedRegion( new CellRangeAddress( initialRowNum, initialRowNum, aColNum, aColNum+1));
