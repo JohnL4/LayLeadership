@@ -126,11 +126,12 @@ public class SpreadsheetWriter
                   "Full Name", 
                   "Age",
                   "Date Joined",
-                  "Activity Type", // Could be "Comment" 
+                  "Row Type", // Could be "Comment" 
                   "Start Date", // Could be date of Comment 
                   "End Date",
-                  "Role", // Comment level 
-                  "Activity, Skill or Comment" 
+                  "Role or Subtype", // Comment level (e.g., Individual) 
+                  "Activity, Skill or Interest", // This column is for short data (keyword-type)
+                  "Comment" // This column is for long, free-form text.
             }; 
       
       Row headerRow = createRow( aSheet, activitiesHeaders, null);
@@ -532,6 +533,7 @@ public class SpreadsheetWriter
                   {
                         "",
                         aComment.getLevel().toString(),
+                        "", // Skip over "Activity/Skill/Interest" column.
                         aComment.getText()
                   });
    }

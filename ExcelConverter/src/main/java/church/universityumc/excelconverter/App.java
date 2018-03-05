@@ -452,7 +452,7 @@ public class App
    }
 
    /**
-    * Update the ACS run date (q.v.) of the given MemberData.
+    * Update the ACS run date (q.v.) of the given MemberData from data in the given Row.
     * @param aMemberData
     * @param aRow
     */
