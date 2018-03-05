@@ -15,5 +15,10 @@ public enum SkillSource
     * Skill derived from an {@link ActivityEngagement} with no start date.  An engagement with no dates isn't
     * really an engagement.
     */
-   UndatedEngagement;
+   UndatedEngagement,
+   
+   /**
+    * Survey Monkey survey conducted in 2016.
+    */
+   Survey2016;
 }
