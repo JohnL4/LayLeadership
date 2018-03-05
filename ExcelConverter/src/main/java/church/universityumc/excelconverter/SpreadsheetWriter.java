@@ -68,6 +68,7 @@ public class SpreadsheetWriter
 
          boldFont = workbook.createFont();
          boldFont.setBold( true);
+         Log.debug( "Bold font name is \"%s\"", boldFont.getFontName());
          headerStyle = workbook.createCellStyle();
          headerStyle.setFont( boldFont);
          headerStyle.setAlignment( HorizontalAlignment.CENTER);
