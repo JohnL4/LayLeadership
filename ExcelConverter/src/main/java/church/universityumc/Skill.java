@@ -13,13 +13,13 @@ import java.util.Map;
  */
 public class Skill
 {
-   private String _name;
+   private String name;
    
    private static Map<String,Skill> allSkills = new HashMap<String,Skill>();
 
-   public Skill( String aName /* , SkillSource aSource */)
+   private Skill( String aName /* , SkillSource aSource */)
    {
-      _name = aName;
+      name = aName;
    }
 
    /**
@@ -28,7 +28,7 @@ public class Skill
     */
    public String getName()
    {
-      return _name;
+      return name;
    }
    
    public static Skill find( String aSkillName)

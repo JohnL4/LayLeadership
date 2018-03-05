@@ -3,6 +3,7 @@ package church.universityumc;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -12,7 +13,18 @@ import java.util.regex.Pattern;
  */
 public class ChurchMember
 {
-   private String lastName, fullName;
+   private String                         lastName;
+   private String                         fullName;
+   private long                           age;
+   private Date                           dateJoined;
+   private String                         phone;
+   private String                         email;
+   private StringBuilder                  biography;
+   private Collection<MemberInterest>     interests;
+   private Collection<MemberSkill>        skills;
+   private Collection<ActivityEngagement> serviceHistory;
+   private Collection<Contact>            contactHistory;
+   private Collection<Comment>            comments;
    
    /**
     * The date the member's {@link age} is "as of", meaning that age is correct as of the indicated date.
@@ -20,16 +32,6 @@ public class ChurchMember
     */
    private Date ageAsOf;
 
-   private long                           age;
-   private Date                           dateJoined;
-   private String                         phone;
-   private String                         email;
-   private StringBuilder                  biography;
-   private Collection<Interest>           interests;
-   private Collection<MemberSkill>        skills;
-   private Collection<ActivityEngagement> serviceHistory;
-   private Collection<Contact>            contactHistory;
-   private Collection<Comment>            comments;
    
    private static final Pattern NAME_SPLITTER = Pattern.compile( ",?\\s+");
    
@@ -55,16 +57,21 @@ public class ChurchMember
    {
       fullName = aFullName;
       
-      String[] nameParts = NAME_SPLITTER.split( aFullName);
-      int n = nameParts.length;
-      int i = n-1;
-      while( i >= 0 && SUFFIX_RE.matcher( nameParts[i]).matches())
-         i--;
-      if (i < 0)
-         // The entire name is all suffixes? Ok, so be it.
+      if (aFullName == null || aFullName.length() == 0)
          lastName = aFullName;
       else
-         lastName = nameParts[i];
+      {
+         String[] nameParts = NAME_SPLITTER.split( aFullName);
+         int n = nameParts.length;
+         int i = n - 1;
+         while (i >= 0 && SUFFIX_RE.matcher( nameParts[i]).matches())
+            i--;
+         if (i < 0)
+            // The entire name is all suffixes? Ok, so be it.
+            lastName = aFullName;
+         else
+            lastName = nameParts[i];
+      }
    }
 
    public String getLastName()
@@ -164,18 +171,28 @@ public class ChurchMember
     * The types of activities (service opportunities) the member is interested in.
     * @return
     */
-   public Collection<Interest> getInterests()
+   public Collection<MemberInterest> getInterests()
    {
-      return interests;
+      return Collections.unmodifiableCollection( interests);
    }
 
+   public void addInterest( MemberInterest anInterest)
+   {
+      if (interests == null)
+         interests = new ArrayList<MemberInterest>();
+      interests.add( anInterest);
+   }
+   
    /**
     * The member's skills (may or may not match with {@link #getInterests()}).
     * @return
     */
    public Collection<MemberSkill> getSkills()
    {
-      return skills;
+      if (skills == null)
+         return null;
+      else
+         return Collections.unmodifiableCollection( skills);
    }
    
    public void addSkill( MemberSkill aMemberSkill)
@@ -191,7 +208,10 @@ public class ChurchMember
     */
    public Collection<ActivityEngagement> getServiceHistory()
    {
-      return serviceHistory;
+      if (serviceHistory == null)
+         return null;
+      else
+         return Collections.unmodifiableCollection( serviceHistory);
    }
    
    public void addServiceHistory( ActivityEngagement anEngagement)
@@ -207,22 +227,13 @@ public class ChurchMember
     */
    public Collection<Contact> getContactHistory()
    {
-      return contactHistory;
+      return Collections.unmodifiableCollection( contactHistory);
    }
    
    public void addContactHistory( Contact aContact)
    {
       // TODO: implement
       throw new UnimplementedException();
-   }
-
-   /**
-    * Dumps this object to the given stream as text.
-    * @param out
-    */
-   public void dumpText(PrintStream out) {
-	   // TODO Auto-generated method stub
-
    }
 
    public void addComment( Comment aComment)
@@ -238,9 +249,21 @@ public class ChurchMember
    
    public Collection<Comment> getComments()
    {
-      return comments; // TODO: readonly Collection?
+      if (comments == null)
+         return null;
+      else
+         return Collections.unmodifiableCollection( comments);
    }
    
+   /**
+    * Dumps this object to the given stream as text.
+    * @param out
+    */
+   public void dumpText(PrintStream out) {
+       // TODO Auto-generated method stub
+
+   }
+
    public String toString()
    {
       return getFullName();

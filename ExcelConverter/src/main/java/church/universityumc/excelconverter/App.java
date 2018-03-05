@@ -56,6 +56,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import church.universityumc.ActivityEngagement;
 import church.universityumc.Log;
+import church.universityumc.MemberData;
 import church.universityumc.MemberSkill;
 import church.universityumc.ChurchMember;
 import church.universityumc.Comment;
@@ -185,17 +186,17 @@ public class App
       {
          infileName = cmdLine.getOptionValue( 'f');
          if (cmdLine.hasOption( "dump")) dumpToConsole( infileName);
-         Collection<ChurchMember> churchMembers = buildChurchMembers( infileName);
+         MemberData memberData = buildChurchMembers( infileName);
          if (cmdLine.hasOption( "xlsx"))
          {
             String outfileName = cmdLine.getOptionValue( "xlsx");
-            dumpToExcelFile( churchMembers, outfileName);
+            dumpToExcelFile( memberData, outfileName);
          }
          if (cmdLine.hasOption( "db"))
          {
             String jdbcConnectionString = cmdLine.getOptionValue( "db");
             // Magical JDBC connection
-            updateDatabase( churchMembers, jdbcConnectionString);
+            updateDatabase( memberData, jdbcConnectionString);
          }
       }
       if (cmdLine.hasOption( "jaxb"))
@@ -331,11 +332,11 @@ public class App
       }
    }
 
-   private static void dumpToExcelFile( Collection<ChurchMember> aChurchMembersColl, String anOutfileName) 
+   private static void dumpToExcelFile( MemberData aMemberData, String anOutfileName) 
          throws IOException
    {
       SpreadsheetWriter ssWriter = new SpreadsheetWriter();
-      ssWriter.dumpToExcelFile( aChurchMembersColl, anOutfileName);
+      ssWriter.dumpToExcelFile( aMemberData, anOutfileName);
    }
 
    private static Font getCellFont( Workbook workbook, Cell cell)
@@ -344,7 +345,7 @@ public class App
       return font;
    }
 
-   private static void updateDatabase( Collection<ChurchMember> aChurchMembersColl, String aJdbcConnectionString)
+   private static void updateDatabase( MemberData aMemberData, String aJdbcConnectionString)
          throws IOException
    {
 
@@ -358,10 +359,10 @@ public class App
     * @throws IOException
     * @throws UnknownRowTypeException
     */
-   private static Collection<ChurchMember> buildChurchMembers( String anInfileName)
+   private static MemberData buildChurchMembers( String anInfileName)
          throws IOException, UnknownRowTypeException
    {
-      Collection<ChurchMember> churchMembers = new ArrayList<ChurchMember>();
+      MemberData retval = new MemberData();
 
       Workbook workbook = readFile( anInfileName);
 
@@ -379,6 +380,12 @@ public class App
                case EmptyRow:
                   break;
                case PageHeader:
+                  updateAcsRunDate( retval, row);
+                  break;
+               case ReportSummary:
+                  break;
+               case ActivitiesSectionMarker:
+               case CommentsSectionMarker:
                   break;
                case MemberHeader:
                   if (memberHeaderColumnNumbers.size() == 0) buildMemberHeaderColumnNumbers( row);
@@ -389,7 +396,7 @@ public class App
                   else
                      currentChurchMember.dumpText( System.out);
                   currentChurchMember = parseMember( row);
-                  churchMembers.add( currentChurchMember);
+                  retval.addMember( currentChurchMember);
                   break;
                case ActivitiesHeader:
                   buildActivitiesHeaderColumnNumbers( row);
@@ -415,13 +422,8 @@ public class App
                   currentChurchMember.addSkill( memberSkill);
                   break;
                }
-               case ActivitiesSectionMarker:
-               case CommentsSectionMarker:
-                  break;
                case Comments:
                   currentChurchMember.addComment( parseComment( row));
-                  break;
-               case ReportSummary:
                   break;
                default:
                   Log.warn( "Unexpected row type: %s", rowType);
@@ -446,7 +448,35 @@ public class App
             Log.warn( exc);
          }
       }
-      return churchMembers;
+      return retval;
+   }
+
+   /**
+    * Update the ACS run date (q.v.) of the given MemberData from data in the given Row.
+    * @param aMemberData
+    * @param aRow
+    */
+   private static void updateAcsRunDate( MemberData aMemberData, Row aRow)
+   {
+      String firstCellValue = aRow.getCell( 0).getStringCellValue();
+      switch (firstCellValue)
+      {
+         case "Date :":
+            String dateString = aRow.getCell( 1).getStringCellValue();
+            Date date = parseDate( dateString);
+            if (date == null)
+               Log.warn( "Unable to parse ACS run date %s", dateString);
+            else
+               aMemberData.setAcsRunDate( date);
+            break;
+         case "Time :":
+            String timeString = aRow.getCell( 1).getStringCellValue();
+            aMemberData.setAcsRunTime( timeString);
+            break;
+         default:
+            Log.warn( "Unable to update ACS run date");
+            break;
+      }
    }
 
    /**

@@ -6,19 +6,19 @@ package church.universityumc;
  */
 public class MemberSkill
 {
-   private Skill _skill;
-   private SkillSource _source;
+   private Skill skill;
+   private SkillSource source;
    
    public MemberSkill( String aSkillName, SkillSource aSkillSource)
    {
-      _skill = Skill.find( aSkillName);
-      _source = aSkillSource;
+      skill = Skill.find( aSkillName);
+      source = aSkillSource;
    }
    
    public MemberSkill( Skill aSkill, SkillSource aSkillSource)
    {
-      _skill = aSkill;
-      _source = aSkillSource;
+      skill = aSkill;
+      source = aSkillSource;
    }
    
    /**
@@ -26,7 +26,7 @@ public class MemberSkill
     */
    public Skill getSkill()
    {
-      return _skill;
+      return skill;
    }
 
    /**
@@ -34,11 +34,11 @@ public class MemberSkill
     */
    public SkillSource getSource()
    {
-      return _source;
+      return source;
    }
 
    public String toString()
    {
-      return String.format( "%s (%s)", _skill, _source);
+      return String.format( "%s (%s)", skill, source);
    }
 }

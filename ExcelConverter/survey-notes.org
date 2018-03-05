@@ -1,0 +1,74 @@
+#+TITLE: Parsing 2016 Survey Data
+* Overview
+
+  We conducted a survey using Survey Monkey in 2016, asking congregants their interests and skills.
+  We also presented some free-form text fields for job experience, ages of children, name, email
+  address, phone.  The survey tool captured each respondent's email address and the start- and
+  end-times of their data-entry session (at least, I think that's what those fields are in our
+  results spreadsheet).
+
+  We'd like to marry this data up with the AccessACS data to give us a better picture of
+  congregants, and allow searching.
+
+* Columns of interest and how they can be handled
+
+  | RespondentID | CollectorID | StartDate | EndDate | IP Address | Email Address | First Name | LastName | Custom Data |
+  | ?            | ?           | ?         | ?       | ?          | ?             | ?          | ?        | ?           |
+
+  | Interests  |                   |                       |                    |                              |          |
+  | Appearance | Caring Ministries | Children's Ministries | College Ministries | Communications and Marketing | Culinary |
+
+  |              |                              |         |        |             |                |       |          |
+  | Discipleship | Endowments and Special Gifts | Finance | Health | Hospitality | Lay Leadership | Music | Outreach |
+
+  |                                                |                         |                        |             |          |
+  | Records and History, Spiritual Resource Center | Senior Adult Ministries | Staff-Parish Relations | Stewardship | Trustees |
+
+  |         |                  |       | Skills     |           |                |                              |
+  | Worship | Youth Ministries | Other | Accounting | Budgeting | Cooking/Baking | Communications and Marketing |
+
+  |                     |                              |           |                |             |                 |         |
+  | Counseling/Greeting | Data Organization/Management | Education | Event Planning | Fundraising | Health/Wellness | History |
+
+  |           |       |            |                  |                               |                   |       |
+  | Investing | Music | Performing | Public Relations | Strategic/Long Range Planning | Trades Experience | Other |
+
+  | Work                | Kids                | Contact  |         |         |           |           |       |     |         |
+  | Open-Ended Response | Open-Ended Response | Name     | Company | Address | Address 2 | City/Town | State | ZIP | Country |
+
+  |               |              |
+  | Email Address | Phone Number |
+
+  - Respondent ID :: Big number.  Might be of interest, who knows?
+  - Collector ID :: No.
+  - Start, End Date :: Use in duplicate-entry detection?  Same IP address w/in 24 hours ==> duplicate?
+  - IP Address :: Yes.
+  - Email Address, First Name, Last Name, Custom Data :: All empty.
+  - Interests :: (Pick list) Yes, please, in abbreviated form
+  - Skills :: (Pick list) Yes, please, in abbreviated form
+    - Other skills :: free-form text, but should keep
+  - Work :: free-form text, but yes
+  - Kids :: free-form text, but yes.  Try to extract ages, on the assumption of numeric entry?
+  - Contact :: yes, duh.  Only some fields got filled in:
+    - Name ::
+    - Email ::
+    - Phone :: 
+
+  Look for duplicated IP addresses w/in the same 24 hours, and coalesce records that way.  We'll
+  take the union of interests, skills; concatenate free-form text if not duplicates
+  
+* Output
+
+  Same "Filter" sheet as transformed ACS data, but...
+
+  Row per interest, row per skill?
+
+  Probably should separate short, discrete data from long free-form data (maybe a column for each
+  type), including in present ACS output (probably a breaking change, in semver terms).
+
+  The reason for separating long text out from short is that short text is probably discrete data
+  and can easily appear in a filter dropdown, but long text really requires more of a "manual" read
+  and might be more amenable to visual scanning (empty field? long text present?) and ad-hoc search
+  than filtering. 
+
+  

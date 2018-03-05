@@ -1,22 +1,70 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>church.universityumc.excelconverter</groupId>
+  <groupId>church.universityumc</groupId>
   <artifactId>excel-converter</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
   <name>excel-converter</name>
-  <url>http://maven.apache.org</url>
+  <description>
+    Converts input spreadsheet from AcessACS into a more usable format for filtering for members with certain
+    characteristics.
+  </description>
+  <url>https://github.com/JohnL4/LayLeadership</url>
+
+  <properties>
+    <junit.version>3.8.1</junit.version>
+    <junit.jupiter.version>5.1.0</junit.jupiter.version>
+    <junit.vintage.version>5.1.0</junit.vintage.version>
+    <junit.platform.version>1.1.0</junit.platform.version>
+  </properties>
+  
   <dependencies>
+
+    <!-- JUnit dependencies from junit5-maven-consume at https://github.com/junit-team/junit5-samples -->
+    
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.jupiter.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!--
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <version>${junit.vintage.version}</version>
+      <scope>test</scope>
+    </dependency>
+    -->
+    <!-- Only required to run tests in an IDE that bundles an older version -->
+    <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-launcher</artifactId>
+      <version>${junit.platform.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
     	<groupId>org.apache.poi</groupId>
     	<artifactId>poi</artifactId>
+    	<version>3.17</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.poi</groupId>
+    	<artifactId>poi-ooxml</artifactId>
     	<version>3.17</version>
     </dependency>
     <dependency>
@@ -24,11 +72,7 @@
     	<artifactId>commons-cli</artifactId>
     	<version>1.4</version>
     </dependency>
-    <dependency>
-    	<groupId>org.apache.poi</groupId>
-    	<artifactId>poi-ooxml</artifactId>
-    	<version>3.17</version>
-    </dependency>
+
     <!-- JAXB dependencies called out here:  https://stackoverflow.com/q/48204141/370611
          and here:  http://openjdk.java.net/jeps/320#Java-EE-modules
     -->
@@ -52,9 +96,12 @@
       <artifactId>javax.activation-api</artifactId>
       <version>1.2.0</version>
     </dependency>
+
   </dependencies>
+
   <build>
     <pluginManagement>
+
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -64,9 +111,41 @@
             <target>9</target>
           </configuration>
         </plugin>
+
+        <!-- surfire 2.19.1 plugin configured following junit5-maven-consumer -->
+	<plugin>
+	  <artifactId>maven-surefire-plugin</artifactId>
+	  <version>2.19.1</version>
+	  <configuration>
+	    <includes>
+	      <include>**/Test*.java</include>
+	      <include>**/*Test.java</include>
+	      <include>**/*Tests.java</include>
+	      <include>**/*TestCase.java</include>
+	    </includes>
+	    <properties>
+	      <!-- <includeTags>fast</includeTags> -->
+	      <!-- <excludeTags>slow</excludeTags> -->
+	      <!--
+		  <configurationParameters>
+		  junit.jupiter.conditions.deactivate = *
+		  </configurationParameters>
+	      -->
+	    </properties>
+	  </configuration>
+	  <dependencies>
+	    <dependency>
+	      <groupId>org.junit.platform</groupId>
+	      <artifactId>junit-platform-surefire-provider</artifactId>
+	      <version>${junit.platform.version}</version>
+	    </dependency>
+	  </dependencies>
+	</plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
+          <version>3.0.2</version>
           <configuration>
             <archive>
               <manifest>
@@ -77,6 +156,7 @@
             </archive>
           </configuration>
         </plugin>
+        
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
@@ -84,21 +164,17 @@
           <configuration>
             <descriptorRefs>
               <!-- <descriptorRef>bin</descriptorRef> -->
+              <!-- <descriptorRef>src</descriptorRef> -->
             </descriptorRefs>
             <descriptors>
               <!-- <descriptor>src/main/assembly/executable-jar-with-dependencies.xml</descriptor> -->
               <descriptor>src/main/assembly/bin.xml</descriptor>
+              <descriptor>src/main/assembly/src.xml</descriptor>
             </descriptors>
-            <archive>
-              <manifest>
-                <mainClass>church.universityumc.excelconverter.App</mainClass>
-              </manifest>
-            </archive>
           </configuration>
           <executions>
-            <!-- (1) Doesn't work (still needs explicit invocation); and (2) Not sure a single executable jar is the
-                 right approach anyway, because we still need external files like logging.properties and maybe some
-                 .BAT/shell scripts.
+            <!-- (1) Doesn't work (still needs explicit invocation)
+            -->
             <execution>
               <id>make-assembly</id>
               <phase>package</phase>
@@ -106,11 +182,12 @@
                 <goal>single</goal>
               </goals>
             </execution>
-            -->
           </executions>
         </plugin>
+        
+        
+
       </plugins>
     </pluginManagement>
   </build>
-  <description>Converts input spreadsheet from AcessACS into a more usable format for filtering for members with certain characteristics.</description>
 </project>
