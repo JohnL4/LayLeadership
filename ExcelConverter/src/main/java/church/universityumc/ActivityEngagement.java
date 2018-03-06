@@ -200,7 +200,7 @@ public class ActivityEngagement
       App.inferredSkillMarshaller.marshal( iskill, sw);
       String skillName = sw.toString();
       Log.warn( "Turning ActivityEngagement into Skill \"%s\", which is probably a Bad Idea", skillName);
-      Skill retval = Skill.find( skillName);
+      Skill retval = Skill.find( skillName, InfoSource.UndatedEngagement);
       return retval;
    }
    

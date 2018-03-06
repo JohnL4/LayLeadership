@@ -7,7 +7,6 @@ import java.io.StringWriter;
 import java.lang.StackWalker.StackFrame;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
-// import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,14 +56,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import church.universityumc.ActivityEngagement;
 import church.universityumc.Log;
 import church.universityumc.MemberData;
-import church.universityumc.MemberSkill;
 import church.universityumc.ChurchMember;
 import church.universityumc.Comment;
 import church.universityumc.EnumResolutionException;
 import church.universityumc.InferredSkill;
+import church.universityumc.InfoSource;
 import church.universityumc.RowType;
 import church.universityumc.Skill;
-import church.universityumc.SkillSource;
 import church.universityumc.VocationalSkill;
 
 /**
@@ -316,7 +314,7 @@ public class App
          if (member.getSkills() != null)
          {
             System.out.printf( "    --------%n");
-            for (MemberSkill skill : member.getSkills())
+            for (Skill skill : member.getSkills())
             {
                System.out.printf( "    %s%n", skill);
             }
@@ -407,8 +405,8 @@ public class App
                      if (activityEngagement.getStartDate() == null)
                      {
                         // It's a skill?
-                        MemberSkill memberSkill = new MemberSkill( activityEngagement.toSkill(), SkillSource.UndatedEngagement); 
-                        currentChurchMember.addSkill( memberSkill);
+                        Skill skill = activityEngagement.toSkill(); 
+                        currentChurchMember.addSkill( skill);
                      }
                      else
                         // It's an activity engagement?
@@ -418,8 +416,7 @@ public class App
                case Vocation:
                {
                   Skill skill = parseSkill( row);
-                  MemberSkill memberSkill = new MemberSkill( skill, SkillSource.PersonalMinistrySurvey2006);
-                  currentChurchMember.addSkill( memberSkill);
+                  currentChurchMember.addSkill( skill);
                   break;
                }
                case Comments:
@@ -620,7 +617,7 @@ public class App
             VocationalSkill vskill = new VocationalSkill( elt1, elt2, elt3);
             StringWriter sw = new StringWriter();
             vocationalSkillMarshaller.marshal( vskill, sw);
-            retval = Skill.find( sw.toString());
+            retval = Skill.find( sw.toString(), InfoSource.PersonalMinistrySurvey2006);
             break;
          default:
             Log.warn( "Unexpected category in Skill row: \"%s\"", category);
@@ -652,7 +649,7 @@ public class App
    }
 
    /**
-    * Parse the comments section into the current {@link ChurchMember}'s data.
+    * Parse the comments section into the current {@link ChurchMember}'s data as generalized comments.
     * 
     * @param aRow
     */
@@ -666,7 +663,7 @@ public class App
       String commentText = nextOrNull( iter);
       
       Comment comment;
-      comment = new Comment( parseDate( commentDate), commentLevel, commentType, commentText);
+      comment = new Comment( parseDate( commentDate), commentLevel, commentType, commentText, InfoSource.AcsComment);
       return comment;
    }
 

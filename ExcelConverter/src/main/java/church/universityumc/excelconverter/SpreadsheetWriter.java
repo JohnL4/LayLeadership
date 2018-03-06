@@ -35,7 +35,6 @@ import church.universityumc.ChurchMember;
 import church.universityumc.Comment;
 import church.universityumc.Log;
 import church.universityumc.MemberData;
-import church.universityumc.MemberSkill;
 import church.universityumc.Skill;
 
 /**
@@ -151,7 +150,7 @@ public class SpreadsheetWriter
          if (member.getSkills() == null) {}
          else
          {
-            for (MemberSkill skill : member.getSkills())
+            for (Skill skill : member.getSkills())
             {
                Row row = createActivityPrefixRow( aSheet, member);
                appendSkillRow( row, member, skill);
@@ -502,7 +501,7 @@ public class SpreadsheetWriter
                   }); 
    }
 
-   private void appendSkillRow( Row aRow, ChurchMember aMember, MemberSkill aSkill)
+   private void appendSkillRow( Row aRow, ChurchMember aMember, Skill aSkill)
    {
       appendToRow( aRow,
             new String[]
@@ -511,7 +510,7 @@ public class SpreadsheetWriter
                         "",
                         "",
                         aSkill.getSource().toString(),
-                        aSkill.getSkill().getName()
+                        aSkill.getName()
                   });
    }
 
