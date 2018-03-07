@@ -132,8 +132,12 @@ public class App
             .desc( "input .xls or .xlsx file")
             .hasArg()
             .build());
-      options.addOption(
-            Option.builder()
+      options.addOption( Option.builder()
+            .longOpt( "s16")
+            .hasArg()
+            .desc( "2016 survey results, as a spreadsheet file")
+            .build());
+      options.addOption( Option.builder()
             .longOpt( "dump")
             .desc( "dump input to console, in no particular format")
             .build());
@@ -179,23 +183,30 @@ public class App
       inferredSkillMarshaller.setProperty( Marshaller.JAXB_FRAGMENT, true);
       inferredSkillUnmarshaller = inferredSkillJaxbContext.createUnmarshaller();
       
-      String infileName = "test.xls";
+      String infileName; // = "test.xls";
+      MemberData memberData = null;
       if (cmdLine.hasOption( 'f'))
       {
          infileName = cmdLine.getOptionValue( 'f');
          if (cmdLine.hasOption( "dump")) dumpToConsole( infileName);
-         MemberData memberData = buildChurchMembers( infileName);
-         if (cmdLine.hasOption( "xlsx"))
-         {
-            String outfileName = cmdLine.getOptionValue( "xlsx");
-            dumpToExcelFile( memberData, outfileName);
-         }
-         if (cmdLine.hasOption( "db"))
-         {
-            String jdbcConnectionString = cmdLine.getOptionValue( "db");
-            // Magical JDBC connection
-            updateDatabase( memberData, jdbcConnectionString);
-         }
+         memberData = buildChurchMembers( infileName);
+      }
+      else
+         memberData = new MemberData();
+      if (cmdLine.hasOption( "s16"))
+      {
+         updateWithSurvey2016( memberData, cmdLine.getOptionValue( "s16"));
+      }
+      if (cmdLine.hasOption( "xlsx"))
+      {
+         String outfileName = cmdLine.getOptionValue( "xlsx");
+         dumpToExcelFile( memberData, outfileName);
+      }
+      if (cmdLine.hasOption( "db"))
+      {
+         String jdbcConnectionString = cmdLine.getOptionValue( "db");
+         // Magical JDBC connection
+         updateDatabase( memberData, jdbcConnectionString);
       }
       if (cmdLine.hasOption( "jaxb"))
       {
@@ -446,6 +457,12 @@ public class App
          }
       }
       return retval;
+   }
+
+   private static void updateWithSurvey2016( MemberData aMemberData, String aSurveySpreadsheetName)
+   {
+      // TODO Auto-generated method stub
+      
    }
 
    /**
