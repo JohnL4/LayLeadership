@@ -20,11 +20,11 @@ public class ChurchMember
    private String                         phone;
    private String                         email;
    private StringBuilder                  biography;
-   private Collection<MemberInterest>     interests;
-   private Collection<MemberSkill>        skills;
    private Collection<ActivityEngagement> serviceHistory;
-   private Collection<Contact>            contactHistory;
+   private Collection<Skill>              skills;
+   private Collection<Interest>           interests;
    private Collection<Comment>            comments;
+   private Collection<Contact>            contactHistory;
    
    /**
     * The date the member's {@link age} is "as of", meaning that age is correct as of the indicated date.
@@ -171,15 +171,15 @@ public class ChurchMember
     * The types of activities (service opportunities) the member is interested in.
     * @return
     */
-   public Collection<MemberInterest> getInterests()
+   public Collection<Interest> getInterests()
    {
       return Collections.unmodifiableCollection( interests);
    }
 
-   public void addInterest( MemberInterest anInterest)
+   public void addInterest( Interest anInterest)
    {
       if (interests == null)
-         interests = new ArrayList<MemberInterest>();
+         interests = new ArrayList<Interest>();
       interests.add( anInterest);
    }
    
@@ -187,7 +187,7 @@ public class ChurchMember
     * The member's skills (may or may not match with {@link #getInterests()}).
     * @return
     */
-   public Collection<MemberSkill> getSkills()
+   public Collection<Skill> getSkills()
    {
       if (skills == null)
          return null;
@@ -195,11 +195,11 @@ public class ChurchMember
          return Collections.unmodifiableCollection( skills);
    }
    
-   public void addSkill( MemberSkill aMemberSkill)
+   public void addSkill( Skill aSkill)
    {
       if (skills == null)
-         skills = new ArrayList<MemberSkill>();
-      skills.add( aMemberSkill);
+         skills = new ArrayList<Skill>();
+      skills.add( aSkill);
    }
 
    /**

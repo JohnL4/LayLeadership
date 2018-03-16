@@ -10,10 +10,11 @@ import java.util.Date;
 public class Comment
 {
 
-   private Date _commentDate;
-   private CommentLevel _commentLevel;
-   private CommentType _commentType;
-   private String _commentText;
+   private Date         commentDate;
+   private CommentLevel commentLevel;
+   private CommentType  commentType;
+   private String       commentText;
+   private InfoSource   source;
 
    /**
     * 
@@ -21,14 +22,16 @@ public class Comment
     * @param aCommentLevel
     * @param aCommentType
     * @param aCommentText
+    * @param aSource - Where this comment came from.
     * @throws EnumResolutionException if one of comment level or comment type can't be mapped to an enum value.
     */
-   public Comment( Date aCommentDate, String aCommentLevel, String aCommentType, String aCommentText) 
+   public Comment( Date aCommentDate, String aCommentLevel, String aCommentType, String aCommentText, InfoSource aSource) 
    {
-      _commentDate = aCommentDate;
-      _commentLevel = CommentLevel.forString( aCommentLevel);
-      _commentType = CommentType.forString( aCommentType);
-      _commentText = aCommentText;
+      commentDate = aCommentDate;
+      commentLevel = CommentLevel.forString( aCommentLevel);
+      commentType = CommentType.forString( aCommentType);
+      commentText = aCommentText;
+      source = aSource;
    }
 
    /**
@@ -36,7 +39,7 @@ public class Comment
     */
    public Date getDate()
    {
-      return _commentDate;
+      return commentDate;
    }
 
    /**
@@ -44,7 +47,7 @@ public class Comment
     */
    public CommentLevel getLevel()
    {
-      return _commentLevel;
+      return commentLevel;
    }
 
    /**
@@ -52,7 +55,7 @@ public class Comment
     */
    public CommentType getType()
    {
-      return _commentType;
+      return commentType;
    }
 
    /**
@@ -60,7 +63,12 @@ public class Comment
     */
    public String getText()
    {
-      return _commentText;
+      return commentText;
+   }
+   
+   public InfoSource getSource()
+   {
+      return source;
    }
    
    public String toString()

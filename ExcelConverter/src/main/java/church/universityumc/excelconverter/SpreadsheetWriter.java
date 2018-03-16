@@ -35,7 +35,6 @@ import church.universityumc.ChurchMember;
 import church.universityumc.Comment;
 import church.universityumc.Log;
 import church.universityumc.MemberData;
-import church.universityumc.MemberSkill;
 import church.universityumc.Skill;
 
 /**
@@ -152,7 +151,7 @@ public class SpreadsheetWriter
          if (member.getSkills() == null) {}
          else
          {
-            for (MemberSkill skill : member.getSkills())
+            for (Skill skill : member.getSkills())
             {
                Row row = createActivityPrefixRow( aSheet, member);
                appendSkillRow( row, member, skill);
@@ -185,11 +184,16 @@ public class SpreadsheetWriter
       int colNum = 0;
       RowColumnDelta delta;
 
-      delta = writeActivityDataColumn( aSheet, 0, colNum++);
-      delta = writeActivityTypeDataColumn( aSheet, 0, colNum++);
-      delta = writeActivityRoleDataColumn( aSheet, 0, colNum++);
-      delta = writeSkillDataColumn( aSheet, 0, colNum++);
-      delta = writeRunDataColumn( aSheet, aMemberData, 0, colNum++);
+      delta = writeActivityDataColumn( aSheet, 0, colNum);
+      colNum += delta.numColumns;
+      delta = writeActivityTypeDataColumn( aSheet, 0, colNum);
+      colNum += delta.numColumns;
+      delta = writeActivityRoleDataColumn( aSheet, 0, colNum);
+      colNum += delta.numColumns;
+      delta = writeSkillDataColumn( aSheet, 0, colNum);
+      colNum += delta.numColumns;
+      delta = writeRunDataColumn( aSheet, aMemberData, 0, colNum);
+      colNum += delta.numColumns;
       
       Row row = aSheet.getRow( 0);
       row.setRowStyle( headerStyle);
@@ -289,20 +293,35 @@ public class SpreadsheetWriter
    private RowColumnDelta writeSkillDataColumn( Sheet aSheet, int aRowNum, int aColNum)
    {
       int initialRowNum = aRowNum;
-      writeCell( aSheet, aRowNum++, aColNum, "Skill");
+      // TODO: include a merged cell header above this row.  This will requires all of the supporting-data
+      // sheet have a frozen two-row header, and all the other one-header regions will have to be shifted
+      // down a row so that their headers are on the 2nd row.  All of this is too much trouble right now
+      // for a sheet that only adds marginal value to this enterprise.
+      writeCell( aSheet, aRowNum, aColNum, "Skill and...");
+      writeCell( aSheet, aRowNum, aColNum+1, "...Skill Info Source");
+      aRowNum++;
       Iterator<Skill> iter = 
             Skill.getAll().stream()
             .sorted( new Comparator<Skill>() {
                @Override
                public int compare( Skill arg0, Skill arg1)
                {
-                  return arg0.getName().compareToIgnoreCase( arg1.getName());
+                  int retval = arg0.getName().compareToIgnoreCase( arg1.getName());
+                  if (retval == 0)
+                     retval = arg0.getSource().toString().compareToIgnoreCase( arg1.getSource().toString());
+                  return retval;
                }})
             .iterator();
       while (iter.hasNext())
-         writeCell( aSheet, aRowNum++, aColNum, iter.next().getName());
+      {
+         Skill skill = iter.next();
+         writeCell( aSheet, aRowNum, aColNum, skill.getName());
+         writeCell( aSheet, aRowNum, aColNum+1, skill.getSource().toString());
+         aRowNum++;
+      }
       aSheet.autoSizeColumn( aColNum);
-      RowColumnDelta retval = new RowColumnDelta( aRowNum - initialRowNum, 1);
+      aSheet.autoSizeColumn( aColNum+1);
+      RowColumnDelta retval = new RowColumnDelta( aRowNum - initialRowNum, 2);
       return retval;
    }
 
@@ -503,7 +522,7 @@ public class SpreadsheetWriter
                   }); 
    }
 
-   private void appendSkillRow( Row aRow, ChurchMember aMember, MemberSkill aSkill)
+   private void appendSkillRow( Row aRow, ChurchMember aMember, Skill aSkill)
    {
       appendToRow( aRow,
             new String[]
@@ -512,7 +531,7 @@ public class SpreadsheetWriter
                         "",
                         "",
                         aSkill.getSource().toString(),
-                        aSkill.getSkill().getName()
+                        aSkill.getName()
                   });
    }
 

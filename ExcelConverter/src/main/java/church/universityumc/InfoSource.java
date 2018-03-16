@@ -1,10 +1,9 @@
 package church.universityumc;
 
 /**
- * The source of info on a {@link Skill}.
- *
+ * Where a piece of information came from.
  */
-public enum SkillSource
+public enum InfoSource
 {
    /**
     * The voluntary "Personal Ministry Survey" that was conducted in 2006.
@@ -20,5 +19,10 @@ public enum SkillSource
    /**
     * Survey Monkey survey conducted in 2016.
     */
-   Survey2016;
+   Survey2016, 
+   
+   /**
+    * From AccessACS "Comments" section.
+    */
+   AcsComment;
 }
