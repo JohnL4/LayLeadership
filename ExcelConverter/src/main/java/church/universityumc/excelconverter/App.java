@@ -64,6 +64,7 @@ import church.universityumc.InfoSource;
 import church.universityumc.RowType;
 import church.universityumc.Skill;
 import church.universityumc.VocationalSkill;
+import church.universityumc.excelconverter.ui.MainController;
 
 /**
  * Hello world!
@@ -160,6 +161,10 @@ public class App
             .longOpt( "jaxb")
             .desc( "play around with JAXB -- Java Architecture to XML Bindings")
             .build());
+      options.addOption( Option.builder()
+            .longOpt( "gui")
+            .desc( "launch the GUI")
+            .build());
       return options;
    }
 
@@ -208,39 +213,11 @@ public class App
          // Magical JDBC connection
          updateDatabase( memberData, jdbcConnectionString);
       }
-      if (cmdLine.hasOption( "jaxb"))
+      if (cmdLine.hasOption( "jaxb")) playWithJaxb();
+      if (cmdLine.hasOption( "gui")) 
       {
-         VocationalSkill vskill = new VocationalSkill("Category Name", "<\"B & O\" Railroad>", "");
-
-         System.out.println( "Marshall...");
-         System.out.printf( "%s -->%n", vskill);
-         StringWriter sw = new StringWriter();
-         vocationalSkillMarshaller.marshal(vskill, sw);
-         String elt1 = sw.toString();
-         System.out.println( elt1);
-         
-         vskill.subcategory = null;
-         System.out.printf( "%s -->%n", vskill);
-         sw = new StringWriter();
-         vocationalSkillMarshaller.marshal(vskill, sw);
-         String elt2 = sw.toString();
-         System.out.println( elt2);
-         
-         System.out.println( "Unmarshall...");
-         StringReader sr = new StringReader(elt1);
-         Object vskillObj = vocationalSkillUnmarshaller.unmarshal( sr);
-         vskill = (VocationalSkill) vskillObj;
-         System.out.println( vskill);
-         
-         sr = new StringReader( elt2);
-         vskillObj = vocationalSkillUnmarshaller.unmarshal( sr);
-         vskill = (VocationalSkill) vskillObj;
-         System.out.println( vskill);
-         
-         System.out.println( "Test InferredSkill...");
-         ActivityEngagement ae = new ActivityEngagement( "Activity Type", "Activity Name", "", "Activity Role");
-         Skill iskill = ae.toSkill();
-         System.out.println( iskill);
+         System.out.println( "Lauching GUI...");
+         MainController.launch( MainController.class, new String[] {});
       }
       System.out.println( "Done.");
    }
@@ -338,6 +315,43 @@ public class App
                System.out.printf( "    %s%n", comment);
             }
          }
+      }
+   }
+
+   private static void playWithJaxb() throws JAXBException
+   {
+      {
+         VocationalSkill vskill = new VocationalSkill("Category Name", "<\"B & O\" Railroad>", "");
+
+         System.out.println( "Marshall...");
+         System.out.printf( "%s -->%n", vskill);
+         StringWriter sw = new StringWriter();
+         vocationalSkillMarshaller.marshal(vskill, sw);
+         String elt1 = sw.toString();
+         System.out.println( elt1);
+         
+         vskill.subcategory = null;
+         System.out.printf( "%s -->%n", vskill);
+         sw = new StringWriter();
+         vocationalSkillMarshaller.marshal(vskill, sw);
+         String elt2 = sw.toString();
+         System.out.println( elt2);
+         
+         System.out.println( "Unmarshall...");
+         StringReader sr = new StringReader(elt1);
+         Object vskillObj = vocationalSkillUnmarshaller.unmarshal( sr);
+         vskill = (VocationalSkill) vskillObj;
+         System.out.println( vskill);
+         
+         sr = new StringReader( elt2);
+         vskillObj = vocationalSkillUnmarshaller.unmarshal( sr);
+         vskill = (VocationalSkill) vskillObj;
+         System.out.println( vskill);
+         
+         System.out.println( "Test InferredSkill...");
+         ActivityEngagement ae = new ActivityEngagement( "Activity Type", "Activity Name", "", "Activity Role");
+         Skill iskill = ae.toSkill();
+         System.out.println( iskill);
       }
    }
 
