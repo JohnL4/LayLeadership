@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="337.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="church.universityumc.excelconverter.ui.MainController">
+<VBox prefHeight="337.0" prefWidth="640.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="church.universityumc.excelconverter.ui.MainController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -84,7 +84,7 @@
             <TextField fx:id="outputFilename" GridPane.rowIndex="3" />
             <BorderPane minHeight="10.0" prefWidth="200.0" GridPane.rowIndex="4">
                <center>
-                  <Button mnemonicParsing="false" text="Go!" BorderPane.alignment="CENTER">
+                  <Button id="goBtn" mnemonicParsing="false" text="Go!" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
                         <Insets />
                      </BorderPane.margin>
