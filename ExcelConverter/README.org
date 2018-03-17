@@ -162,9 +162,9 @@
       java -jar /path/to/excel-converter-1.0-SNAPSHOT.jar --nogui -f "original input.xlsx" --xlsx "reformatted output.xlsx" > excel-converter.log 2>&1
     #+END_SRC
 
-    If you're on Windows, use backslashes (\) instead of forward slashes.
+    If you're on Windows, use backslashes (~\~) instead of forward slashes.
 
-    The "~> filename.log 2>&1~" part ensures that all messages, warning, and errors are captured
+    The "~> filename.log 2>&1~" part ensures that all messages, warnings, and errors are captured
     in the specified text file.  You can print that file out or email to someone.
     
 * Logger Format
