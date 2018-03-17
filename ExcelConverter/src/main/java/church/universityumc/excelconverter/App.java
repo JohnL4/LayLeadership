@@ -34,6 +34,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.UnrecognizedOptionException;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -162,18 +163,28 @@ public class App
             .desc( "play around with JAXB -- Java Architecture to XML Bindings")
             .build());
       options.addOption( Option.builder()
-            .longOpt( "gui")
-            .desc( "launch the GUI")
+            .longOpt( "nogui")
+            .desc( "don't launch the GUI")
             .build());
       return options;
    }
 
-   public static void main( String[] args) throws IOException, ParseException, UnknownRowTypeException, JAXBException
+   public static void main( String[] args) throws IOException, UnknownRowTypeException, JAXBException, ParseException
    {
 //      Log.warn( "test warning");
 //      Log.debug( "test debug");
       options = makeOptions();
-      CommandLine cmdLine = parseCommandLine( args);
+      CommandLine cmdLine;
+      try {
+         cmdLine = parseCommandLine( args);
+      }
+      catch (UnrecognizedOptionException exc)
+      {
+         exc.printStackTrace();
+         showHelp();
+         cmdLine = null; // Satisfy compiler/IDE.
+         System.exit( 1);
+      }
       if (cmdLine.hasOption( 'h')) showHelp();
 
       vocationalSkillJaxbContext = JAXBContext.newInstance( VocationalSkill.class);
@@ -214,9 +225,11 @@ public class App
          updateDatabase( memberData, jdbcConnectionString);
       }
       if (cmdLine.hasOption( "jaxb")) playWithJaxb();
-      if (cmdLine.hasOption( "gui")) 
+      if (cmdLine.hasOption( "nogui"))
+         ;
+      else
       {
-         System.out.println( "Lauching GUI...");
+         System.out.println( "Launching GUI...");
          MainController.launch( MainController.class, new String[] {});
       }
       System.out.println( "Done.");
