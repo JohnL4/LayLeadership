@@ -62,6 +62,17 @@
     Dependency-management and build system.  Great for sharing dependencies with other developers and automating testing
     (if I bother to write any unit tests, which I may actually do, at some point) and building.
 
+    See comments in the file ~pom.xml~ for notes on various dependencies and build targets.
+
+*** Eclipse
+
+    Notes on various bizarrenesses in our favorite old IDE.
+
+**** JavaFX
+
+     Install SceneBuilder.  You may need to explicitly specify the path to it in Eclipse's
+     preferences.  That preference is located at the top-level item "JavaFX".
+
 *** RESEARCH-HOLD Amazon Web Services (AWS)
     CLOSED: [2018-01-31 Wed 13:21]
 

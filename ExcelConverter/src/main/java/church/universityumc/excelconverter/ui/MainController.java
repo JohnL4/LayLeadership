@@ -30,6 +30,11 @@ public class MainController extends Application {
          exc.printStackTrace();
       }
    }
+   
+   @FXML protected void handleInputFileEvent( ActionEvent anEvent)
+   {
+      
+   }
 
    @FXML protected void handleQuitEvent( ActionEvent anEvent)
    {

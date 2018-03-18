@@ -1,1 +1,13 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+/*
+ * Note on -fx-base: This is a looked-up color 
+ * (https://docs.oracle.com/javase/9/docs/api/javafx/scene/doc-files/cssref.html#typecolor))
+ * defined in the default stylesheet for JavaFX ("Modena", available at or near 
+ * http://hg.openjdk.java.net/openjfx/9/rt/file/c734b008e3e8/modules/javafx.controls/src/main/resources/com/sun/javafx/scene/control/skin/modena/modena.css)).
+ * You won't find it documented in the CSS Reference because it's not an official CSS property.  If you use
+ * a different theme besides Modena (which is the default, as of Java 9, so you might not know you're using it)
+ * that does not make definitions based on "-fx-base", then it will probably have no effect.
+ */
+ 
+#goBtn { -fx-base: hsb(90, 80%, 100%); }
