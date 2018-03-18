@@ -83,7 +83,7 @@
          </padding>
          <children>
             <Label text="Input Files" />
-            <ListView fx:id="inputFilenames" minHeight="20.0" minWidth="20.0" GridPane.rowIndex="1" />
+            <ListView fx:id="inputFilenamesListView" minHeight="20.0" minWidth="20.0" GridPane.rowIndex="1" />
             <Label text="Output File" GridPane.rowIndex="2" />
             <TextField fx:id="outputFilename" GridPane.rowIndex="3" />
             <BorderPane minHeight="10.0" prefWidth="200.0" GridPane.rowIndex="4">
@@ -96,8 +96,7 @@
                <center>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Button defaultButton="true" mnemonicParsing="false" text="Go!" />
-                        <Button id="goBtn" mnemonicParsing="false" text="Go!" />
+                        <Button id="goBtn" defaultButton="true" mnemonicParsing="false" text="Go!" />
                      </children>
                   </HBox>
                </center>

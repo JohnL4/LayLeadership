@@ -24,11 +24,21 @@ import javafx.stage.Stage;
 
 public class MainController extends Application {
 
-   @FXML private ListView<String> inputFilenames;
+   @FXML private ListView<String> inputFilenamesListView; // TODO: should really be a list of Files, not Strings.
 
    private Set<String> inputFilenameSet = new HashSet<String>();
    
+   private ObservableList<String> inputFilenames = FXCollections.observableArrayList();
+   
    private Stage primaryStage;
+
+//   @Override
+//   public void init()
+//   {
+//      System.out.printf( "inputFilenamesListView = %s%n", inputFilenamesListView);
+//      // This is useless.  Somehow, the correct ListView gets instantiated later.
+//      inputFilenamesListView = new ListView( inputFilenames);
+//   }
    
    @Override
    public void start( Stage primaryStage)
@@ -51,17 +61,33 @@ public class MainController extends Application {
    
    @FXML protected void handleInputFileEvent( ActionEvent anEvent)
    {
+      System.out.printf( "inputFilenamesListView, items = %s, %s%n", inputFilenamesListView, inputFilenamesListView.getItems());
       FileChooser chooser = new FileChooser();
       chooser.setTitle( "Pick File(s) To Be Processed");
       chooser.getExtensionFilters().addAll(
             new ExtensionFilter( "Microsoft Excel Files", "*.xls", "*.xlsx"),
             new ExtensionFilter( "All Files", "*.*"));
+      
       List<File> chosenFiles = chooser.showOpenMultipleDialog( primaryStage);
-      List<String> chosenFilenames = chosenFiles.stream().map( f -> f.getName()).collect( Collectors.toList());
-      System.out.printf( "Chosen files: %s%n", String.join( " | ", chosenFilenames));
-      inputFilenameSet.addAll( chosenFilenames);
-      List<String> fns = inputFilenameSet.stream().collect( Collectors.toList());
-      inputFilenames.setItems( FXCollections.observableList( fns));
+      
+      if (chosenFiles == null)
+         ;
+      else
+      {
+         List<String> chosenFilenames = chosenFiles
+               .stream()
+               .map( f -> f.getName())
+               .collect( Collectors.toList());
+         System.out.printf( "Chosen files: %s%n", String.join( " | ", chosenFilenames));
+         inputFilenameSet.addAll( chosenFilenames);
+         List<String> fns = inputFilenameSet
+               .stream()
+               .sorted()
+               .collect( Collectors.toList());
+         inputFilenames.setAll( fns);
+         inputFilenamesListView.setItems( inputFilenames);
+      }
+      System.out.printf( "inputFilenamesListView, items = %s, %s%n", inputFilenamesListView, inputFilenamesListView.getItems());
    }
 
    @FXML protected void handleQuitEvent( ActionEvent anEvent)
