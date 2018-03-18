@@ -73,6 +73,13 @@
      Install SceneBuilder.  You may need to explicitly specify the path to it in Eclipse's
      preferences.  That preference is located at the top-level item "JavaFX".
 
+**** e(fx)clipse
+
+     You should install this separately from SceneBuilder.  You may not be able to set the
+     SceneBuilder path as above before you install this.  Resource files (*.css, *.fxml) should go
+     in the ~resources~ directory (preserving directory tree structure below that).
+     
+
 *** RESEARCH-HOLD Amazon Web Services (AWS)
     CLOSED: [2018-01-31 Wed 13:21]
 
