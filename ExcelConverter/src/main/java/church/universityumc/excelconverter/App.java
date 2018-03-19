@@ -2,6 +2,7 @@ package church.universityumc.excelconverter;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.StackWalker.StackFrame;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.LogManager;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +36,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.UnrecognizedOptionException;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -64,6 +67,7 @@ import church.universityumc.InfoSource;
 import church.universityumc.RowType;
 import church.universityumc.Skill;
 import church.universityumc.VocationalSkill;
+import church.universityumc.excelconverter.ui.MainController;
 
 /**
  * Hello world!
@@ -160,15 +164,37 @@ public class App
             .longOpt( "jaxb")
             .desc( "play around with JAXB -- Java Architecture to XML Bindings")
             .build());
+      options.addOption( Option.builder()
+            .longOpt( "nogui")
+            .desc( "don't launch the GUI")
+            .build());
       return options;
    }
 
-   public static void main( String[] args) throws IOException, ParseException, UnknownRowTypeException, JAXBException
+   public static void main( String[] args) throws IOException, UnknownRowTypeException, JAXBException, ParseException
    {
-//      Log.warn( "test warning");
-//      Log.debug( "test debug");
+      // Don't need system property, since we're about to explicitly load the config file as an InputStream.
+//      System.setProperty( "java.util.logging.config.file", "logging.properties");
+      // Leading "/" means "top of classpath", basically.
+      InputStream str = App.class.getResourceAsStream( "/logging.properties");
+      if (str == null)
+         System.out.printf( "java.class.path = %s%n", System.getProperty( "java.class.path"));
+      else
+         LogManager.getLogManager().readConfiguration( str);
+      Log.warn( "test warning");
+      Log.debug( "test debug");
       options = makeOptions();
-      CommandLine cmdLine = parseCommandLine( args);
+      CommandLine cmdLine;
+      try {
+         cmdLine = parseCommandLine( args);
+      }
+      catch (UnrecognizedOptionException exc)
+      {
+         exc.printStackTrace();
+         showHelp();
+         cmdLine = null; // Satisfy compiler/IDE.
+         System.exit( 1);
+      }
       if (cmdLine.hasOption( 'h')) showHelp();
 
       vocationalSkillJaxbContext = JAXBContext.newInstance( VocationalSkill.class);
@@ -208,41 +234,16 @@ public class App
          // Magical JDBC connection
          updateDatabase( memberData, jdbcConnectionString);
       }
-      if (cmdLine.hasOption( "jaxb"))
+      if (cmdLine.hasOption( "jaxb")) playWithJaxb();
+      if (cmdLine.hasOption( "nogui"))
+         ;
+      else
       {
-         VocationalSkill vskill = new VocationalSkill("Category Name", "<\"B & O\" Railroad>", "");
-
-         System.out.println( "Marshall...");
-         System.out.printf( "%s -->%n", vskill);
-         StringWriter sw = new StringWriter();
-         vocationalSkillMarshaller.marshal(vskill, sw);
-         String elt1 = sw.toString();
-         System.out.println( elt1);
-         
-         vskill.subcategory = null;
-         System.out.printf( "%s -->%n", vskill);
-         sw = new StringWriter();
-         vocationalSkillMarshaller.marshal(vskill, sw);
-         String elt2 = sw.toString();
-         System.out.println( elt2);
-         
-         System.out.println( "Unmarshall...");
-         StringReader sr = new StringReader(elt1);
-         Object vskillObj = vocationalSkillUnmarshaller.unmarshal( sr);
-         vskill = (VocationalSkill) vskillObj;
-         System.out.println( vskill);
-         
-         sr = new StringReader( elt2);
-         vskillObj = vocationalSkillUnmarshaller.unmarshal( sr);
-         vskill = (VocationalSkill) vskillObj;
-         System.out.println( vskill);
-         
-         System.out.println( "Test InferredSkill...");
-         ActivityEngagement ae = new ActivityEngagement( "Activity Type", "Activity Name", "", "Activity Role");
-         Skill iskill = ae.toSkill();
-         System.out.println( iskill);
+         System.out.println( "Launching GUI...");
+         MainController.launch( MainController.class, new String[] {});
       }
       System.out.println( "Done.");
+      Log.debug( "Done");
    }
 
    private static CommandLine parseCommandLine( String[] args) throws ParseException
@@ -338,6 +339,43 @@ public class App
                System.out.printf( "    %s%n", comment);
             }
          }
+      }
+   }
+
+   private static void playWithJaxb() throws JAXBException
+   {
+      {
+         VocationalSkill vskill = new VocationalSkill("Category Name", "<\"B & O\" Railroad>", "");
+
+         System.out.println( "Marshall...");
+         System.out.printf( "%s -->%n", vskill);
+         StringWriter sw = new StringWriter();
+         vocationalSkillMarshaller.marshal(vskill, sw);
+         String elt1 = sw.toString();
+         System.out.println( elt1);
+         
+         vskill.subcategory = null;
+         System.out.printf( "%s -->%n", vskill);
+         sw = new StringWriter();
+         vocationalSkillMarshaller.marshal(vskill, sw);
+         String elt2 = sw.toString();
+         System.out.println( elt2);
+         
+         System.out.println( "Unmarshall...");
+         StringReader sr = new StringReader(elt1);
+         Object vskillObj = vocationalSkillUnmarshaller.unmarshal( sr);
+         vskill = (VocationalSkill) vskillObj;
+         System.out.println( vskill);
+         
+         sr = new StringReader( elt2);
+         vskillObj = vocationalSkillUnmarshaller.unmarshal( sr);
+         vskill = (VocationalSkill) vskillObj;
+         System.out.println( vskill);
+         
+         System.out.println( "Test InferredSkill...");
+         ActivityEngagement ae = new ActivityEngagement( "Activity Type", "Activity Name", "", "Activity Role");
+         Skill iskill = ae.toSkill();
+         System.out.println( iskill);
       }
    }
 

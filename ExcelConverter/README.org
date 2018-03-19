@@ -62,6 +62,24 @@
     Dependency-management and build system.  Great for sharing dependencies with other developers and automating testing
     (if I bother to write any unit tests, which I may actually do, at some point) and building.
 
+    See comments in the file ~pom.xml~ for notes on various dependencies and build targets.
+
+*** Eclipse
+
+    Notes on various bizarrenesses in our favorite old IDE.
+
+**** JavaFX
+
+     Install SceneBuilder.  You may need to explicitly specify the path to it in Eclipse's
+     preferences.  That preference is located at the top-level item "JavaFX".
+
+**** e(fx)clipse
+
+     You should install this separately from SceneBuilder.  You may not be able to set the
+     SceneBuilder path as above before you install this.  Resource files (*.css, *.fxml) should go
+     in the ~resources~ directory (preserving directory tree structure below that).
+     
+
 *** RESEARCH-HOLD Amazon Web Services (AWS)
     CLOSED: [2018-01-31 Wed 13:21]
 
@@ -144,7 +162,7 @@
 
 ** Run
 
-  : java -Djava.util.logging.config.file=logging.properties -jar <jarFileName> [options]
+  : java -Djava.util.logging.config.file=logging.properties -jar <jarFileName> --nogui [options]
 
   Note the -D logging config option gives problems in PowerShell.  You can leave it out, but the logging will only use
   default config.
@@ -159,14 +177,27 @@
        prompt:
     
     #+BEGIN_SRC bash
-    java -jar /path/to/excel-converter-1.0-SNAPSHOT.jar -f "original input.xlsx" --xlsx "reformatted output.xlsx"
+      java -jar /path/to/excel-converter-1.0-SNAPSHOT.jar --nogui -f "original input.xlsx" --xlsx "reformatted output.xlsx" > excel-converter.log 2>&1
     #+END_SRC
 
-    If you're on Windows, use backslashes (\) instead of forward slashes.
+    If you're on Windows, use backslashes (~\~) instead of forward slashes.
+
+    The "~> filename.log 2>&1~" part ensures that all messages, warnings, and errors are captured
+    in the specified text file.  You can print that file out or email to someone.
+
+*** Log file
+
+    In addition to the output redirect specified above, the app logs to a file named
+    ~excel-converter-0-0.log~ (the numbers may be different).  This is a text file that can be
+    printed or emailed.
     
 * Logger Format
 
-** How to activate
+** How to activate -- OLD NOTES; TEMPORARILY IRRELEVANT
+
+   (Logging is now hardcoded into the app, to simplify things.  The logging properties follow the
+   format given in [[#logging-technical-details][Technical details]].  In future, I might test for the system property specified
+   here and load the logging.properties only if the system property is /not/ set.)
 
    Logging properties are in the file ~logging.properties~.
 
@@ -177,6 +208,9 @@
     CLOSED: [2018-03-01 Thu 23:02]
 
 ** Technical details
+   :PROPERTIES:
+   :CUSTOM_ID: logging-technical-details
+   :END:
    
   ~String.format()~ call with the following arguments:
 
