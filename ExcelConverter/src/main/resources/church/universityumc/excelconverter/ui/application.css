@@ -11,9 +11,17 @@
  */
 
 /* I really like this green.  I should probably comment it out when I deliver this.  :)
+*/
 #goBtn { -fx-base: hsb(90, 80%, 100%); }
+
+/* This affects everything the same as using the "*" selector (on Windows, at least), so this is probably more better.
+.root { -fx-base: #131716; }
 */
 
 /*
-.root { -fx-base: #111811; }
+* { -fx-base: #131716; }
+*/
+
+/*
+.root { -fx-base: hsb(90, 80%, 100%); }
 */

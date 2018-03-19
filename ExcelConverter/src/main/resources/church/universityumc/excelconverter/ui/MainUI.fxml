@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="337.0" prefWidth="640.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="church.universityumc.excelconverter.ui.MainController">
+<VBox prefHeight="337.0" prefWidth="640.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="church.universityumc.excelconverter.ui.MainController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -80,7 +80,7 @@
          </padding>
          <children>
             <Label text="Input Files" />
-            <ListView fx:id="inputFilesListView" minHeight="20.0" minWidth="20.0" GridPane.rowIndex="1"/>
+            <ListView fx:id="inputFilesListView" minHeight="20.0" minWidth="20.0" GridPane.rowIndex="1" />
             <Label text="Output File" GridPane.rowIndex="2" />
             <TextField fx:id="outputFilename" GridPane.rowIndex="3" />
             <BorderPane minHeight="10.0" prefWidth="200.0" GridPane.rowIndex="4">
@@ -93,7 +93,9 @@
                <center>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
                      <children>
+                        <Button mnemonicParsing="false" text="Go!" />
                         <Button id="goBtn" defaultButton="true" mnemonicParsing="false" text="Go!" />
+                        <Button mnemonicParsing="false" text="Go!" />
                      </children>
                   </HBox>
                </center>
