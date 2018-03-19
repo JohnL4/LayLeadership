@@ -2,6 +2,7 @@ package church.universityumc.excelconverter;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.StackWalker.StackFrame;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.LogManager;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -171,8 +173,16 @@ public class App
 
    public static void main( String[] args) throws IOException, UnknownRowTypeException, JAXBException, ParseException
    {
-//      Log.warn( "test warning");
-//      Log.debug( "test debug");
+      // Don't need system property, since we're about to explicitly load the config file as an InputStream.
+//      System.setProperty( "java.util.logging.config.file", "logging.properties");
+      // Leading "/" means "top of classpath", basically.
+      InputStream str = App.class.getResourceAsStream( "/logging.properties");
+      if (str == null)
+         System.out.printf( "java.class.path = %s%n", System.getProperty( "java.class.path"));
+      else
+         LogManager.getLogManager().readConfiguration( str);
+      Log.warn( "test warning");
+      Log.debug( "test debug");
       options = makeOptions();
       CommandLine cmdLine;
       try {
@@ -233,6 +243,7 @@ public class App
          MainController.launch( MainController.class, new String[] {});
       }
       System.out.println( "Done.");
+      Log.debug( "Done");
    }
 
    private static CommandLine parseCommandLine( String[] args) throws ParseException

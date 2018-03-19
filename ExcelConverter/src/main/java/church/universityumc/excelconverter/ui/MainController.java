@@ -3,11 +3,13 @@ package church.universityumc.excelconverter.ui;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import church.universityumc.Log;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -24,11 +26,14 @@ import javafx.stage.Stage;
 
 public class MainController extends Application {
 
-   @FXML private ListView<String> inputFilenamesListView; // TODO: should really be a list of Files, not Strings.
+//   @FXML private ListView<String> inputFilenamesListView; // TODO: should really be a list of Files, not Strings.
+   @FXML private ListView<File> inputFilesListView;
 
-   private Set<String> inputFilenameSet = new HashSet<String>();
+//   private Set<String> inputFilenameSet = new HashSet<String>();
+   private Set<File> inputFileSet = new HashSet<File>();
    
-   private ObservableList<String> inputFilenames = FXCollections.observableArrayList();
+//   private ObservableList<String> inputFilenames = FXCollections.observableArrayList();
+   private ObservableList<File> inputFiles = FXCollections.observableArrayList();
    
    private Stage primaryStage;
 
@@ -61,7 +66,7 @@ public class MainController extends Application {
    
    @FXML protected void handleInputFileEvent( ActionEvent anEvent)
    {
-      System.out.printf( "inputFilenamesListView, items = %s, %s%n", inputFilenamesListView, inputFilenamesListView.getItems());
+//      System.out.printf( "inputFilenamesListView, items = %s, %s%n", inputFilenamesListView, inputFilenamesListView.getItems());
       FileChooser chooser = new FileChooser();
       chooser.setTitle( "Pick File(s) To Be Processed");
       chooser.getExtensionFilters().addAll(
@@ -78,21 +83,30 @@ public class MainController extends Application {
                .stream()
                .map( f -> f.getName())
                .collect( Collectors.toList());
-         System.out.printf( "Chosen files: %s%n", String.join( " | ", chosenFilenames));
-         inputFilenameSet.addAll( chosenFilenames);
-         List<String> fns = inputFilenameSet
+         Log.debug( String.format( "Chosen filenames: %s", String.join( " | ", chosenFilenames)));
+//         inputFilenameSet.addAll( chosenFilenames);
+         inputFileSet.addAll( chosenFiles);
+//         List<String> fns = inputFilenameSet
+//               .stream()
+//               .sorted()
+//               .collect( Collectors.toList());
+         List<File> fs = inputFileSet
                .stream()
-               .sorted()
+               .sorted( new Comparator<File>() { 
+                  public int compare(File a, File b) { return a.getName().compareToIgnoreCase( b.getName()); } 
+                  })
                .collect( Collectors.toList());
-         inputFilenames.setAll( fns);
-         inputFilenamesListView.setItems( inputFilenames);
+//         inputFilenames.setAll( fns);
+         inputFiles.setAll( fs);
+//         inputFilenamesListView.setItems( inputFilenames);
+         inputFilesListView.setItems( inputFiles);
       }
-      System.out.printf( "inputFilenamesListView, items = %s, %s%n", inputFilenamesListView, inputFilenamesListView.getItems());
+//      System.out.printf( "inputFilenamesListView, items = %s, %s%n", inputFilenamesListView, inputFilenamesListView.getItems());
    }
 
    @FXML protected void handleQuitEvent( ActionEvent anEvent)
    {
-      System.out.println( "Quit event");
+      Log.debug( "Quit event");
       Platform.exit();
    }
 }
