@@ -184,10 +184,20 @@
 
     The "~> filename.log 2>&1~" part ensures that all messages, warnings, and errors are captured
     in the specified text file.  You can print that file out or email to someone.
+
+*** Log file
+
+    In addition to the output redirect specified above, the app logs to a file named
+    ~excel-converter-0-0.log~ (the numbers may be different).  This is a text file that can be
+    printed or emailed.
     
 * Logger Format
 
-** How to activate
+** How to activate -- OLD NOTES; TEMPORARILY IRRELEVANT
+
+   (Logging is now hardcoded into the app, to simplify things.  The logging properties follow the
+   format given in [[#logging-technical-details][Technical details]].  In future, I might test for the system property specified
+   here and load the logging.properties only if the system property is /not/ set.)
 
    Logging properties are in the file ~logging.properties~.
 
@@ -198,6 +208,9 @@
     CLOSED: [2018-03-01 Thu 23:02]
 
 ** Technical details
+   :PROPERTIES:
+   :CUSTOM_ID: logging-technical-details
+   :END:
    
   ~String.format()~ call with the following arguments:
 
