@@ -2,7 +2,6 @@ package church.universityumc.excelconverter.ui;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +11,9 @@ import java.util.stream.Collectors;
 import church.universityumc.Log;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,31 +21,57 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 public class MainController extends Application {
 
-//   @FXML private ListView<String> inputFilenamesListView; // TODO: should really be a list of Files, not Strings.
    @FXML private ListView<File> inputFilesListView;
+   
+   @FXML private TextField outputFile;
+   
+   @FXML private Button goBtn;
 
-//   private Set<String> inputFilenameSet = new HashSet<String>();
    private Set<File> inputFileSet = new HashSet<File>();
    
-//   private ObservableList<String> inputFilenames = FXCollections.observableArrayList();
    private ObservableList<File> inputFiles = FXCollections.observableArrayList();
    
+//   private File chosenOutputFile;
+   // You don't wrap a normal object in an Observable, you just declare the Observable and assign to it via the .set() method.
+   private ObjectProperty<File> chosenOutputFileProperty = new SimpleObjectProperty();
+
    private Stage primaryStage;
 
-//   @Override
-//   public void init()
-//   {
+   @Override
+   public void init()
+   {
 //      System.out.printf( "inputFilenamesListView = %s%n", inputFilenamesListView);
 //      // This is useless.  Somehow, the correct ListView gets instantiated later.
 //      inputFilenamesListView = new ListView( inputFilenames);
-//   }
+      if (goBtn == null)
+         Log.debug( "goBtn is null");
+      else
+         Log.debug( goBtn.toString());
+   }
+   
+   /**
+    * This method is magically called by javafx if it exists, when the scene/controller is completely constructed.  
+    * The @FXML attribute enables us to not make it public if we don't want to. 
+    */
+   @FXML protected void initialize()
+   {
+      if (goBtn == null)
+         Log.debug( "goBtn is null");
+      else
+      {
+         Log.debug( goBtn.toString());
+         goBtn.disableProperty().bind( Bindings.isNull( chosenOutputFileProperty));
+      }
+   }
    
    @Override
    public void start( Stage primaryStage)
@@ -55,7 +83,14 @@ public class MainController extends Application {
          fxmlRoot = FXMLLoader.load( getClass().getResource( "MainUI.fxml"));
          Scene scene = new Scene( fxmlRoot /* ,400,400 */);
          scene.getStylesheets().add( getClass().getResource( "application.css").toExternalForm());
+         primaryStage.setTitle( "Excel Converter");
          primaryStage.setScene( scene);
+
+         if (goBtn == null)
+            Log.debug( "goBtn is null");
+         else
+            Log.debug( goBtn.toString());
+         
          primaryStage.show();
       }
       catch (IOException exc)
@@ -66,7 +101,6 @@ public class MainController extends Application {
    
    @FXML protected void handleInputFileEvent( ActionEvent anEvent)
    {
-//      System.out.printf( "inputFilenamesListView, items = %s, %s%n", inputFilenamesListView, inputFilenamesListView.getItems());
       FileChooser chooser = new FileChooser();
       chooser.setTitle( "Pick File(s) To Be Processed");
       chooser.getExtensionFilters().addAll(
@@ -84,29 +118,44 @@ public class MainController extends Application {
                .map( f -> f.getName())
                .collect( Collectors.toList());
          Log.debug( String.format( "Chosen filenames: %s", String.join( " | ", chosenFilenames)));
-//         inputFilenameSet.addAll( chosenFilenames);
          inputFileSet.addAll( chosenFiles);
-//         List<String> fns = inputFilenameSet
-//               .stream()
-//               .sorted()
-//               .collect( Collectors.toList());
          List<File> fs = inputFileSet
                .stream()
                .sorted( new Comparator<File>() { 
                   public int compare(File a, File b) { return a.getName().compareToIgnoreCase( b.getName()); } 
                   })
                .collect( Collectors.toList());
-//         inputFilenames.setAll( fns);
          inputFiles.setAll( fs);
-//         inputFilenamesListView.setItems( inputFilenames);
          inputFilesListView.setItems( inputFiles);
       }
-//      System.out.printf( "inputFilenamesListView, items = %s, %s%n", inputFilenamesListView, inputFilenamesListView.getItems());
+   }
+   
+   @FXML protected void handleOutputFileEvent( ActionEvent anEvent)
+   {
+      FileChooser chooser = new FileChooser();
+      chooser.setTitle( "Pick Output File");
+      chooser.getExtensionFilters().addAll(
+            new ExtensionFilter( "Microsoft Excel Files", "*.xlsx"),
+            new ExtensionFilter( "All Files", "*.*"));
+      
+      File chosenOutputFile = chooser.showSaveDialog( primaryStage);
+      
+      if (chosenOutputFile == null)
+         ;
+      else
+      {
+         chosenOutputFileProperty.set( chosenOutputFile);
+         outputFile.setText( chosenOutputFile.toString());
+      }
    }
 
    @FXML protected void handleQuitEvent( ActionEvent anEvent)
    {
       Log.debug( "Quit event");
+      if (goBtn == null)
+         Log.debug( "goBtn is still null");
+      else
+         Log.debug( String.format( "Now goBtn is %s", goBtn));
       Platform.exit();
    }
 }
