@@ -9,6 +9,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -59,6 +60,7 @@
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
           <items>
+                  <MenuItem mnemonicParsing="false" onAction="#handleExplainDisabledControls" text="Disabled Controls" />
             <MenuItem mnemonicParsing="false" text="About..." />
           </items>
         </Menu>
@@ -93,9 +95,13 @@
                <center>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Button mnemonicParsing="false" text="Go!" />
-                        <Button id="goBtn" fx:id="goBtn" mnemonicParsing="false" text="Go!" />
-                        <Button defaultButton="true" mnemonicParsing="false" text="Go!" />
+                        <Button mnemonicParsing="false" text="Normal" />
+                        <Button id="goBtn" fx:id="goBtn" mnemonicParsing="false" text="Custom">
+                           <tooltip>
+                              <Tooltip text="A normal button with a custom color." wrapText="true" />
+                           </tooltip>
+                        </Button>
+                        <Button defaultButton="true" mnemonicParsing="false" text="Default" />
                      </children>
                   </HBox>
                </center>

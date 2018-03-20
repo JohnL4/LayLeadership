@@ -42,7 +42,7 @@ public class MainController extends Application {
    
 //   private File chosenOutputFile;
    // You don't wrap a normal object in an Observable, you just declare the Observable and assign to it via the .set() method.
-   private ObjectProperty<File> chosenOutputFileProperty = new SimpleObjectProperty();
+   private ObjectProperty<File> chosenOutputFileProperty = new SimpleObjectProperty<File>();
 
    private Stage primaryStage;
 
@@ -149,6 +149,19 @@ public class MainController extends Application {
          chosenOutputFileProperty.set( chosenOutputFile);
          outputFile.setText( chosenOutputFile.toString());
       }
+   }
+   
+   /**
+    * Because we can't put tooltips on disabled controls and other solutions introduce various artifacts
+    * (ButtonBar: weird spacing; ToolBar: funky borders; SplitPane: probably more border issues + a divider),
+    * this is our fallback, to help the user understand why a certain button or checkbox or whathaveyou
+    * is disabled.
+    * @param anEvent
+    */
+   @FXML protected void handleExplainDisabledControls( ActionEvent anEvent)
+   {
+      // TODO: explain each disabled control here.
+      Log.warn( "unimplemented");
    }
 
    @FXML protected void handleQuitEvent( ActionEvent anEvent)
