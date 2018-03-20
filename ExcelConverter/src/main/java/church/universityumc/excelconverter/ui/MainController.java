@@ -62,6 +62,7 @@ public class MainController extends Application {
     * This method is magically called by javafx if it exists, when the scene/controller is completely constructed.  
     * The @FXML attribute enables us to not make it public if we don't want to. 
     * @see https://docs.oracle.com/javafx/2/api/javafx/fxml/doc-files/introduction_to_fxml.html#controllers
+    * @see https://docs.oracle.com/javase/9/docs/api/javafx/fxml/doc-files/introduction_to_fxml.html#controllers (i.e., part of the API javadocs)
     */
    @FXML protected void initialize()
    {
