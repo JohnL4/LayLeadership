@@ -26,6 +26,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -34,6 +36,8 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 public class MainController extends Application {
+
+   private static final String APPLICATION_TITLE = "Excel Converter";
 
    @FXML private ListView<File> inputFilesListView;
    
@@ -115,7 +119,7 @@ public class MainController extends Application {
          fxmlRoot = FXMLLoader.load( getClass().getResource( "MainUI.fxml"));
          Scene scene = new Scene( fxmlRoot /* ,400,400 */);
          scene.getStylesheets().add( getClass().getResource( "application.css").toExternalForm());
-         primaryStage.setTitle( "Excel Converter");
+         primaryStage.setTitle( APPLICATION_TITLE);
          primaryStage.setScene( scene);
 
 //         if (goBtn == null)
@@ -209,6 +213,14 @@ public class MainController extends Application {
    {
       // TODO: explain each disabled control here.
       Log.warn( "unimplemented");
+      Alert alert = new Alert(AlertType.INFORMATION);
+      alert.setTitle( APPLICATION_TITLE + " - Why Disabled?");
+      alert.setHeaderText( "Why some controls are disabled");
+      String reason = goBtnDisabledReason.get();
+      if (reason == null || reason.isEmpty())
+         reason = "Actually, no controls are disabled right now.";
+      alert.setContentText( reason);
+      alert.showAndWait();
    }
 
    @FXML protected void handleQuitEvent( ActionEvent anEvent)
