@@ -211,8 +211,6 @@ public class MainController extends Application {
     */
    @FXML protected void handleExplainDisabledControls( ActionEvent anEvent)
    {
-      // TODO: explain each disabled control here.
-      Log.warn( "unimplemented");
       Alert alert = new Alert(AlertType.INFORMATION);
       alert.setTitle( APPLICATION_TITLE + " - Why Disabled?");
       alert.setHeaderText( "Why some controls are disabled");
