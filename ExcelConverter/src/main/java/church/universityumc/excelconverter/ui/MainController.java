@@ -14,7 +14,12 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableStringValue;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -35,6 +40,8 @@ public class MainController extends Application {
    @FXML private TextField outputFile;
    
    @FXML private Button goBtn;
+   
+   @FXML private SimpleStringProperty goBtnDisabledReason = new SimpleStringProperty();
 
    private Set<File> inputFileSet = new HashSet<File>();
    
@@ -46,16 +53,21 @@ public class MainController extends Application {
 
    private Stage primaryStage;
 
+   /**
+    * This is called before {@link #start(Stage)}, but there's nothing really special about it -- it's NOT
+    * called after the controller is fully initialized.  For that, see {@link #initialize()}.
+    */
    @Override
    public void init()
    {
 //      System.out.printf( "inputFilenamesListView = %s%n", inputFilenamesListView);
 //      // This is useless.  Somehow, the correct ListView gets instantiated later.
 //      inputFilenamesListView = new ListView( inputFilenames);
-      if (goBtn == null)
-         Log.debug( "goBtn is null");
-      else
-         Log.debug( goBtn.toString());
+//      if (goBtn == null)
+//         Log.debug( "goBtn is null");
+//      else
+//         Log.debug( goBtn.toString());
+//      updateDisableReasons();
    }
    
    /**
@@ -70,8 +82,26 @@ public class MainController extends Application {
          Log.debug( "goBtn is null");
       else
       {
-         Log.debug( goBtn.toString());
-         goBtn.disableProperty().bind( Bindings.isNull( chosenOutputFileProperty));
+         // Add listeners to data fields of interest, so whenever they change (no matter who changes them)
+         // we recalculate the "disabled" reason and the enablement of the "Go!" button.
+         inputFiles.addListener( new ListChangeListener<File>() {
+
+            @Override
+            public void onChanged( Change<? extends File> arg0)
+            {
+               updateDisableReasons();
+            }
+         });
+         chosenOutputFileProperty.addListener( new ChangeListener<File>() {
+
+            @Override
+            public void changed( ObservableValue<? extends File> arg0, File arg1, File arg2)
+            {
+               updateDisableReasons();
+            }
+         });
+         goBtn.disableProperty().bind( goBtnDisabledReason.isNotEmpty());
+         updateDisableReasons();
       }
    }
    
@@ -88,10 +118,10 @@ public class MainController extends Application {
          primaryStage.setTitle( "Excel Converter");
          primaryStage.setScene( scene);
 
-         if (goBtn == null)
-            Log.debug( "goBtn is null");
-         else
-            Log.debug( goBtn.toString());
+//         if (goBtn == null)
+//            Log.debug( "goBtn is null");
+//         else
+//            Log.debug( goBtn.toString());
          
          primaryStage.show();
       }
@@ -101,6 +131,23 @@ public class MainController extends Application {
       }
    }
    
+   private void updateDisableReasons()
+   {
+//      Log.debug( String.format( "goBtnDisabledReason = %s (hashcode = 0x%x)", goBtnDisabledReason, goBtnDisabledReason.hashCode()));
+//      Log.debug(  String.format( "inputFileSet = %s (hashcode = 0x%x)", inputFileSet, inputFileSet.hashCode()));
+//      Log.debug( String.format( "chosenOutputFileProperty = %s (hashcode = 0x%x)", chosenOutputFileProperty, chosenOutputFileProperty.hashCode() ));
+      boolean noInput = inputFileSet == null || inputFileSet.size() == 0;
+      boolean noOutput = chosenOutputFileProperty == null || chosenOutputFileProperty.get() == null;
+      if (noInput && noOutput)
+         goBtnDisabledReason.set("You need to specify both at least one input file and an output file.");
+      else if (noInput)
+         goBtnDisabledReason.set( "You need to specify at least one input file");
+      else if (noOutput)
+         goBtnDisabledReason.set( "You need to specify an output file");
+      else
+         goBtnDisabledReason.set(null);
+   }
+
    @FXML protected void handleInputFileEvent( ActionEvent anEvent)
    {
       FileChooser chooser = new FileChooser();

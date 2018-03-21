@@ -22,7 +22,7 @@
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
-        <Menu mnemonicParsing="false" text="File">
+        <Menu text="_File">
           <items>
             <MenuItem mnemonicParsing="false" onAction="#handleInputFileEvent" text="Input File...">
                      <accelerator>
@@ -44,7 +44,7 @@
                      </accelerator></MenuItem>
           </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
+        <Menu text="_Edit">
           <items>
             <MenuItem mnemonicParsing="false" text="Undo" />
             <MenuItem mnemonicParsing="false" text="Redo" />
@@ -58,7 +58,7 @@
             <MenuItem mnemonicParsing="false" text="Unselect All" />
           </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Help">
+        <Menu text="_Help">
           <items>
                   <MenuItem mnemonicParsing="false" onAction="#handleExplainDisabledControls" text="Disabled Controls" />
             <MenuItem mnemonicParsing="false" text="About..." />
@@ -84,7 +84,7 @@
             <Label text="Input Files" />
             <ListView fx:id="inputFilesListView" minHeight="20.0" minWidth="20.0" GridPane.rowIndex="1" />
             <Label text="Output File" GridPane.rowIndex="2" />
-            <TextField fx:id="outputFile" GridPane.rowIndex="3" />
+            <TextField fx:id="outputFile" editable="false" focusTraversable="false" GridPane.rowIndex="3" />
             <BorderPane minHeight="10.0" prefWidth="200.0" GridPane.rowIndex="4">
                <opaqueInsets>
                   <Insets />
@@ -96,7 +96,7 @@
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
                      <children>
                         <Button mnemonicParsing="false" text="Normal" />
-                        <Button id="goBtn" fx:id="goBtn" mnemonicParsing="false" text="Custom">
+                        <Button id="goBtn" fx:id="goBtn" text="_Custom">
                            <tooltip>
                               <Tooltip text="A normal button with a custom color." wrapText="true" />
                            </tooltip>
