@@ -59,6 +59,8 @@ public class MainController extends Application {
 
    private Stage primaryStage;
 
+   private FileChooser chooser;
+
    /**
     * This is called before {@link #start(Stage)}, but there's nothing really special about it -- it's NOT
     * called after the controller is fully initialized.  For that, see {@link #initialize()}.
@@ -159,14 +161,20 @@ public class MainController extends Application {
 
    @FXML protected void handleInputFileEvent( ActionEvent anEvent)
    {
-      FileChooser chooser = new FileChooser();
+      if (chooser == null)
+      {
+         chooser = new FileChooser();
+         String userDir = System.getProperty( "user.dir");
+         Log.debug( String.format( "user.dir = %s", userDir));
+         chooser.setInitialDirectory( new File( userDir));
+      }
+      else
+         Log.debug( "FileChooser has already been created");
       chooser.setTitle( "Pick File(s) To Be Processed");
+      chooser.getExtensionFilters().clear();
       chooser.getExtensionFilters().addAll(
             new ExtensionFilter( "Microsoft Excel Files", "*.xls", "*.xlsx"),
             new ExtensionFilter( "All Files", "*.*"));
-      String userDir = System.getProperty( "user.dir");
-      Log.debug( String.format( "user.dir = %s", userDir));
-      chooser.setInitialDirectory( new File( userDir));
       
       List<File> chosenFiles = chooser.showOpenMultipleDialog( primaryStage);
       
@@ -193,8 +201,17 @@ public class MainController extends Application {
    
    @FXML protected void handleOutputFileEvent( ActionEvent anEvent)
    {
-      FileChooser chooser = new FileChooser();
+      if (chooser == null)
+      {
+         chooser = new FileChooser();
+         String userDir = System.getProperty( "user.dir");
+         Log.debug( String.format( "user.dir = %s", userDir));
+         chooser.setInitialDirectory( new File( userDir));
+      }
+      else
+         Log.debug( "FileChooser has already been created");
       chooser.setTitle( "Pick Output File");
+      chooser.getExtensionFilters().clear();
       chooser.getExtensionFilters().addAll(
             new ExtensionFilter( "Microsoft Excel Files", "*.xlsx"),
             new ExtensionFilter( "All Files", "*.*"));
