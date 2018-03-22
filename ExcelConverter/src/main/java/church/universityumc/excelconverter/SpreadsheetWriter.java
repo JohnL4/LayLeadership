@@ -57,7 +57,7 @@ public class SpreadsheetWriter
     */
    private Font boldFont;
 
-   public void dumpToExcelFile( MemberData aMemberData, String anOutfileName)
+   public void dumpToExcelFile( MemberData aMemberData, File anOutfile)
          throws IOException
    {
       try (Workbook workbook = new XSSFWorkbook())
@@ -82,13 +82,12 @@ public class SpreadsheetWriter
          Sheet dataSheet = workbook.createSheet( WorkbookUtil.createSafeSheetName( "Supporting Data"));
          writeDataSheet( dataSheet, aMemberData);
 
-         File outFile = new File( anOutfileName);
-         if (outFile.exists())
+         if (anOutfile.exists())
          {
-            Log.debug( "Deleting file \"%s\" before writing", anOutfileName);
-            outFile.delete();
+            Log.debug( "Deleting file \"%s\" before writing", anOutfile);
+            anOutfile.delete();
          }
-         FileOutputStream out = new FileOutputStream( outFile);
+         FileOutputStream out = new FileOutputStream( anOutfile);
          workbook.write( out);
          out.close();
       }
@@ -97,7 +96,7 @@ public class SpreadsheetWriter
    private void writeMembersSheet( Sheet aSheet, MemberData aMemberData)
    {
       String[] memberHeaders = new String[] {"Last Name", "Full Name", "Phone", "Email"}; 
-      Row row = createRow( aSheet, memberHeaders, EnumSet.of( FontStyle.Bold));
+      Row row = createRow( aSheet, memberHeaders /* , EnumSet.of( FontStyle.Bold) */ );
       row.setRowStyle( headerStyle);
       
       for (ChurchMember member : aMemberData.getMembers())
@@ -134,7 +133,7 @@ public class SpreadsheetWriter
                   "Comment" // This column is for long, free-form text.
             }; 
       
-      Row headerRow = createRow( aSheet, activitiesHeaders, null);
+      Row headerRow = createRow( aSheet, activitiesHeaders /* , null */ );
       headerRow.setRowStyle( headerStyle);
 
       for (ChurchMember member : aMemberData.getMembers())
@@ -406,21 +405,21 @@ public class SpreadsheetWriter
     * @param aFontStyleSet TODO: This should be a true CellStyle, not a bunch of flags for bold, italic.
     * @return the created row
     */
-   private  Row createRow( Sheet aSheet, String[] aStringv, EnumSet<FontStyle> aFontStyleSet)
+   private  Row createRow( Sheet aSheet, String[] aStringv /* , EnumSet<FontStyle> aFontStyleSet */ )
    {
       Log.setMember( null); // TODO: move this somewhere else, higher in the call tree
       Log.setRow( -1);
       
       final EnumSet<FontStyle> specialStyles = EnumSet.of( FontStyle.Bold, FontStyle.Italic);
       
-      EnumSet<FontStyle> fontStyles = aFontStyleSet;
-      if (fontStyles == null) {}
-      else
-      {
-         fontStyles.retainAll( specialStyles);
-         if (fontStyles.size() > 0)
-            Log.warn( "Special styles unimplemented");
-      }
+//      EnumSet<FontStyle> fontStyles = aFontStyleSet;
+//      if (fontStyles == null) {}
+//      else
+//      {
+//         fontStyles.retainAll( specialStyles);
+//         if (fontStyles.size() > 0)
+//            Log.warn( "Special styles unimplemented");
+//      }
       int physRowCount = aSheet.getPhysicalNumberOfRows();
       int nextRow = physRowCount;
       Row row = aSheet.createRow( nextRow);
@@ -441,7 +440,7 @@ public class SpreadsheetWriter
     */
    private Row createActivityPrefixRow( Sheet aSheet, ChurchMember aMember)
    {
-      Row row = createRow( aSheet, new String[] {aMember.getLastName(), aMember.getFullName()}, null);
+      Row row = createRow( aSheet, new String[] {aMember.getLastName(), aMember.getFullName()} /* , null */ );
       Cell cell;
       
       cell = row.createCell( row.getLastCellNum(), CellType.NUMERIC);
@@ -487,7 +486,7 @@ public class SpreadsheetWriter
 
    private  Row createMemberDetailRow( Sheet aSheet, ChurchMember aMember)
    {
-      Row row = createRow( aSheet, new String[] {aMember.getLastName(), aMember.getFullName()}, null);
+      Row row = createRow( aSheet, new String[] {aMember.getLastName(), aMember.getFullName()} /* , null */ );
       Cell cell;
       
       cell = row.createCell( row.getLastCellNum());

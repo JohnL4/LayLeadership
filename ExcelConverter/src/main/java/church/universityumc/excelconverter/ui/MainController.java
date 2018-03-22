@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import church.universityumc.Log;
+import church.universityumc.excelconverter.App;
+import church.universityumc.excelconverter.UnknownRowTypeException;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -141,11 +143,14 @@ public class MainController extends Application {
 //      Log.debug(  String.format( "inputFileSet = %s (hashcode = 0x%x)", inputFileSet, inputFileSet.hashCode()));
 //      Log.debug( String.format( "chosenOutputFileProperty = %s (hashcode = 0x%x)", chosenOutputFileProperty, chosenOutputFileProperty.hashCode() ));
       boolean noInput = inputFileSet == null || inputFileSet.size() == 0;
+      boolean tooManyInputs = inputFileSet != null && inputFileSet.size() > 1;
       boolean noOutput = chosenOutputFileProperty == null || chosenOutputFileProperty.get() == null;
-      if (noInput && noOutput)
-         goBtnDisabledReason.set("You need to specify both at least one input file and an output file.");
-      else if (noInput)
-         goBtnDisabledReason.set( "You need to specify at least one input file");
+      if ((noInput || tooManyInputs) && noOutput)
+         // goBtnDisabledReason.set("You need to specify both at least one input file and an output file.");
+         goBtnDisabledReason.set("You need to specify both one input file and an output file.");
+      else if (noInput || tooManyInputs)
+         // goBtnDisabledReason.set( "You need to specify at least one input file");
+         goBtnDisabledReason.set( "You need to specify one input file");
       else if (noOutput)
          goBtnDisabledReason.set( "You need to specify an output file");
       else
@@ -159,6 +164,9 @@ public class MainController extends Application {
       chooser.getExtensionFilters().addAll(
             new ExtensionFilter( "Microsoft Excel Files", "*.xls", "*.xlsx"),
             new ExtensionFilter( "All Files", "*.*"));
+      String userDir = System.getProperty( "user.dir");
+      Log.debug( String.format( "user.dir = %s", userDir));
+      chooser.setInitialDirectory( new File( userDir));
       
       List<File> chosenFiles = chooser.showOpenMultipleDialog( primaryStage);
       
@@ -219,6 +227,13 @@ public class MainController extends Application {
          reason = "Actually, no controls are disabled right now.";
       alert.setContentText( reason);
       alert.showAndWait();
+   }
+   
+   @FXML protected void handleGoClick( ActionEvent anEvent) throws IOException, UnknownRowTypeException
+   {
+      Log.debug( "Go!");
+      App.processAcsFiles( inputFiles, chosenOutputFileProperty.get());
+      Platform.exit();
    }
 
    @FXML protected void handleQuitEvent( ActionEvent anEvent)

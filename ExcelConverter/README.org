@@ -238,3 +238,24 @@
   In future releases of the JDK (10, 11, ...) this tool will probably be removed (as will the ~javax.xml.bind~ package
   and, possibly, associated packages).  Read the ~pom.xml~ for tips on recovering a reference to those libraries.
 
+* COMMENT JML (Java Modeling Language for assertions)
+
+  Site: http://www.openjml.org/
+
+  JML is a high-powered facility for making assertions about program behavior, both at runtime and
+  in such a way as to be checkable statically.  The static checking is very ambitious, and I'll
+  probably not be attempting it, but the runtime checking looks very usable.
+
+  JML is the Java analogue to Microsoft's /Contracts/ system.  (A certain computer scientist has
+  actually patented the original phrase that this concept is most well-known by, so we can't use
+  that phrase, but you get the point.)
+  
+** Installation
+   
+  There is, unfortunately, no Maven artifact for this, so it has to be downloaded and installed
+  separately.
+
+  Get it from https://github.com/OpenJML/OpenJML/releases/.
+
+  *Changed my mind.*  Would be nice to get this to work, but it looks like it needs a special
+   compiler (~jmlc~) which is almost certainly not up to snuff with the latest version of Java.

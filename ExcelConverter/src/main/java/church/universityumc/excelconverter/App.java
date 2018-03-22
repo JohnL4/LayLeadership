@@ -1,5 +1,6 @@
 package church.universityumc.excelconverter;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +28,7 @@ import java.util.regex.Pattern;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.cli.CommandLine;
@@ -183,6 +185,9 @@ public class App
          LogManager.getLogManager().readConfiguration( str);
       Log.warn( "test warning");
       Log.debug( "test debug");
+      
+      initGlobals();
+
       options = makeOptions();
       CommandLine cmdLine;
       try {
@@ -197,25 +202,13 @@ public class App
       }
       if (cmdLine.hasOption( 'h')) showHelp();
 
-      vocationalSkillJaxbContext = JAXBContext.newInstance( VocationalSkill.class);
-      vocationalSkillMarshaller = vocationalSkillJaxbContext.createMarshaller();
-      vocationalSkillMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, false);
-      vocationalSkillMarshaller.setProperty( Marshaller.JAXB_FRAGMENT, true);
-      vocationalSkillUnmarshaller = vocationalSkillJaxbContext.createUnmarshaller();
-
-      inferredSkillJaxbContext = JAXBContext.newInstance( InferredSkill.class);
-      inferredSkillMarshaller = inferredSkillJaxbContext.createMarshaller();
-      inferredSkillMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, false);
-      inferredSkillMarshaller.setProperty( Marshaller.JAXB_FRAGMENT, true);
-      inferredSkillUnmarshaller = inferredSkillJaxbContext.createUnmarshaller();
-      
       String infileName; // = "test.xls";
       MemberData memberData = null;
       if (cmdLine.hasOption( 'f'))
       {
          infileName = cmdLine.getOptionValue( 'f');
          if (cmdLine.hasOption( "dump")) dumpToConsole( infileName);
-         memberData = buildChurchMembers( infileName);
+         memberData = buildChurchMembers( new File( infileName));
       }
       else
          memberData = new MemberData();
@@ -226,7 +219,7 @@ public class App
       if (cmdLine.hasOption( "xlsx"))
       {
          String outfileName = cmdLine.getOptionValue( "xlsx");
-         dumpToExcelFile( memberData, outfileName);
+         dumpToExcelFile( memberData, new File( outfileName));
       }
       if (cmdLine.hasOption( "db"))
       {
@@ -246,6 +239,21 @@ public class App
       Log.debug( "Done");
    }
 
+   private static void initGlobals() throws JAXBException, PropertyException
+   {
+      vocationalSkillJaxbContext = JAXBContext.newInstance( VocationalSkill.class);
+      vocationalSkillMarshaller = vocationalSkillJaxbContext.createMarshaller();
+      vocationalSkillMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, false);
+      vocationalSkillMarshaller.setProperty( Marshaller.JAXB_FRAGMENT, true);
+      vocationalSkillUnmarshaller = vocationalSkillJaxbContext.createUnmarshaller();
+
+      inferredSkillJaxbContext = JAXBContext.newInstance( InferredSkill.class);
+      inferredSkillMarshaller = inferredSkillJaxbContext.createMarshaller();
+      inferredSkillMarshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, false);
+      inferredSkillMarshaller.setProperty( Marshaller.JAXB_FRAGMENT, true);
+      inferredSkillUnmarshaller = inferredSkillJaxbContext.createUnmarshaller();
+   }
+
    private static CommandLine parseCommandLine( String[] args) throws ParseException
    {
       CommandLineParser parser = new DefaultParser();
@@ -260,9 +268,26 @@ public class App
       helpFormatter.printHelp( "java -jar <this-jar-file>", overview, options, "", false);
    }
 
+   /**
+    * Process the given ACS files into the given output file, overwriting it.
+    * @param anInputFilesColl
+    * @param anOutputFile
+    * @throws UnknownRowTypeException 
+    * @throws IOException 
+    */
+   public static void processAcsFiles( Collection<File> anInputFilesColl, File anOutputFile) throws IOException, UnknownRowTypeException
+   {
+      assert anInputFilesColl != null && anInputFilesColl.size() == 1 : "exactly one input file";
+      assert anOutputFile != null;
+      
+      File firstFile = anInputFilesColl.stream().findFirst().get();
+      MemberData memberData = buildChurchMembers( firstFile);
+      dumpToExcelFile( memberData, anOutputFile);
+   }
+   
    private static void dumpToConsole( String anInfileName) throws IOException
    {
-      Workbook workbook = readFile( anInfileName);
+      Workbook workbook = readFile( new File( anInfileName));
       for (Sheet sheet : workbook) // For all sheets in the workbook...
          for (Row row : sheet)
             for (Cell cell : row)
@@ -344,46 +369,44 @@ public class App
 
    private static void playWithJaxb() throws JAXBException
    {
-      {
-         VocationalSkill vskill = new VocationalSkill("Category Name", "<\"B & O\" Railroad>", "");
+      VocationalSkill vskill = new VocationalSkill( "Category Name", "<\"B & O\" Railroad>", "");
 
-         System.out.println( "Marshall...");
-         System.out.printf( "%s -->%n", vskill);
-         StringWriter sw = new StringWriter();
-         vocationalSkillMarshaller.marshal(vskill, sw);
-         String elt1 = sw.toString();
-         System.out.println( elt1);
-         
-         vskill.subcategory = null;
-         System.out.printf( "%s -->%n", vskill);
-         sw = new StringWriter();
-         vocationalSkillMarshaller.marshal(vskill, sw);
-         String elt2 = sw.toString();
-         System.out.println( elt2);
-         
-         System.out.println( "Unmarshall...");
-         StringReader sr = new StringReader(elt1);
-         Object vskillObj = vocationalSkillUnmarshaller.unmarshal( sr);
-         vskill = (VocationalSkill) vskillObj;
-         System.out.println( vskill);
-         
-         sr = new StringReader( elt2);
-         vskillObj = vocationalSkillUnmarshaller.unmarshal( sr);
-         vskill = (VocationalSkill) vskillObj;
-         System.out.println( vskill);
-         
-         System.out.println( "Test InferredSkill...");
-         ActivityEngagement ae = new ActivityEngagement( "Activity Type", "Activity Name", "", "Activity Role");
-         Skill iskill = ae.toSkill();
-         System.out.println( iskill);
-      }
+      System.out.println( "Marshall...");
+      System.out.printf( "%s -->%n", vskill);
+      StringWriter sw = new StringWriter();
+      vocationalSkillMarshaller.marshal( vskill, sw);
+      String elt1 = sw.toString();
+      System.out.println( elt1);
+
+      vskill.subcategory = null;
+      System.out.printf( "%s -->%n", vskill);
+      sw = new StringWriter();
+      vocationalSkillMarshaller.marshal( vskill, sw);
+      String elt2 = sw.toString();
+      System.out.println( elt2);
+
+      System.out.println( "Unmarshall...");
+      StringReader sr = new StringReader( elt1);
+      Object vskillObj = vocationalSkillUnmarshaller.unmarshal( sr);
+      vskill = (VocationalSkill) vskillObj;
+      System.out.println( vskill);
+
+      sr = new StringReader( elt2);
+      vskillObj = vocationalSkillUnmarshaller.unmarshal( sr);
+      vskill = (VocationalSkill) vskillObj;
+      System.out.println( vskill);
+
+      System.out.println( "Test InferredSkill...");
+      ActivityEngagement ae = new ActivityEngagement( "Activity Type", "Activity Name", "", "Activity Role");
+      Skill iskill = ae.toSkill();
+      System.out.println( iskill);
    }
 
-   private static void dumpToExcelFile( MemberData aMemberData, String anOutfileName) 
+   private static void dumpToExcelFile( MemberData aMemberData, File anOutfile) 
          throws IOException
    {
       SpreadsheetWriter ssWriter = new SpreadsheetWriter();
-      ssWriter.dumpToExcelFile( aMemberData, anOutfileName);
+      ssWriter.dumpToExcelFile( aMemberData, anOutfile);
    }
 
    private static Font getCellFont( Workbook workbook, Cell cell)
@@ -401,17 +424,17 @@ public class App
    /**
     * Build an internal database of {@link ChurchMember}s and all the associated collections of objects.
     * 
-    * @param anInfileName
+    * @param anInfile
     * @return
     * @throws IOException
     * @throws UnknownRowTypeException
     */
-   private static MemberData buildChurchMembers( String anInfileName)
+   private static MemberData buildChurchMembers( File anInfile)
          throws IOException, UnknownRowTypeException
    {
       MemberData retval = new MemberData();
 
-      Workbook workbook = readFile( anInfileName);
+      Workbook workbook = readFile( anInfile);
 
       Sheet sheet = workbook.getSheetAt( 0);
       RowType previousSectionRowType = RowType.None;
@@ -890,9 +913,9 @@ public class App
       System.err.printf( fmt.toString(), args);
    }
 
-   private static Workbook readFile( String filename) throws IOException
+   private static Workbook readFile( File aFile) throws IOException
    {
-      try (FileInputStream fis = new FileInputStream( filename))
+      try (FileInputStream fis = new FileInputStream( aFile))
       {
          try
          {
@@ -901,7 +924,7 @@ public class App
          catch (Exception exc)
          {}
       }
-      try (FileInputStream fis = new FileInputStream( filename))
+      try (FileInputStream fis = new FileInputStream( aFile))
       {
          return new XSSFWorkbook( fis);
       }

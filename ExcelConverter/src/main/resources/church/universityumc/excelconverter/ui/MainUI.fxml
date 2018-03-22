@@ -95,13 +95,11 @@
                <center>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Button mnemonicParsing="false" text="Normal" />
-                        <Button id="goBtn" fx:id="goBtn" text="_Custom">
+                        <Button id="goBtn" fx:id="goBtn" defaultButton="true" onAction="#handleGoClick" text="_Go!">
                            <tooltip>
                               <Tooltip text="A normal button with a custom color." wrapText="true" />
                            </tooltip>
                         </Button>
-                        <Button defaultButton="true" mnemonicParsing="false" text="Default" />
                      </children>
                   </HBox>
                </center>
