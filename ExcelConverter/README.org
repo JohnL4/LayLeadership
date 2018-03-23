@@ -8,6 +8,9 @@
 
   This utility will handle the conversion from AccessACS's output to a more useful form for us.
 
+  (*Now that this program is written and running, you can see how to run it in the "Run" section
+  below.*)
+
 * Roadmap
 
   (Note: See the various project boards, including the one for the Excel converter at
@@ -132,7 +135,7 @@
   This program expects input in the form of a spreadsheet with a layout matching the sample input
   distributed with it.
 
-* Build, Run
+* Build
 
 ** Copy Dependencies
 
@@ -160,21 +163,37 @@
   TODO: might need to do something similar with a source distributable (? maybe?) so the mvn ~release~ plugin will do
   the right thing.
 
-** Run
+* Install
 
-  : java -Djava.util.logging.config.file=logging.properties -jar <jarFileName> --nogui [options]
+  Assuming you don't want to build the program (why not??), you can download a release from the
+  GitHub "Releases" tab.  You probably want the "bin" zip, which you can unzip wherever you want.
 
-  Note the -D logging config option gives problems in PowerShell.  You can leave it out, but the logging will only use
-  default config.
+* Run
 
-*** To actually convert spreadsheets
+  Double-click the jar file, or use the following command line:
 
-    1. Make sure you have at least the Java Runtime Environment (JRE) installed.  You can get it at
-       https://java.com.  (Don't worry if your browser doesn't run it; modern browsers don't run any
-       plugins by default, as a security measure.)
+ : java -Djava.util.logging.config.file=logging.properties -jar <jarFileName> --nogui [options]
 
-    2. Go to a shell window ("command prompt" on Windows) and type the following at the command
-       prompt:
+ Use option ~-h~ to get a list of available options.
+ 
+ Note the -D logging config option gives problems in PowerShell.  You can leave it out, but the logging will only use
+ default config.
+
+** To actually convert spreadsheets
+
+   Make sure you have at least the Java Runtime Environment (JRE) installed.  You can get it at
+   https://java.com.  (Don't worry if your browser doesn't run it; modern browsers don't run any
+   plugins by default, as a security measure.)
+
+*** Option 1: Double-click the jar file to run the program's GUI
+
+    This is probably the option you want.  Specify the input file and output file, hit the "Go!"
+    button and then check both the output AND the log file (see below, [[#log-file][Log file]]).
+
+*** Option 2: Run the program from the command line
+
+    Go to a shell window ("command prompt" on Windows) and type the following at the command
+    prompt:
     
     #+BEGIN_SRC bash
       java -jar /path/to/excel-converter-1.0-SNAPSHOT.jar --nogui -f "original input.xlsx" --xlsx "reformatted output.xlsx" > excel-converter.log 2>&1
@@ -185,13 +204,18 @@
     The "~> filename.log 2>&1~" part ensures that all messages, warnings, and errors are captured
     in the specified text file.  You can print that file out or email to someone.
 
-*** Log file
+** Log file
+   :PROPERTIES:
+   :CUSTOM_ID: log-file
+   :END:
 
-    In addition to the output redirect specified above, the app logs to a file named
-    ~excel-converter-0-0.log~ (the numbers may be different).  This is a text file that can be
-    printed or emailed.
+   In addition to the output redirect specified above, the app logs to a file named
+   ~excel-converter-0-0.log~ (the numbers may be different).  This is a text file that can be
+   printed or emailed.  (All text files can be opened with Notepad on a Windows computer.)  You
+   should check it for errors and warnings after you run the program.  (Lines labelled "FINE" are
+   debugging messages and can be ignored.)
     
-* Logger Format
+* Logging
 
 ** How to activate -- OLD NOTES; TEMPORARILY IRRELEVANT
 
