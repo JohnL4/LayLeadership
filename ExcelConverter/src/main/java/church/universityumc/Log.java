@@ -21,6 +21,7 @@ public class Log
    
    private static Integer row;
 
+   private static String EOL = System.getProperty( "line.separator");
    /**
     * Sets the current {@link ChurchMember} being processed.
     * 
@@ -78,14 +79,14 @@ public class Log
             msgSB.append( throwableWalker.toString());
          else
             msgSB.append( throwableWalker.getMessage());
-
+         msgSB.append( EOL);
          StringWriter sw = new StringWriter();
          PrintWriter pw = new PrintWriter( sw);
          throwableWalker.printStackTrace( pw);
          pw.close();
          msgSB.append( sw.toString());
          throwableWalker = throwableWalker.getCause();
-         if (throwableWalker != null) msgSB.append( "\n----------------  caused by  ----------------\n");
+         if (throwableWalker != null) msgSB.append( String.format( "%n----------------  caused by  ----------------%n"));
       }
       debug( msgSB.toString());
    }
@@ -100,7 +101,7 @@ public class Log
       StringBuilder fmt = new StringBuilder( aFormat == null ? "(no message)" : aFormat);
 
       if (row != null)
-         fmt.append( " at data row ").append( row);
+         fmt.append( " at data row ").append( row + 1);
       
       Optional<StackFrame> caller = StackWalker.getInstance(Option.RETAIN_CLASS_REFERENCE).walk( 
             stream -> stream

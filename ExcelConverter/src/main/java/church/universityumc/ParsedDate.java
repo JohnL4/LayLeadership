@@ -37,6 +37,12 @@ public class ParsedDate
    public boolean explicitNone;
    
    /**
+    * A string signifying that there is explicitly no date to be parsed, and which is guaranteed to match 
+    * {@link #NO_ROTATION_REGEX}.
+    */
+   public static final String NO_DATE = "No rotation date";
+   
+   /**
     * If the string passed to {@link #ParsedDate(String)} matches this pattern, there is explicitly no date.
     */
    private static final Pattern NO_ROTATION_REGEX = Pattern.compile( "no rotation", Pattern.CASE_INSENSITIVE);

@@ -61,6 +61,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import church.universityumc.ActivityEngagement;
 import church.universityumc.Log;
 import church.universityumc.MemberData;
+import church.universityumc.ParsedDate;
 import church.universityumc.ChurchMember;
 import church.universityumc.Comment;
 import church.universityumc.EnumResolutionException;
@@ -658,14 +659,30 @@ public class App
     * Parse the given row into an {@link ActivityEngagement}.
     * @param aRow
     * @return
+    * @throws UnexpectedCellTypeException 
     */
-   private static ActivityEngagement parseActivity( Row aRow) // TODO: this needs to be a variety of things: ActivityEngagement, Skill, etc.
+   private static ActivityEngagement parseActivity( Row aRow) throws UnexpectedCellTypeException // TODO: this needs to be a variety of things: ActivityEngagement, Skill, etc.
    {
       // Iterator<Cell> iter = aRow.cellIterator();
       
       String activityType = aRow.getCell( activityHeaderColumnNumbers.get( CATEGORY)).getStringCellValue();
       String activityName = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_1)).getStringCellValue();
-      String activityEndYearString = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_2)).getStringCellValue();
+      String activityEndYearString;
+      Cell activityEndYearCell = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_2));
+      switch (activityEndYearCell.getCellTypeEnum())
+      {
+         case STRING: 
+            activityEndYearString = activityEndYearCell.getStringCellValue();
+            break;
+         case NUMERIC:
+            activityEndYearString = Long.toString( Double.valueOf( activityEndYearCell.getNumericCellValue()).longValue());
+            break;
+         case BLANK:
+            activityEndYearString = ParsedDate.NO_DATE;
+            break;
+         default:
+            throw new UnexpectedCellTypeException( String.format( "Unexpected cell type parsing integer: %s", activityEndYearCell.getCellTypeEnum()));
+      }
       String activityRole = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_3)).getStringCellValue();
       
       return new ActivityEngagement( activityType, activityName, activityEndYearString, activityRole);
@@ -673,7 +690,7 @@ public class App
 
    /**
     * Parse the given row as a {@Skill}.
-    * @param row
+    * @param aRow
     * @return
     * @throws JAXBException 
     */
@@ -802,6 +819,10 @@ public class App
                      throw new UnknownRowTypeException( aRow.getRowNum());
                }
             }
+            else if (cellType == CellType.BLANK && allCellsBlank( aRow)) 
+            {
+               retval = RowType.EmptyRow;
+            }
             else
                throw new UnknownRowTypeException( aRow.getRowNum());
          }
@@ -811,6 +832,40 @@ public class App
       else
          retval = RowType.EmptyRow;
 
+      return retval;
+   }
+
+   /**
+    * Returns true iff all cells in the given row are blank (null, {@link CellType.Blank}, empty string).
+    * @param aRow
+    * @return
+    */
+   private static boolean allCellsBlank( Row aRow)
+   {
+      boolean retval = true;
+      Iterator<Cell> cellIter = aRow.cellIterator();
+      while (retval && cellIter.hasNext())
+      {
+         Cell cell = cellIter.next();
+         if (cell == null || cell.getCellTypeEnum() == CellType.BLANK)
+            continue;
+         if (cell.getCellTypeEnum() == CellType.STRING)
+         {
+            String cellValue = cell.getStringCellValue();
+            if (cellValue == null || cellValue.isEmpty())
+               continue;
+            else
+            {
+               retval = false;
+               break;
+            }
+         }
+         else
+         {
+            retval = false;
+            break;
+         }
+      }
       return retval;
    }
 

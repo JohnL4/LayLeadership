@@ -9,7 +9,7 @@ public class UnknownRowTypeException extends Exception
    
    /**
     * 
-    * @param aRowNum - The number of the row that is unrecognizable. 
+    * @param aRowNum - The number (0-based) of the row that is unrecognizable. 
     */
    public UnknownRowTypeException( int aRowNum)
    {
@@ -17,4 +17,8 @@ public class UnknownRowTypeException extends Exception
       rowNum = aRowNum;
    }
    
+   public String getMessage()
+   {
+      return String.format( "Unknown row type at data row %d", rowNum + 1);
+   }
 }
