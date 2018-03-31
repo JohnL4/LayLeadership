@@ -262,6 +262,11 @@
   In future releases of the JDK (10, 11, ...) this tool will probably be removed (as will the ~javax.xml.bind~ package
   and, possibly, associated packages).  Read the ~pom.xml~ for tips on recovering a reference to those libraries.
 
+* TreeView
+
+  - /activityName/ -- String
+    - ~startDateField~ -- String; /dropdown containing field names, e.g., "Element [1234]"/
+
 * COMMENT JML (Java Modeling Language for assertions)
 
   Site: http://www.openjml.org/
