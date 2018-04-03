@@ -6,16 +6,17 @@
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.BorderPane?>
 
-
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1">
+<BorderPane xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="church.universityumc.excelconverter.ui.ConfigController">
    <center>
-      <TreeView prefHeight="542.0" prefWidth="633.0" BorderPane.alignment="CENTER" />
+      <TreeView fx:id="configTreeView" minHeight="50.0" minWidth="50.0" BorderPane.alignment="CENTER" />
    </center>
    <bottom>
       <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <buttons>
-          <Button cancelButton="true" mnemonicParsing="false" text="Cancel" />
+          <Button cancelButton="true" mnemonicParsing="false" onAction="#close" text="Cancel" />
             <Button defaultButton="true" mnemonicParsing="false" text="Ok" />
+            <Button text="_Load" />
+            <Button text="_Save" />
         </buttons>
       </ButtonBar>
    </bottom>

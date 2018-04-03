@@ -39,7 +39,7 @@ import javafx.stage.Stage;
 
 public class MainController extends Application {
 
-   private static final String APPLICATION_TITLE = "Excel Converter";
+   static final String APPLICATION_TITLE = "Excel Converter";
 
    @FXML private ListView<File> inputFilesListView;
    
@@ -60,7 +60,7 @@ public class MainController extends Application {
    private Stage primaryStage;
 
    private FileChooser chooser;
-
+   
    /**
     * This is called before {@link #start(Stage)}, but there's nothing really special about it -- it's NOT
     * called after the controller is fully initialized.  For that, see {@link #initialize()}.
@@ -159,6 +159,11 @@ public class MainController extends Application {
          goBtnDisabledReason.set(null);
    }
 
+   @FXML protected void handleConfigEvent( ActionEvent anEvent) throws IOException
+   {
+      ConfigController.launchConfig();
+   }
+   
    @FXML protected void handleInputFileEvent( ActionEvent anEvent)
    {
       if (chooser == null)

@@ -30,7 +30,7 @@ public enum RowType
    /**
     * Row is a "Comments" row, hopefully containing biographical info about the {@link ChurchMember}.
     */
-   Comments, 
+   Comment, 
    
    /**
     * Marks the beginning of an "ACTIVITIES" section.

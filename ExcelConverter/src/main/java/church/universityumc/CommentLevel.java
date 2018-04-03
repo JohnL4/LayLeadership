@@ -11,6 +11,12 @@ public enum CommentLevel
    Individual,
    
    /**
+    * Comment pertains to the member's entire family.  This may be a comment entered in for one member, but
+    * describing other family members.
+    */
+   Family,
+   
+   /**
     * The level at which this comment applies is unknown.
     */
    Unknown;

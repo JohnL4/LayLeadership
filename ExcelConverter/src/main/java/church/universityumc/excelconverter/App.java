@@ -492,7 +492,7 @@ public class App
                   currentChurchMember.addSkill( skill);
                   break;
                }
-               case Comments:
+               case Comment:
                   currentChurchMember.addComment( parseComment( row));
                   break;
                default:
@@ -795,7 +795,7 @@ public class App
                      retval = RowType.ActivitiesHeader;
                   else if (parseDate( cellValue) != null && !font.getBold() && !font.getItalic()
                         && aCurrentSection == RowType.CommentsSectionMarker)
-                     retval = RowType.Comments;
+                     retval = RowType.Comment;
                   else if (font.getBold() && !font.getItalic()) // Could be preceded by Activities or Comments or
                                                                 // MemberHeader
                   {
