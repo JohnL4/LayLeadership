@@ -2,8 +2,7 @@ package church.universityumc.excelconverter.ui;
 
 import java.io.IOException;
 
-import com.oracle.tools.packager.Log;
-
+import church.universityumc.Log;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,13 +17,15 @@ public class ConfigController
    /**
     * The config screen.
     */
-   private Parent fxmlConfig;
+   private static Parent fxmlConfig;
    
-   private Stage configStage;
+   private static Stage configStage;
    
-   private Scene configScene;
+   private static Scene configScene;
    
    private static ConfigController self;
+
+   private static FXMLLoader fxmlLoader;
    
    public ConfigController()
    {
@@ -35,8 +36,19 @@ public class ConfigController
    {
       if (self == null)
       {
-         self = new ConfigController(); // TODO: totally not the right thing to do.  FXMLLoader.load() creates another controller instance (the "real" one).
-         self.start( new Stage());
+         fxmlLoader = new FXMLLoader( ConfigController.class.getResource( "ConfigUI.fxml"));
+         fxmlConfig = fxmlLoader.load();
+         configScene = new Scene( fxmlConfig);
+         configScene.getStylesheets().add( ConfigController.class.getResource( "application.css").toExternalForm());
+         configStage = new Stage();
+         configStage.setTitle( CONFIG_TITLE);
+         configStage.setScene( configScene);
+         self = fxmlLoader.getController(); // Not a giant fan of this. TODO: get out of static code ASAP.  Maybe set this static member sooner and make properties non-static?
+         
+         configStage.show();
+
+         //         self = new ConfigController(); // TODO: totally not the right thing to do.  FXMLLoader.load() creates another controller instance (the "real" one).
+//         self.start( new Stage());
       }
       else
          self.restart();

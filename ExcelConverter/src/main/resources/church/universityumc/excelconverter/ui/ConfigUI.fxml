@@ -6,7 +6,8 @@
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="church.universityumc.excelconverter.ui.ConfigController">
+<BorderPane xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" 
+		fx:controller="church.universityumc.excelconverter.ui.ConfigController">
    <center>
       <TreeView fx:id="configTreeView" minHeight="50.0" minWidth="50.0" BorderPane.alignment="CENTER" />
    </center>
