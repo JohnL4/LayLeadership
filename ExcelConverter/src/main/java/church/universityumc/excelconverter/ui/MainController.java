@@ -161,7 +161,7 @@ public class MainController extends Application {
 
    @FXML protected void handleConfigEvent( ActionEvent anEvent) throws IOException
    {
-      ConfigController.launchConfig();
+      ConfigController.launchConfig( primaryStage);
    }
    
    @FXML protected void handleInputFileEvent( ActionEvent anEvent)

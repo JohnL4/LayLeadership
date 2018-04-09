@@ -265,6 +265,7 @@
 * TreeView
 
   - /activityName/ -- String
+    - ~activityType~ -- 
     - ~startDateField~ -- String; /dropdown containing field names, e.g., "Element [1234]"/
 
 * COMMENT JML (Java Modeling Language for assertions)

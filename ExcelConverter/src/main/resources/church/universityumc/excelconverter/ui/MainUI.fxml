@@ -16,8 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="337.0" prefWidth="640.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" 
-		fx:controller="church.universityumc.excelconverter.ui.MainController">
+<VBox prefHeight="337.0" prefWidth="640.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="church.universityumc.excelconverter.ui.MainController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -87,7 +86,6 @@
             <ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.rowIndex="4">
               <buttons>
                   <Button id="goBtn" fx:id="goBtn" defaultButton="true" onAction="#handleGoClick" text="_Go!" />
-                  <Button onAction="#handleConfigEvent" text="_Config" />
               </buttons>
             </ButtonBar>
          </children>
