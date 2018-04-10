@@ -59,6 +59,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import church.universityumc.ActivityEngagement;
+import church.universityumc.ActivityType;
 import church.universityumc.Log;
 import church.universityumc.MemberData;
 import church.universityumc.ParsedDate;
@@ -103,6 +104,7 @@ public class App
    private static final String  ACTIVITIES               = "ACTIVITIES";
    private static final String  COMMENTS                 = "COMMENTS";
    private static final Pattern NO_ROTATION_REGEX        = Pattern.compile( "no rotation", Pattern.CASE_INSENSITIVE);
+   private static final Pattern CHURCH_COUNCIL_REGEX     = Pattern.compile( "council", Pattern.CASE_INSENSITIVE);
    
    /**
     * Identifies a row specifying a member's vocation, from the 2006 Personal Ministry Survey.
@@ -663,29 +665,85 @@ public class App
     */
    private static ActivityEngagement parseActivity( Row aRow) throws UnexpectedCellTypeException // TODO: this needs to be a variety of things: ActivityEngagement, Skill, etc.
    {
-      // Iterator<Cell> iter = aRow.cellIterator();
-      
+      ActivityEngagement retval = parseSpecialActivity( aRow);
+      if (retval == null)
+      {
+         String activityType = aRow.getCell( activityHeaderColumnNumbers.get( CATEGORY)).getStringCellValue();
+         String activityName = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_1)).getStringCellValue();
+         String activityEndYearString;
+         Cell activityEndYearCell = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_2));
+         switch (activityEndYearCell.getCellTypeEnum())
+         {
+            case STRING: 
+               activityEndYearString = activityEndYearCell.getStringCellValue();
+               break;
+            case NUMERIC:
+               activityEndYearString = Long.toString( Double.valueOf( activityEndYearCell.getNumericCellValue()).longValue());
+               break;
+            case BLANK:
+               activityEndYearString = ParsedDate.NO_DATE;
+               break;
+            default:
+               throw new UnexpectedCellTypeException( String.format( "Unexpected cell type parsing integer: %s", activityEndYearCell.getCellTypeEnum()));
+         }
+         String activityRole = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_3)).getStringCellValue();
+
+         retval = new ActivityEngagement( activityType, activityName, activityEndYearString, activityRole);
+      }
+      return retval;
+   }
+
+   /**
+    * Some activity rows require special processing; handle that here, returning null if no special handling
+    * is required.
+    * @param aRow
+    * @return a complete ActivityEngagement only if special processing is required.
+    * @throws UnexpectedCellTypeException 
+    */
+   private static ActivityEngagement parseSpecialActivity( Row aRow) throws UnexpectedCellTypeException
+   {
+      ActivityEngagement retval;
       String activityType = aRow.getCell( activityHeaderColumnNumbers.get( CATEGORY)).getStringCellValue();
-      String activityName = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_1)).getStringCellValue();
-      String activityEndYearString;
-      Cell activityEndYearCell = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_2));
-      switch (activityEndYearCell.getCellTypeEnum())
+      Matcher matcher = CHURCH_COUNCIL_REGEX.matcher( activityType);
+      if (matcher.find())
+      {
+         String activityStartYearString = activityYearString( aRow, ELEMENT_1);
+         String activityEndYearString = activityYearString( aRow, ELEMENT_2);
+         String activityRole = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_3)).getStringCellValue();
+
+         retval = new ActivityEngagement( ActivityType.COMMITTEE_TYPE_NAME, activityType, activityStartYearString, activityEndYearString, activityRole);
+      }
+      else retval = null;
+      return retval;
+   }
+
+   /**
+    * Returns the year contained in the given column (by field name) of the given row, or {@link ParsedDate#NO_DATE}
+    * if there is no year in that column.
+    * @param aRow
+    * @param aFieldName
+    * @return
+    * @throws UnexpectedCellTypeException
+    */
+   private static String activityYearString( Row aRow, String aFieldName) throws UnexpectedCellTypeException
+   {
+      String retval;
+      Cell activityYearCell = aRow.getCell( activityHeaderColumnNumbers.get( aFieldName));
+      switch (activityYearCell.getCellTypeEnum())
       {
          case STRING: 
-            activityEndYearString = activityEndYearCell.getStringCellValue();
+            retval = activityYearCell.getStringCellValue();
             break;
          case NUMERIC:
-            activityEndYearString = Long.toString( Double.valueOf( activityEndYearCell.getNumericCellValue()).longValue());
+            retval = Long.toString( Double.valueOf( activityYearCell.getNumericCellValue()).longValue());
             break;
          case BLANK:
-            activityEndYearString = ParsedDate.NO_DATE;
+            retval = ParsedDate.NO_DATE;
             break;
          default:
-            throw new UnexpectedCellTypeException( String.format( "Unexpected cell type parsing integer: %s", activityEndYearCell.getCellTypeEnum()));
+            throw new UnexpectedCellTypeException( String.format( "Unexpected cell type parsing integer: %s", activityYearCell.getCellTypeEnum()));
       }
-      String activityRole = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_3)).getStringCellValue();
-      
-      return new ActivityEngagement( activityType, activityName, activityEndYearString, activityRole);
+      return retval;
    }
 
    /**

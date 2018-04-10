@@ -27,7 +27,7 @@ public class ActivityType
    /**
     * Canonical name for a committee activity type (special case).
     */
-   private static final String COMMITTEE_TYPE_NAME = "Committee";
+   public static final String COMMITTEE_TYPE_NAME = "Committee";
    
    private static final Pattern YEAR_RE      = Pattern.compile( "\\d{4}");
    private static final Pattern COMMITTEE_RE = Pattern.compile( "\\bcommittees?\\b", Pattern.CASE_INSENSITIVE);
@@ -141,20 +141,52 @@ public class ActivityType
       else
          monthNum = null;
       
-      activityType = activityType.trim();
-      Matcher committeeMatcher = COMMITTEE_RE.matcher( activityType);
-      if (committeeMatcher.matches()) // Scan entire string for match, not part (we want a more-or-less exact match).
-         activityType = COMMITTEE_TYPE_NAME;
+      retval = findActivityTypeWithStartDate( activityType, year, monthNum);
+
+      return retval;
+   }
+
+   /**
+    * Finds or creates the given activity and "decorates" it with the given year (month = January).
+    * @param anActivityType
+    * @param anActivityStartYear
+    * @return
+    */
+   public static ActivityType find( String anActivityType, String anActivityStartYear)
+   {
+      ActivityType retval;
+
+      Integer year = Integer.parseInt( anActivityStartYear);
+      Integer monthNum = null;
       
-      retval = allActivityTypes.get( activityType);
+      retval = findActivityTypeWithStartDate( anActivityType, year, monthNum);
+
+      return retval;
+   }
+
+   /**
+    * Find (or create) a previously-seen ActivityType and add a start date to it.
+    * @param anActivityType
+    * @param aYear - May be null
+    * @param aMonthNum - May be null
+    * @return
+    */
+   private static ActivityType findActivityTypeWithStartDate( String anActivityType, Integer aYear, Integer aMonthNum)
+   {
+      ActivityType retval;
+      anActivityType = anActivityType.trim();
+      Matcher committeeMatcher = COMMITTEE_RE.matcher( anActivityType);
+      if (committeeMatcher.matches()) // Scan entire string for match, not part (we want a more-or-less exact match).
+         anActivityType = COMMITTEE_TYPE_NAME;
+      
+      retval = allActivityTypes.get( anActivityType);
       if (retval == null)
       {
-         retval = new ActivityType( activityType);
-         allActivityTypes.put( activityType, retval);
+         retval = new ActivityType( anActivityType);
+         allActivityTypes.put( anActivityType, retval);
       }
-      retval._startYear = year;
-      retval._startMonth = monthNum;
-
+      retval._startYear = aYear;
+      retval._startMonth = aMonthNum;
       return retval;
    }
 
