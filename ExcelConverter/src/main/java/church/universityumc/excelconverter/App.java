@@ -707,11 +707,12 @@ public class App
       Matcher matcher = CHURCH_COUNCIL_REGEX.matcher( activityType);
       if (matcher.find())
       {
-         String activityStartYearString = activityYearString( aRow, ELEMENT_1);
-         String activityEndYearString = activityYearString( aRow, ELEMENT_2);
-         String activityRole = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_3)).getStringCellValue();
+         String activityStartDateString = activityYearString( aRow, ELEMENT_1);
+         String activityRole = aRow.getCell( activityHeaderColumnNumbers.get( ELEMENT_2)).getStringCellValue();
+         String activityEndDateString = activityYearString( aRow, ELEMENT_3);
 
-         retval = new ActivityEngagement( ActivityType.COMMITTEE_TYPE_NAME, activityType, activityStartYearString, activityEndYearString, activityRole);
+         retval = new ActivityEngagement( ActivityType.COMMITTEE_TYPE_NAME, activityType, activityStartDateString, 
+               activityEndDateString, activityRole);
       }
       else retval = null;
       return retval;

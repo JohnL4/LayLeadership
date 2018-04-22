@@ -44,6 +44,11 @@ public class Log
       row = aRow;
    }
    
+   public static Integer getRow()
+   {
+      return row;
+   }
+   
    public static void warn(String aFormat,  Object... args)
    {
       StringBuilder fmt = decorateMessage( aFormat);

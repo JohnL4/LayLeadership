@@ -1,14 +1,12 @@
 package church.universityumc;
 
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class ActivityType
 {
@@ -27,27 +25,9 @@ public class ActivityType
    /**
     * Canonical name for a committee activity type (special case).
     */
-   public static final String COMMITTEE_TYPE_NAME = "Committee";
-   
-   private static final Pattern YEAR_RE      = Pattern.compile( "\\d{4}");
-   private static final Pattern COMMITTEE_RE = Pattern.compile( "\\bcommittees?\\b", Pattern.CASE_INSENSITIVE);
-   
-   private static final List<String>  MONTH_RE_STRINGS = List.of( "jan(uary)?", "feb(ruary)?", "mar(ch)?", "apr(il)?",
-         "may", "june?", "july?", "aug(ust)?", "sep(t(ember)?)?", "oct(ober)?", "nov(ember)?", "dec(ember)?");
-   private static final List<Pattern> MONTH_RES;
-   private static final Pattern       MONTHS_RE;
-         // = Pattern.compile(
-         // "\\b(jan(uary)?|feb(ruary)?|mar(ch)?|apr(il)?|may|june?|july?|aug(ust)?|sep(t(ember)?)?|oct(ober)?|nov(ember)?|dec(ember)?)\\b",
-         // Pattern.CASE_INSENSITIVE);
+   public static final String   COMMITTEE_TYPE_NAME = "Committee";
+   private static final Pattern COMMITTEE_RE        = Pattern.compile( "\\bcommittees?\\b", Pattern.CASE_INSENSITIVE);
 
-   static {
-      MONTH_RES = Collections.unmodifiableList( MONTH_RE_STRINGS.stream()
-            .map( s -> Pattern.compile( s, Pattern.CASE_INSENSITIVE))
-            .collect( Collectors.toList()));
-      String concatenatedREs = MONTH_RE_STRINGS.stream().collect( Collectors.joining( "|")); 
-      MONTHS_RE = Pattern.compile( "\\b(" + concatenatedREs.toString() + ")\\b", Pattern.CASE_INSENSITIVE);
-   }
-   
    /**
     * Map from {@link #_name} to {@link ActivityType}, in-memory repository.
     */
@@ -110,56 +90,83 @@ public class ActivityType
    public static ActivityType find( String anActivityType)
    {
       ActivityType retval;
-      String activityType = anActivityType;
+      String activityType;
       Integer year;
-      
-      Matcher yrMatcher = YEAR_RE.matcher( activityType);
-      if (yrMatcher.find()) 
+      Integer month; // 1-based
+      try
       {
-         year = Integer.parseInt( yrMatcher.group());
-         activityType = yrMatcher.replaceFirst( "");
+         ParsedDate parsedActivityType = new ParsedDate( anActivityType);
+         activityType = parsedActivityType.remainder == null ? anActivityType : parsedActivityType.remainder;
+         year = parsedActivityType.year;
+         month = parsedActivityType.month;
       }
-      else
-         year = null;
-      
-      String month;
-      Integer monthNum;
-      Matcher monthMatcher = MONTHS_RE.matcher( activityType);
-      if (monthMatcher.find())
+      catch (ParseException exc)
       {
-         month = monthMatcher.group();
-         activityType = monthMatcher.replaceFirst( "");
-         monthNum = 0;
-         for (Pattern monthRE : MONTH_RES)
-         {
-            if (monthRE.matcher( month).matches())
-               break;
-            else
-               monthNum++;
-         }
+         Log.warn( exc);
+         activityType = anActivityType;
+         year = month = null;
       }
-      else
-         monthNum = null;
       
-      retval = findActivityTypeWithStartDate( activityType, year, monthNum);
+      retval = findActivityTypeWithStartDate( activityType, year, month == null ? null : month - 1);
 
       return retval;
    }
 
    /**
     * Finds or creates the given activity and "decorates" it with the given year (month = January).
-    * @param anActivityType
-    * @param anActivityStartYear
+    * @param anActivityType -- May contain start date (as month name and year), which will take precedence 
+    *       over anActivityStateDate (which should be null in that case, anyway). 
+    * @param anActivityStartDate
     * @return
     */
-   public static ActivityType find( String anActivityType, String anActivityStartYear)
+   public static ActivityType find( String anActivityType, String anActivityStartDate)
    {
       ActivityType retval;
 
-      Integer year = Integer.parseInt( anActivityStartYear);
-      Integer monthNum = null;
+      String activityType;
+      Integer year;
+      Integer monthNum;
       
-      retval = findActivityTypeWithStartDate( anActivityType, year, monthNum);
+      ParsedDate startDateFromType;
+      try
+      {
+         startDateFromType = new ParsedDate( anActivityType);
+         activityType = startDateFromType.remainder;
+      }
+      catch (ParseException exc)
+      {
+         startDateFromType = null;
+         activityType = anActivityType;
+      }
+      
+      ParsedDate explicitStartDate;
+      try
+      {
+         explicitStartDate = new ParsedDate( anActivityStartDate);
+      }
+      catch (ParseException exc)
+      {
+         Log.warn( exc);
+         explicitStartDate = null;
+      }
+      
+      
+      if (startDateFromType == null || startDateFromType.year == null)
+         year = explicitStartDate == null ? null : explicitStartDate.year;
+      else
+         year = startDateFromType.year;
+      
+      if (startDateFromType == null || startDateFromType.month == null)
+      {
+         if (explicitStartDate == null || explicitStartDate.month == null)
+            monthNum = null;
+         else
+            monthNum = explicitStartDate.month - 1;
+      }
+      else
+         monthNum = startDateFromType.month - 1;
+      
+      retval = findActivityTypeWithStartDate( activityType, year, monthNum);
 
       return retval;
    }
@@ -168,7 +175,7 @@ public class ActivityType
     * Find (or create) a previously-seen ActivityType and add a start date to it.
     * @param anActivityType
     * @param aYear - May be null
-    * @param aMonthNum - May be null
+    * @param aMonthNum - 0-based, may be null
     * @return
     */
    private static ActivityType findActivityTypeWithStartDate( String anActivityType, Integer aYear, Integer aMonthNum)

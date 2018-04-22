@@ -56,16 +56,16 @@ public class ActivityEngagement
    public ActivityEngagement( 
          String anActivityType, 
          String anActivityName, 
-         String anActivityStartYear,
-         String anActivityEndYear, 
+         String anActivityStartDate,
+         String anActivityEndDate, 
          String anActivityRole)
    {
-      activityType = ActivityType.find( anActivityType, anActivityStartYear);
+      activityType = ActivityType.find( anActivityType, anActivityStartDate);
       activity = Activity.find( anActivityName);
       role = ActivityRole.find( anActivityRole);
 
       initStartDate();
-      initEndDate( anActivityEndYear);
+      initEndDate( anActivityEndDate);
       if (endDate != null && startDate != null && endDate.before( startDate))
          Log.warn( "created ActivityEngagement, but end-date (%tc) < start-date (%tc)", endDate, startDate);
    }
