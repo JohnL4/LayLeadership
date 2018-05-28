@@ -75,4 +75,48 @@ public class Comment
    {
       return String.format( "%tD %s (%s)", getDate(), getType(), getLevel());
    }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((commentDate == null) ? 0 : commentDate.hashCode());
+      result = prime * result + ((commentLevel == null) ? 0 : commentLevel.hashCode());
+      result = prime * result + ((commentText == null) ? 0 : commentText.hashCode());
+      result = prime * result + ((commentType == null) ? 0 : commentType.hashCode());
+      result = prime * result + ((source == null) ? 0 : source.hashCode());
+      return result;
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals( Object obj)
+   {
+      if (this == obj) return true;
+      if (obj == null) return false;
+      if (getClass() != obj.getClass()) return false;
+      Comment other = (Comment) obj;
+      if (commentDate == null)
+      {
+         if (other.commentDate != null) return false;
+      }
+      else if (!commentDate.equals( other.commentDate)) return false;
+      if (commentLevel != other.commentLevel) return false;
+      if (commentText == null)
+      {
+         if (other.commentText != null) return false;
+      }
+      else if (!commentText.equals( other.commentText)) return false;
+      if (commentType != other.commentType) return false;
+      if (source != other.source) return false;
+      return true;
+   }
+   
+   
 }

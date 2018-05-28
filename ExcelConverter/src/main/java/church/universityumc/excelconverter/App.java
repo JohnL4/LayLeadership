@@ -280,11 +280,16 @@ public class App
     */
    public static void processAcsFiles( Collection<File> anInputFilesColl, File anOutputFile) throws IOException, UnknownRowTypeException
    {
-      assert anInputFilesColl != null && anInputFilesColl.size() == 1 : "exactly one input file";
+      assert anInputFilesColl != null; // && anInputFilesColl.size() == 1 : "exactly one input file";
       assert anOutputFile != null;
       
-      File firstFile = anInputFilesColl.stream().findFirst().get();
-      MemberData memberData = buildChurchMembers( firstFile);
+//      File firstFile = anInputFilesColl.stream().findFirst().get();
+      MemberData memberData = new MemberData();
+      for (File file : anInputFilesColl)
+      {
+         MemberData tempMemberData = buildChurchMembers( file);
+         memberData.merge( tempMemberData);
+      }
       dumpToExcelFile( memberData, anOutputFile);
    }
    

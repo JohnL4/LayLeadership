@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * "Internal database" of church members built from AccessACS output (and possibly other sources).
@@ -15,7 +16,10 @@ public class MemberData
 {
    private Calendar acsRunDate = Calendar.getInstance();
    
-   private Collection<ChurchMember> members = new ArrayList<ChurchMember>();
+   /**
+    * Map from arbitrary ChurchMember to canonical ChurchMember.
+    */
+   private HashMap<ChurchMember, ChurchMember> members = new HashMap<ChurchMember, ChurchMember>();
 
    private static final DateFormat TIME_FORMAT = DateFormat.getTimeInstance( DateFormat.SHORT);
    
@@ -64,7 +68,7 @@ public class MemberData
     */
    public Collection<ChurchMember> getMembers()
    {
-      return Collections.unmodifiableCollection( members);
+      return Collections.unmodifiableCollection( members.values());
    }
    
    /**
@@ -73,7 +77,28 @@ public class MemberData
     */
    public void addMember(ChurchMember aMember)
    {
-      members.add( aMember);
+      
+      if (members.containsKey( aMember))
+      {
+         // Transfer aMember's data to already-existing member.
+         ChurchMember existingMember = members.get( aMember);
+         existingMember.merge( aMember);
+      }
+      else
+         members.put( aMember, aMember);
+   }
+
+   /**
+    * Merge the given MemberData into this MemberData, eliminating duplicates.
+    * @param aTempMemberData
+    */
+   public void merge( MemberData aTempMemberData)
+   {
+      for (ChurchMember member : aTempMemberData.getMembers())
+      {
+         addMember( member);
+      }
+      
    }
    
 }

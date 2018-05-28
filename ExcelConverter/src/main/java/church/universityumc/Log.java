@@ -49,6 +49,20 @@ public class Log
       return row;
    }
    
+   public static void error(String aFormat,  Object... args)
+   {
+      StringBuilder fmt = decorateMessage( aFormat);
+      System.getLogger( LOGGER_NAME).log( Level.ERROR, String.format( fmt.toString(), args));
+   }
+
+   public static void error( Exception anException)
+   {
+      String msg = anException.getMessage();
+      if (msg == null)
+         msg = anException.toString();
+      error( msg);
+   }
+
    public static void warn(String aFormat,  Object... args)
    {
       StringBuilder fmt = decorateMessage( aFormat);

@@ -20,7 +20,7 @@ public class ChurchMember
    private String                         phone;
    private String                         email;
    private StringBuilder                  biography;
-   private Collection<ActivityEngagement> serviceHistory;
+   private Collection<ActivityEngagement> serviceHistory; // TODO: set + compareTo()
    private Collection<Skill>              skills;
    private Collection<Interest>           interests;
    private Collection<Comment>            comments;
@@ -31,7 +31,6 @@ public class ChurchMember
     * One year later, that member will be one year older.
     */
    private Date ageAsOf;
-
    
    private static final Pattern NAME_SPLITTER = Pattern.compile( ",?\\s+");
    
@@ -267,6 +266,44 @@ public class ChurchMember
    public String toString()
    {
       return getFullName();
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + (int) (age ^ (age >>> 32));
+      result = prime * result + ((fullName == null) ? 0 : fullName.hashCode());
+      return result;
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals( Object obj)
+   {
+      if (this == obj) return true;
+      if (obj == null) return false;
+      if (getClass() != obj.getClass()) return false;
+      ChurchMember other = (ChurchMember) obj;
+      if (age != other.age) return false;
+      if (fullName == null)
+      {
+         if (other.fullName != null) return false;
+      }
+      else if (!fullName.equals( other.fullName)) return false;
+      return true;
+   }
+
+   public void merge( ChurchMember aMember)
+   {
+      
+      throw new RuntimeException("not implemented");
    }
    
 }

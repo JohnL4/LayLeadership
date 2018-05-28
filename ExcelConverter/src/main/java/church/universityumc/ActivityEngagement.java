@@ -232,4 +232,62 @@ public class ActivityEngagement
       retval.append( ")");
       return retval.toString();
    }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((activity == null) ? 0 : activity.hashCode());
+      result = prime * result + ((activityType == null) ? 0 : activityType.hashCode());
+      result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
+      result = prime * result + (hasRotationDate ? 1231 : 1237);
+      result = prime * result + ((role == null) ? 0 : role.hashCode());
+      result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
+      return result;
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals( Object obj)
+   {
+      if (this == obj) return true;
+      if (obj == null) return false;
+      if (getClass() != obj.getClass()) return false;
+      ActivityEngagement other = (ActivityEngagement) obj;
+      if (activity == null)
+      {
+         if (other.activity != null) return false;
+      }
+      else if (!activity.equals( other.activity)) return false;
+      if (activityType == null)
+      {
+         if (other.activityType != null) return false;
+      }
+      else if (!activityType.equals( other.activityType)) return false;
+      if (endDate == null)
+      {
+         if (other.endDate != null) return false;
+      }
+      else if (!endDate.equals( other.endDate)) return false;
+      if (hasRotationDate != other.hasRotationDate) return false;
+      if (role == null)
+      {
+         if (other.role != null) return false;
+      }
+      else if (!role.equals( other.role)) return false;
+      if (startDate == null)
+      {
+         if (other.startDate != null) return false;
+      }
+      else if (!startDate.equals( other.startDate)) return false;
+      return true;
+   }
+   
+   
 }
