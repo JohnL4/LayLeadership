@@ -1,11 +1,13 @@
 package church.universityumc;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /** 
  * A member of the congregation.
@@ -13,18 +15,18 @@ import java.util.regex.Pattern;
  */
 public class ChurchMember
 {
-   private String                         lastName;
-   private String                         fullName;
-   private long                           age;
-   private Date                           dateJoined;
-   private String                         phone;
-   private String                         email;
-   private StringBuilder                  biography;
-   private Collection<ActivityEngagement> serviceHistory; // TODO: set + compareTo()
-   private Collection<Skill>              skills;
-   private Collection<Interest>           interests;
-   private Collection<Comment>            comments;
-   private Collection<Contact>            contactHistory;
+   private String                  lastName;
+   private String                  fullName;
+   private long                    age;
+   private Date                    dateJoined;
+   private String                  phone;
+   private String                  email;
+   private Set<String>             biography;
+   private Set<ActivityEngagement> serviceHistory; // TODO: set + compareTo()
+   private Set<Skill>              skills;
+   private Set<Interest>           interests;
+   private Set<Comment>            comments;
+   private HashSet<Contact>        contactHistory;
    
    /**
     * The date the member's {@link age} is "as of", meaning that age is correct as of the indicated date.
@@ -37,6 +39,8 @@ public class ChurchMember
    // I think "the 10th" is enough, don't you?
    private static final Pattern SUFFIX_RE = Pattern.compile( "Jr\\.?|Sr\\.?|III?|I?VI?I?I?|I?X", Pattern.CASE_INSENSITIVE);
    
+   private static String EOL = System.getProperty( "line.separator");
+
    /**
     * The member's original full name, as received from AccessACS.
     * @return
@@ -150,9 +154,13 @@ public class ChurchMember
       email = aEmail;
    }
 
-   public String getBiography()
+   /**
+    * Returns all the biography strings that have been entered, in arbitrary order.
+    * @return
+    */
+   public String getBiographyString()
    {
-      return biography.toString();
+      return biography.stream().collect( Collectors.joining( EOL));
    }
    
    private void addBiography( String aBiography)
@@ -160,10 +168,9 @@ public class ChurchMember
       if (aBiography == null || aBiography.length() == 0)
          return;
       if (biography == null)
-         biography = new StringBuilder();
-      if (biography.length() > 0)
-         biography.append( "\n");
-      biography.append( aBiography);
+         biography = Collections.synchronizedSet( new HashSet<String>());
+      String bio = aBiography.intern(); // Faster set operation if we can compare just on hashcode and not character by character.
+      biography.add( bio);
    }
 
    /**
@@ -178,7 +185,7 @@ public class ChurchMember
    public void addInterest( Interest anInterest)
    {
       if (interests == null)
-         interests = new ArrayList<Interest>();
+         interests = Collections.synchronizedSet( new HashSet<Interest>());
       interests.add( anInterest);
    }
    
@@ -197,7 +204,7 @@ public class ChurchMember
    public void addSkill( Skill aSkill)
    {
       if (skills == null)
-         skills = new ArrayList<Skill>();
+         skills = Collections.synchronizedSet( new HashSet<Skill>());
       skills.add( aSkill);
    }
 
@@ -216,7 +223,7 @@ public class ChurchMember
    public void addServiceHistory( ActivityEngagement anEngagement)
    {
       if (serviceHistory == null)
-         serviceHistory = new ArrayList<ActivityEngagement>();
+         serviceHistory = Collections.synchronizedSet( new HashSet<ActivityEngagement>());
       serviceHistory.add( anEngagement);
    }
 
@@ -240,7 +247,7 @@ public class ChurchMember
       if (aComment == null)
          return;
       if (comments == null)
-         comments = new ArrayList<Comment>();
+         comments = Collections.synchronizedSet( new HashSet<Comment>());
       comments.add( aComment);
       if (aComment.getType() == CommentType.Biography)
          addBiography( aComment.getText());
@@ -300,10 +307,26 @@ public class ChurchMember
       return true;
    }
 
+   /**
+    * Merge the given ChurchMember into this ChurchMember, copying new data.
+    * @param aMember
+    */
    public void merge( ChurchMember aMember)
    {
+      // Don't need to merge any of the basic demographics for the member because they come from the same source
+      // and should be duplicates.
+      // Merge:
+      //    biography
+      //    serviceHistory
+      //    skills
+      //    interests
+      //    comments
       
-      throw new RuntimeException("not implemented");
+      aMember.biography.stream().forEach(b -> addBiography(b));
+      aMember.serviceHistory.stream().forEach( ae -> addServiceHistory( ae));
+      aMember.skills.stream().forEach( sk -> addSkill( sk));
+      aMember.interests.stream().forEach( i -> addInterest( i));
+      aMember.comments.stream().forEach( c -> addComment( c));
    }
    
 }

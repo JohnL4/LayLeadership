@@ -178,6 +178,7 @@ public class App
 
    public static void main( String[] args) throws IOException, UnknownRowTypeException, JAXBException, ParseException
    {
+      // NOTE: for GUI processing, see MainController (launched from here unless option "nogui" is given).
       // Don't need system property, since we're about to explicitly load the config file as an InputStream.
 //      System.setProperty( "java.util.logging.config.file", "logging.properties");
       // Leading "/" means "top of classpath", basically.
