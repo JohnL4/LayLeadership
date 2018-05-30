@@ -145,12 +145,12 @@ public class MainController extends Application {
 //      Log.debug(  String.format( "inputFileSet = %s (hashcode = 0x%x)", inputFileSet, inputFileSet.hashCode()));
 //      Log.debug( String.format( "chosenOutputFileProperty = %s (hashcode = 0x%x)", chosenOutputFileProperty, chosenOutputFileProperty.hashCode() ));
       boolean noInput = inputFileSet == null || inputFileSet.size() == 0;
-      boolean tooManyInputs = inputFileSet != null && inputFileSet.size() > 1;
+      // boolean tooManyInputs = inputFileSet != null && inputFileSet.size() > 1;
       boolean noOutput = chosenOutputFileProperty == null || chosenOutputFileProperty.get() == null;
-      if ((noInput || tooManyInputs) && noOutput)
+      if ((noInput /* || tooManyInputs */) && noOutput)
          // goBtnDisabledReason.set("You need to specify both at least one input file and an output file.");
          goBtnDisabledReason.set("You need to specify both one input file and an output file.");
-      else if (noInput || tooManyInputs)
+      else if (noInput /* || tooManyInputs */)
          // goBtnDisabledReason.set( "You need to specify at least one input file");
          goBtnDisabledReason.set( "You need to specify one input file");
       else if (noOutput)

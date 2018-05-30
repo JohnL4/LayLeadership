@@ -315,18 +315,12 @@ public class ChurchMember
    {
       // Don't need to merge any of the basic demographics for the member because they come from the same source
       // and should be duplicates.
-      // Merge:
-      //    biography
-      //    serviceHistory
-      //    skills
-      //    interests
-      //    comments
       
-      aMember.biography.stream().forEach(b -> addBiography(b));
-      aMember.serviceHistory.stream().forEach( ae -> addServiceHistory( ae));
-      aMember.skills.stream().forEach( sk -> addSkill( sk));
-      aMember.interests.stream().forEach( i -> addInterest( i));
-      aMember.comments.stream().forEach( c -> addComment( c));
+      if ( aMember.biography != null)      aMember.biography      .stream().forEach( b -> addBiography( b));
+      if ( aMember.serviceHistory != null) aMember.serviceHistory .stream().forEach( ae -> addServiceHistory( ae));
+      if ( aMember.skills != null)         aMember.skills         .stream().forEach( sk -> addSkill( sk));
+      if ( aMember.interests != null)      aMember.interests      .stream().forEach( i -> addInterest( i));
+      if ( aMember.comments != null)       aMember.comments       .stream().forEach( c -> addComment( c));
    }
    
 }
