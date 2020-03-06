@@ -66,6 +66,8 @@
    n-to-n.  Maybe, for the purposes of AirTable, we want the member-history tables combined, so they can be presented in
    one stream.  Bad d/b design, but oh well.
 
+   The idea being that we don't want to overload or fatigue members with committees.
+
    - Member ::
    - Committee ::
    - StartDate ::
@@ -98,6 +100,9 @@
 
    - Member :: Church member to contact
    - Assignee :: LayLeadershipCommitteeMember this task is assigned to.
+   - ContactTaskType :: An enum so we can get consistent task naming and maybe a description of the
+        contact task type (e.g., "Initial Contact", "Followup Contact", "Confirmation Contact").
+        Nullable.
    - Summary :: Short display text.
    - Description :: Notes pertaining to the task as a whole, not its history.  In case a task requires multiple contacts
                     (or steps of some sort? What would those be?), the results of each step would go in the
@@ -122,5 +127,14 @@
 
    Just seems like a good idea, rather than "category" (since a thing can really one ever be in one category).
    
-   - Name ::
+   - Name :: e.g., Outreach, Mission, Welcome, Care, Labor, Education, Service
+
+** InterestTag?
+
+   So, interests can be more widely categorized as Mission, Welcome, Service, etc.  So, if members
+   express an interest in certain /types/ of things (e.g., "Mission"), we can pull the list of
+   possibilities up by Tag.
+
+   - Interest ::
+   - Tag :: 
              
