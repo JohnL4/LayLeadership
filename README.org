@@ -52,9 +52,10 @@
 
 ** MemberContactHistory
 
-   Contact history. n-to-n.
+   Contact history. n-to-n.  Note that a contact task can have multiple history items ("called, left
+   message", "called, spoke to").
 
-   - Member ::
+   - Member :: Who did the task.  Not necessarily the same as who it was assigned to.
    - ContactTask ::
    - Date :: 
    - Notes ::
