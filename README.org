@@ -139,3 +139,46 @@
    - Interest ::
    - Tag :: 
              
+* Storyboards
+
+** History, Closed
+
+   | *Actor* | *Member to contact* |   |   *Date* |     | *Result*            | *Next Task8                                         | *Notes* |
+   | John    | Alice               | > | 7-1-2019 | ... | Left msg            | Call back                                           |         |
+   | John    | Bob                 |   | 7-2-2019 | !   | Spoke, Bob accepted | Margaret calls/emails with details of first meeting |         |
+   | Mary    | Henry               |   |          | ... |                     | Call                                                |         |
+
+** History, Open
+
+   | *Actor* | *Member to contact* |   |    *Date* |     | *Result*                          | *Next Task8                                         | *Notes* |
+   | John    | Alice               | V |  7-1-2019 | ... | Spoke to, she's thinking about it | Call back after 7-3-2019                            |         |
+   |         |                     |   |  7-1-2019 |     | Left msg                          | Call back                                           |         |
+   |         |                     |   | 6-28-2019 |     | Left msg                          | Call back                                           |         |
+   | John    | Bob                 |   |  7-2-2019 | !   | Spoke, Bob accepted               | Margaret calls/emails with details of first meeting |         |
+   | Mary    | Henry               |   |           | ... |                                   | Call                                                |         |
+   
+* UI Widgets
+
+** Date
+
+   Display: Weds., Mar. 29, 2019.  (dow MMM-d-yyyy, format configurable)
+
+   Accept: mdy format configured, or md "partial date" (month/day or day/month)
+
+   Also accept:
+
+   | . (or blank?) | current date                      |
+   | -n            | days ago (-1 is yesterday)        |
+   | +n            | days from now (+1 is tomorrow)    |
+   | -Wed          | last Weds.                        |
+   | +Wed          | next Weds.                        |
+   | -Wed x 2      | two Wednesdays ago                |
+   | +Wed x 2      | Weds. week (week from next Weds.) |
+
+** Free text w/auto-complete
+
+   Most-frequently used over the last (configurable) period.  If none used, keep doubling period
+   until we find at least one.
+
+   Requires tracking... date of use???  Needs a history table???  Maybe a rolling history table
+   w/dates and a max. number of rows.
