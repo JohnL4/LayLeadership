@@ -11,6 +11,8 @@
   perspective, without fear of being sued.  Probably not a giant concern for charitable organizations such as churches,
   but, just to be safe, I've picked the most permissive license I see.  Enjoy. :) )
 
+  Diagrams are built with Evolus Pencil.
+
 * Components
 
 ** ExcelConverter
@@ -38,6 +40,7 @@
    - Last Name ::
    - Phone Number ::
    - Email Address ::
+   - Active :: Deceased, moved, etc.
    - Comments :: I guess this should be confidential, if we want to commit this to the cloud.  I think we can trust it,
                  for the most part, but maybe we shouldn't put anything TOO embarrassing in here.
 
@@ -62,12 +65,15 @@
    - Result :: Explicit focus on results. :)
    - NextTask :: Don't know if we can automatically create records or not. Use Zapier?
 
-** MemberCommitteeHistory
+** [MemberCommitteeHistory]
 
-   n-to-n.  Maybe, for the purposes of AirTable, we want the member-history tables combined, so they can be presented in
-   one stream.  Bad d/b design, but oh well.
+   n-to-n.  Maybe, for the purposes of AirTable, we want the member-history tables combined, so they
+   can be presented in one stream.  Bad d/b design, but oh well.  Note that a member can serve
+   multiple times on the same committee.
 
    The idea being that we don't want to overload or fatigue members with committees.
+
+   Note that this data is probably already available in the regular church database.
 
    - Member ::
    - Committee ::
@@ -75,9 +81,10 @@
    - EndDate ::
    - Notes :: Any (confidential) notes on that member's tenure on that committee.
 
-** Committee
+** [Committee]
 
-   Church committee.
+   May not be necessary.  Church committee.  Can also cover other efforts, like Sunday school
+   teacher or "Habitat organizer".
 
    - Name ::
    - Blurb :: description of committee, for use in recruiting.  Really, the type of standard things we'd like to put in
@@ -85,9 +92,12 @@
    - MeetingsPerYear :: assumption: 1-2-hour meetings
    - ExtraHoursPerMonth :: time required outside of meetings
 
-** CommitteeMember?
+** [CommitteeMember?]
 
-   Not sure we need this, but it would be n-to-n.
+   Not sure we need this (almost certain we don't), but it would be n-to-n.  See also MemberCommitteeHistory.
+
+   - StartDate ::
+   - EndDate :: 
 
 ** ContactTask
 
@@ -104,16 +114,20 @@
    - ContactTaskType :: An enum so we can get consistent task naming and maybe a description of the
         contact task type (e.g., "Initial Contact", "Followup Contact", "Confirmation Contact").
         Nullable.
-   - Summary :: Short display text.
+   - Summary :: Short display text.  Nullable.  If present, put an "Info"-type icon on the member's
+                name in the list to alert the user of its presence.
    - Description :: Notes pertaining to the task as a whole, not its history.  In case a task requires multiple contacts
                     (or steps of some sort? What would those be?), the results of each step would go in the
-                    MemberContactHistory notes/result.
+                    MemberContactHistory notes/result.  Nullable.  If present, member's name will be
+                    a hyperlink in the action list that will yield a popup containing this info.
 
 ** LayLeadershipCommitteeMember
 
    Church members who are on the Lay Leadership committee.
 
    - Member :: Link back to church member, where the contact info will be stored
+   - Active ::
+   - LastActiveDate :: for "undo" type action ("show all, sort by date, mark active some")
 
 ** Interest
 
@@ -139,7 +153,43 @@
    - Interest ::
    - Tag :: 
              
+** Configuration
+
+*** Animation Speed
+
+    Fast, regular. Super-fast?
+
+*** Statuses
+
+    Sort order, which are terminal.
+    
+*** Colors
+
+    (Do these really need to be configurable?)
+    
 * Storyboards
+
+** Initial
+
+   Initial display will be all current members of Lay Leadership committee, all other fields empty.
+
+   To assign a contact task, type the contactee's (member's) name in the "Member to contact" field.
+
+   If there is already a member in that field, a [+] button will appear, allowing a new empty row to
+   be inserted.
+
+   *Alternatively*, could have a hamburger menu on each non-empty row.  Operations:
+
+   - New contact
+   - Delete contact
+   - Reassign contact
+
+** Overall "Undo" function -- Undo/Redo Tree
+
+   If we use the Command (or Memento?) pattern, we can build a tree of undo/redo options.  Put an
+   Undo/Redo button at the top of the UI, and when we hit a tree branch node, offer a "display tree"
+   option.  (But redo operation will traverse most-recently-used branch.)  Command descriptions
+   might be long, so use a tree control to show the tree.  (That might be a gimme.)
 
 ** History, Closed
 
@@ -157,6 +207,98 @@
    | John    | Bob                 |   |  7-2-2019 | !   | Spoke, Bob accepted               | Margaret calls/emails with details of first meeting |         |
    | Mary    | Henry               |   |           | ... |                                   | Call                                                |         |
    
+** Behavior of "Add New Result" button ([+])
+
+   On the far right of the "result" field will appear an "add new" button only when the result
+   already has text in it and the status icon isn't "Done" (or otherwise a terminal status).
+
+   Requirements:
+
+   - Result, Next Task, Notes fields blank
+   - Status not terminal ("Done").  (Note that status can always be changed to non-terminal.)
+
+   It adds a new blank row, pushing existing rows down one row.
+
+   If there /is/ history, and the result field is blank (or all relevant fields: result, next task,
+   notes), then it turns into a "Remove Blank Result" button ([-]) which is basically an Undo
+   function: removes the blank result row and shifts all history up one row.
+
+   Or we could just rely on the general "Undo" function.
+
+*** [+] Animation
+
+    Stationary fields:
+
+    - Actor
+    - Contactee
+    - Status icon (perhaps should be to left of date)
+
+    Fields that drop down a row:
+
+    - Date
+    - Result
+    - Next action
+    - Notes
+
+    Fields drop down and new date (current date, initially) and "Undo" button fades in.
+
+    "Undo" button fades out when anything is changed, and fades back in when operative.
+
+*** [-] Animation
+
+    Oppsite of [+]?
+
+** Filterable fields
+
+   Icon to far right of field header.  Is a toggle that remembers previous filter value.  When
+   filtering, tooltip shows current criteria.
+
+   Filter on text will be regex.
+
+   Filter on status will be bitfield (multi checkbox).
+
+   Filter on date will be range.  (TODO: need a "clear current board" operation to start a new year
+   of Lay Leadership recruiting.)
+
+   Some individual values will also be filterable by single click (or maybe right click, so don't
+   need a plethora of icons).
+
+   - Actor
+   - Contactee (easy to see all position this contactee is being recruited for, so can do in one
+     phone call)
+   - Status (e.g., who's blocked? who's done?)
+
+*** Actor
+
+    Default filter is current user (what's assigned to me?)
+
+*** Member to contact -- no default
+
+*** Date -- no default
+
+*** Status -- no default
+
+** Sortable fields
+
+*** Actor
+
+*** Contactee
+
+*** Status
+
+    Order: Blocked, In Progress, Done.
+
+*** Date
+
+    Each row carries its history, and history is not affected by sort (history is always
+    decreasingly sorted (earlier dates at the bottom)).
+
+** New cycle
+
+   Every year, the cycle starts over.  Some data needs to be archived (e.g., contact history).
+
+   [Some committee members roll off.]
+
 * UI Widgets
 
 ** Date
