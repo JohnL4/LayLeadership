@@ -91,12 +91,26 @@
    Running on AdoptOpenJDK 11 is as easy as downloading and installing it and changing the above
    =JAVA_HOME= to point to the new JDK.  It seems to run without problem.
 
-   TODO: It might also be possible to install it via homebrew, which might then keep it up to date
-   better than a manual install process would.
+   It should also be possible to install it via homebrew, which might then keep it up to date better than a manual
+   install process would.
 
+   For homebrew, you'll need to open a "tap" (i.e., add another repository), and then install the "cask" for the jdk you
+   want.  See the instructions at the adoptopenjdk.
+
+** Deploy code
+
+   Well, first you have to write some code.  See [[#hello-world][Simplest possible code]].
+   
 * Database
 
 ** Consider an ORM of some sort
 
 * JS Framework
-  
+* App code
+
+** Simplest possible code
+   :PROPERTIES:
+   :CUSTOM_ID: hello-world
+   :END:
+
+   Uh...
