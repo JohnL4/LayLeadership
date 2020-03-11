@@ -96,5 +96,7 @@
 
 * Database
 
+** Consider an ORM of some sort
+
 * JS Framework
   
