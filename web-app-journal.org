@@ -1,0 +1,91 @@
+# -*- org -*-
+#+TITLE: Being a Journal of my Java Web-App Development Journey
+#+COLUMNS: %12TODO %10WHO %3PRIORITY(PRI) %3HOURS(HRS){est+} %85ITEM
+# #+INFOJS_OPT: view:showall toc:t ltoc:nil path:../org-info.js mouse:#B3F2E3
+# Pandoc needs H:9; default is H:3.
+# `^:nil' means raw underscores and carets are not interpreted to mean sub- and superscript.  (Use {} to force interpretation.)
+#+OPTIONS: author:nil creator:t H:9 ^:{}
+#+HTML_HEAD: <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400,400i,600,600i|IBM+Plex+Sans:400,400i,600,600i|IBM+Plex+Serif:400,400i,600,600i">
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/org-mode.css" />
+
+# Generates "up" and "home" links ("." is "current directory").  Can comment one out.
+#+HTML_LINK_UP: .
+#+HTML_LINK_HOME: /index.html
+
+# Use ``#+ATTR_HTML: :class lower-alpha'' on line before list to use the following class.
+# See https://emacs.stackexchange.com/a/18943/17421
+# 
+#+HTML_HEAD: <style type="text/css">
+#+HTML_HEAD:  ol.lower-alpha { list-style-type: lower-alpha; }
+#+HTML_HEAD: </style>
+
+* Overview
+
+  I'm going to keep a diary of my effort to develop a web app from soup to nuts.
+
+  The initial plans are in [[file:README.org][README.org]].
+
+* Java
+
+  Currently running my wiki on JSPWiki on Tomcat 8 on Java 8.  I'd like to run a different process
+  on Java whatever-is-the-latest.  (Note: I can't.  See [[#jakarta-java-version-question][the Jakarta/Java version question]].
+
+  Looks like some process has kept Java up to date on my AWS server.  Yay.  Also, apparently,
+  openjdk is legal to use.  Yay.
+
+  https://adoptopenjdk.net/index.html has the builds for download.
+
+** On a Mac
+   
+  On a Mac, the OpenJDK 8 installer puts files in
+  =/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/bin=, but I can't seem to
+  symlink them in to =/usr/bin=.
+
+** Java EE
+
+   Well, first off, a /lot/ has happened in the Java world since I left it, around 2005 or so.
+   (Pshew, was it really that long ago?  Oy.)
+
+   Java EE has become Jakarta EE, and is now managed by the Eclipse Foundation.  It appears that, as
+   of <2020-03-09 Mon>, Java EE 8 is the download (from Oracle), but, in future, I guess we'll be
+   getting new versions from https://jakarta.ee/.
+
+*** Question: Does Jakarta EE run on any version of Java >= 8?  Answer: apparently not. :(
+    :PROPERTIES:
+    :CUSTOM_ID: jakarta-java-version-question
+    :END:
+
+    Based on this quote: /"We also have to move the APIs to support JDK 11."/ from this article:
+    https://dzone.com/articles/jakarta-ee-8-and-beyond. 
+
+* Tomcat
+
+** On a Mac
+
+   Unzipped Tomcat 9 to =/opt=.
+
+   Created user =tomcat= using Mac "Users and Groups" control panel applet.  Disabled login by
+   =tomcat= with the following shell command:
+
+   : sudo chpass -s /usr/bin/false tomcat
+   
+   chown'd the resulting directory (recursively) to user =tomcat=.
+
+   Created a simple =run-tomcat= (and analogous =stop-tomcat=) script in my =~/Bin= directory:
+
+   #+BEGIN_SRC shell
+     #!/bin/bash
+
+     export CATALINA_HOME=/opt/apache-tomcat-9.0.31
+
+     # export CATALINA_BASE=~/Tomcat/apache-tomcat-9.0
+
+     export JAVA_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home
+
+     exec su -m tomcat ${CATALINA_HOME}/bin/catalina.sh start
+   #+END_SRC
+
+* Database
+
+* JS Framework
+  

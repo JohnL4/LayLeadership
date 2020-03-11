@@ -15,12 +15,16 @@
 
 * Components
 
-** ExcelConverter
+** Standalone ExcelConverter
 
-   Produces a spreadsheet usable for filtering for congregation members who might be a good fit for
-   whatever activity is being recruited for (e.g., a committee).
+   This is a standalone program that produces a spreadsheet usable for filtering for congregation
+   members who might be a good fit for whatever activity is being recruited for (e.g., a committee).
 
    Explore the ~ExcelConverter~ folder for more info, including its own README.
+
+** "Contact Task Board" Web App
+
+   Most of the rest of this document deals with this.
 
 * Design/implementation process
 
@@ -324,3 +328,17 @@
 
    Requires tracking... date of use???  Needs a history table???  Maybe a rolling history table
    w/dates and a max. number of rows.
+* Server
+
+  Something something Java.  Serve on a different port than the wiki?  Different process?
+
+* Database
+
+  Something something SQL.
+
+  Sqlite at first.
+
+  Then maybe Postgresql.
+
+  Or some sort of AWS relational d/b.
+  

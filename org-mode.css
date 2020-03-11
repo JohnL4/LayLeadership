@@ -1,0 +1,41 @@
+body {
+    /* Include fonts via lines like the following in the html head (just pick one):
+     * <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans" rel="stylesheet">
+     * <link href="https://fonts.googleapis.com/css?family=Asap" rel="stylesheet">
+     * <link href="https://fonts.googleapis.com/css?family=Chivo|Source+Sans+Pro" rel="stylesheet">
+     */
+    font-family: 'IBM Plex Sans', sans-serif;
+    /* font-family: 'Asap', sans-serif; */
+    /* font-family: 'Source Sans Pro', sans-serif; */
+}
+pre, code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: smaller;
+}
+pre {
+}
+body { margin-left: 7%; }
+/* h1 is doc title */
+h1, h2, h3 { margin-left: -6%; }
+h4 { margin-left: -3%; }
+h5, h6, h7, h8, h9, h10 { font-size: 1em; font-weight: bold; }
+#preamble .button { border: 1px solid; padding: 0.3em; margin-right: 1em;}
+.title  { text-align: center; }
+.todo   { color: magenta /*#FF0090*/ /*red*/; }
+.done   { color: green; }
+.tag    { background-color: #add8e6; font-weight:normal }
+.target { }
+.timestamp { color: #8681B2; font-style: italic; }
+.timestamp-kwd { color: #5f9ea0; }
+p.verse { margin-left: 3% }
+pre.src, pre.example { background-color: #F3F5F7; overflow: auto;}
+pre.src:before { top: 10px; } /* overrides -10px, to bring box into pre box, so 'overflow: auto;' won't clip it */
+pre.src-csharp:before  { content: 'C#'; }
+pre.src-css:before  { content: 'CSS'; }
+pre.src-haskell:before  { content: 'Haskell'; }
+pre.src-javascript:before  { content: 'JavaScript'; }
+pre.src-powershell:before  { content: 'PowerShell'; }
+pre.src-sql:before  { content: 'SQL'; }
+pre.src-typescript:before  { content: 'TypeScript'; }
+pre.src-vbnet:before  { content: 'VB.Net'; }
+pre.src-xml:before  { content: 'XML'; }
