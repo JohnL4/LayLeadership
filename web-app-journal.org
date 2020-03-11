@@ -85,6 +85,15 @@
      exec su -m tomcat ${CATALINA_HOME}/bin/catalina.sh start
    #+END_SRC
 
+   Edited =/opt/apache-tomcat-9.0.31/conf/tomcat-users.xml= to add users for manager-gui, admin-gui
+   and (separate user) manager-script, admin-script.
+
+   Running on AdoptOpenJDK 11 is as easy as downloading and installing it and changing the above
+   =JAVA_HOME= to point to the new JDK.  It seems to run without problem.
+
+   TODO: It might also be possible to install it via homebrew, which might then keep it up to date
+   better than a manual install process would.
+
 * Database
 
 * JS Framework

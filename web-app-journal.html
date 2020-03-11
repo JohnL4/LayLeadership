@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-03-10 Tue 20:44 -->
+<!-- 2020-03-10 Tue 22:53 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Being a Journal of my Java Web-App Development Journey</title>
@@ -255,30 +255,30 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orgc91fc67">1. Overview</a></li>
-<li><a href="#orgb95065c">2. Java</a>
+<li><a href="#org20c1707">1. Overview</a></li>
+<li><a href="#orgac7472a">2. Java</a>
 <ul>
-<li><a href="#orga55487e">2.1. On a Mac</a></li>
-<li><a href="#org82f0ff6">2.2. Java EE</a>
+<li><a href="#orge1edb95">2.1. On a Mac</a></li>
+<li><a href="#org84bc569">2.2. Java EE</a>
 <ul>
 <li><a href="#jakarta-java-version-question">2.2.1. Question: Does Jakarta EE run on any version of Java &gt;= 8?  Answer: apparently not. :(</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org48feb56">3. Tomcat</a>
+<li><a href="#org807c7d8">3. Tomcat</a>
 <ul>
-<li><a href="#org0b452c8">3.1. On a Mac</a></li>
+<li><a href="#org0fa1995">3.1. On a Mac</a></li>
 </ul>
 </li>
-<li><a href="#orgfb7951a">4. Database</a></li>
-<li><a href="#org43b855b">5. JS Framework</a></li>
+<li><a href="#org20b2151">4. Database</a></li>
+<li><a href="#orgecf9bda">5. JS Framework</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orgc91fc67" class="outline-2">
-<h2 id="orgc91fc67"><span class="section-number-2">1</span> Overview</h2>
+<div id="outline-container-org20c1707" class="outline-2">
+<h2 id="org20c1707"><span class="section-number-2">1</span> Overview</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 I'm going to keep a diary of my effort to develop a web app from soup to nuts.
@@ -290,8 +290,8 @@ The initial plans are in <a href="README.html">README.org</a>.
 </div>
 </div>
 
-<div id="outline-container-orgb95065c" class="outline-2">
-<h2 id="orgb95065c"><span class="section-number-2">2</span> Java</h2>
+<div id="outline-container-orgac7472a" class="outline-2">
+<h2 id="orgac7472a"><span class="section-number-2">2</span> Java</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Currently running my wiki on JSPWiki on Tomcat 8 on Java 8.  I'd like to run a different process
@@ -308,8 +308,8 @@ openjdk is legal to use.  Yay.
 </p>
 </div>
 
-<div id="outline-container-orga55487e" class="outline-3">
-<h3 id="orga55487e"><span class="section-number-3">2.1</span> On a Mac</h3>
+<div id="outline-container-orge1edb95" class="outline-3">
+<h3 id="orge1edb95"><span class="section-number-3">2.1</span> On a Mac</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 On a Mac, the OpenJDK 8 installer puts files in
@@ -319,8 +319,8 @@ symlink them in to <code>/usr/bin</code>.
 </div>
 </div>
 
-<div id="outline-container-org82f0ff6" class="outline-3">
-<h3 id="org82f0ff6"><span class="section-number-3">2.2</span> Java EE</h3>
+<div id="outline-container-org84bc569" class="outline-3">
+<h3 id="org84bc569"><span class="section-number-3">2.2</span> Java EE</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 Well, first off, a <i>lot</i> has happened in the Java world since I left it, around 2005 or so.
@@ -334,7 +334,7 @@ getting new versions from <a href="https://jakarta.ee/">https://jakarta.ee/</a>.
 </p>
 </div>
 
-<div id="outline-container-org08c5af0" class="outline-4">
+<div id="outline-container-org71bb8bb" class="outline-4">
 <h4 id="jakarta-java-version-question"><span class="section-number-4">2.2.1</span> Question: Does Jakarta EE run on any version of Java &gt;= 8?  Answer: apparently not. :(</h4>
 <div class="outline-text-4" id="text-jakarta-java-version-question">
 <p>
@@ -346,12 +346,12 @@ Based on this quote: <i>"We also have to move the APIs to support JDK 11."</i> f
 </div>
 </div>
 
-<div id="outline-container-org48feb56" class="outline-2">
-<h2 id="org48feb56"><span class="section-number-2">3</span> Tomcat</h2>
+<div id="outline-container-org807c7d8" class="outline-2">
+<h2 id="org807c7d8"><span class="section-number-2">3</span> Tomcat</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-org0b452c8" class="outline-3">
-<h3 id="org0b452c8"><span class="section-number-3">3.1</span> On a Mac</h3>
+<div id="outline-container-org0fa1995" class="outline-3">
+<h3 id="org0fa1995"><span class="section-number-3">3.1</span> On a Mac</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 Unzipped Tomcat 9 to <code>/opt</code>.
@@ -387,20 +387,35 @@ Created a simple <code>run-tomcat</code> (and analogous <code>stop-tomcat</code>
 <span style="color: #a020f0;">exec</span> su -m tomcat ${<span style="color: #8b6914;">CATALINA_HOME</span>}/bin/catalina.sh start
 </pre>
 </div>
+
+<p>
+Edited <code>/opt/apache-tomcat-9.0.31/conf/tomcat-users.xml</code> to add users for manager-gui, admin-gui
+and (separate user) manager-script, admin-script.
+</p>
+
+<p>
+Running on AdoptOpenJDK 11 is as easy as downloading and installing it and changing the above
+<code>JAVA_HOME</code> to point to the new JDK.  It seems to run without problem.
+</p>
+
+<p>
+TODO: It might also be possible to install it via homebrew, which might then keep it up to date
+better than a manual install process would.
+</p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgfb7951a" class="outline-2">
-<h2 id="orgfb7951a"><span class="section-number-2">4</span> Database</h2>
+<div id="outline-container-org20b2151" class="outline-2">
+<h2 id="org20b2151"><span class="section-number-2">4</span> Database</h2>
 </div>
 
-<div id="outline-container-org43b855b" class="outline-2">
-<h2 id="org43b855b"><span class="section-number-2">5</span> JS Framework</h2>
+<div id="outline-container-orgecf9bda" class="outline-2">
+<h2 id="orgecf9bda"><span class="section-number-2">5</span> JS Framework</h2>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Created: 2020-03-10 Tue 20:44</p>
+<p class="date">Created: 2020-03-10 Tue 22:53</p>
 <p class="creator"><a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.1 (<a href="https://orgmode.org">Org</a> mode 9.2.3)</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
