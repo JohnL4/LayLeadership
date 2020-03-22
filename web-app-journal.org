@@ -71,7 +71,8 @@
    
    chown'd the resulting directory (recursively) to user =tomcat=.
 
-   Created a simple =run-tomcat= (and analogous =stop-tomcat=) script in my =~/Bin= directory:
+   Created a simple =start-tomcat= (and analogous =stop-tomcat=) script in
+   =/opt/apache-tomcat-9.0.31/bin= directory:
 
    #+BEGIN_SRC shell
      #!/bin/bash
