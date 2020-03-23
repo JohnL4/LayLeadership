@@ -98,6 +98,10 @@
    For homebrew, you'll need to open a "tap" (i.e., add another repository), and then install the "cask" for the jdk you
    want.  See the instructions at the adoptopenjdk.
 
+** On Ubuntu Linux 16.04
+
+   See http://tarheel-nc.s3-website-us-east-1.amazonaws.com/tomcat-9-setup.html.
+
 ** Deploy code
 
    Well, first you have to write some code.  See [[#hello-world][Simplest possible code]].
@@ -106,7 +110,65 @@
 
 ** Consider an ORM of some sort
 
+
+* JavaEE dependencies
+
+  I feel like there's a license restriction on the EE libs from Oracle.  So I need to find an
+  implementation I can use.
+
+  Turns out...
+
+  #+BEGIN_QUOTE
+  The Apache Tomcat® software is an open source implementation of the Java Servlet, JavaServer
+  Pages, Java Expression Language and Java WebSocket technologies. The Java Servlet, JavaServer
+  Pages, Java Expression Language and Java WebSocket specifications are developed under the Java
+  Community Process.
+  #+END_QUOTE
+
+  (From https://tomcat.apache.org/, right at the top.)
+
+  This at least satisfies the compiler:
+
+  : javac -cp /opt/apache-tomcat-9.0.31/lib/servlet-api.jar com/how_hard_can_it_be/play/Main.java
+
+  /I think/ you can also add them via Maven (from
+  https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api/4.0.1):
+
+  #+BEGIN_SRC xml
+    <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>4.0.1</version>
+        <scope>provided</scope>
+    </dependency>
+  #+END_SRC 
+
 * JS Framework
+
+* Build system
+
+** Gradle
+   
+   Gradle is not the clean, well-documented system I had hoped for.  Maybe if this turns into a big,
+   giant project, it might pay off, but there seems to be a ton black magic documented in example
+   code and (probably) StackOverflow answer, so... maybe just use Maven.
+
+** Maven
+
+   Back to Maven, until I give up on it again.
+
+*** Install/update
+    
+   Update maven, configure PATH.  (Is that really all I have to do?)  On a Mac.
+
+   Ok, so, I just downloaded the zip from Apache, unzipped it into =/opt= and symlinked the /three/
+   executable files in the =bin= directory to =/usr/local/bin=, which is already on the path.
+
+*** Make a project
+
+    
+
 * App code
 
 ** Simplest possible code

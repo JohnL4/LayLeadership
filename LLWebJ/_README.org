@@ -31,7 +31,11 @@
 
 * What the heck am I doing?
 
+  See 
+
 ** Gradle
 
-** and stuff
+** JavaEE dependencies
+
+   Need all the =javax.servlet= stuff, at least.
    
