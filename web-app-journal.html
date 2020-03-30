@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-03-22 Sun 23:56 -->
+<!-- 2020-03-29 Sun 22:36 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Being a Journal of my Java Web-App Development Journey</title>
@@ -193,9 +193,11 @@
   /*]]>*/-->
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400,400i,600,600i|IBM+Plex+Sans:400,400i,600,600i|IBM+Plex+Serif:400,400i,600,600i">
-<link rel="stylesheet" type="text/css" href="/org-mode.css" />
+<link rel="stylesheet" type="text/css" href="org-mode.css" />
 <style type="text/css">
+/* BODY { background: black; color: white; } */
 ol.lower-alpha { list-style-type: lower-alpha; }
+.open-question { background: rgba( 255, 0, 255, 0.3); }
 </style>
 <script type="text/javascript">
 /*
@@ -255,53 +257,86 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org37f239b">1. Overview</a></li>
-<li><a href="#org0263334">2. Java</a>
+<li><a href="#orgbe71225">1. Overview</a></li>
+<li><a href="#org42475a0">2. Java</a>
 <ul>
-<li><a href="#org19af84f">2.1. On a Mac</a></li>
-<li><a href="#orgba0b7db">2.2. Java EE</a>
+<li><a href="#org21ba971">2.1. On a Mac</a></li>
+<li><a href="#org60b8286">2.2. Java EE</a>
 <ul>
 <li><a href="#jakarta-java-version-question">2.2.1. Question: Does Jakarta EE run on any version of Java &gt;= 8?  Answer: apparently not. :(</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org98f9c8a">3. Tomcat</a>
+<li><a href="#org567e5d1">3. Tomcat</a>
 <ul>
-<li><a href="#orgea7ac28">3.1. On a Mac</a></li>
-<li><a href="#org0095887">3.2. On Ubuntu Linux 16.04</a></li>
-<li><a href="#org82d954d">3.3. Deploy code</a></li>
+<li><a href="#org4441998">3.1. On a Mac</a></li>
+<li><a href="#org6eaefce">3.2. On Ubuntu Linux 16.04</a></li>
+<li><a href="#org49f8596">3.3. Deploy code</a></li>
 </ul>
 </li>
-<li><a href="#orgfec4b44">4. Database</a>
+<li><a href="#org0be00f2">4. Database</a>
 <ul>
-<li><a href="#orgd834179">4.1. Consider an ORM of some sort</a></li>
+<li><a href="#orgadca95c">4.1. Consider an ORM of some sort</a></li>
 </ul>
 </li>
-<li><a href="#org6c8265d">5. JavaEE dependencies</a></li>
-<li><a href="#org1c43c89">6. JS Framework</a></li>
-<li><a href="#org47eafed">7. Build system</a>
+<li><a href="#orge279bc1">5. JavaEE dependencies</a></li>
+<li><a href="#org702e741">6. JS Framework</a></li>
+<li><a href="#org4e2cbb6">7. Build system</a>
 <ul>
-<li><a href="#org0069722">7.1. Gradle</a></li>
-<li><a href="#orgc7c0093">7.2. Maven</a>
+<li><a href="#org97d08d5">7.1. Gradle</a></li>
+<li><a href="#maven">7.2. <span class="todo IN_PROGRESS">IN-PROGRESS</span> Maven</a>
 <ul>
-<li><a href="#orgc4c72f2">7.2.1. Install/update</a></li>
-<li><a href="#org00a53fe">7.2.2. Make a project</a></li>
+<li><a href="#org10b183d">7.2.1. Install/update</a></li>
+<li><a href="#org77a7f73">7.2.2. <span class="todo IN_PROGRESS">IN-PROGRESS</span> Make a project</a>
+<ul>
+<li><a href="#org6c13670">7.2.2.1. Effective POM</a></li>
+<li><a href="#org883559a">7.2.2.2. Patching up generated POMs</a></li>
+<li><a href="#org1fdc5c3">7.2.2.3. How to define servlets (where the source code goes)</a></li>
+<li><a href="#orgbd65a17">7.2.2.4. How to make <code>javax.servlet</code> dependencies available</a></li>
+<li><a href="#org5b67f2a">7.2.2.5. How to define routings so that URLs map to servlets</a></li>
+<li><a href="#j2ee-project-structure">7.2.2.6. File structure for "simple J2EE" (ha)</a></li>
+<li><a href="#org4d54b4c">7.2.2.7. Further info on the "simple" J2EE packaging, from reference docs</a></li>
+</ul>
+</li>
+<li><a href="#orgc829285">7.2.3. Reactor?  What's that?</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgf9cd067">8. App code</a>
+<li><a href="#orgd371886">8. App code</a>
 <ul>
 <li><a href="#hello-world">8.1. Simplest possible code</a></li>
+<li><a href="#org0afcce6">8.2. Other aspects to consider</a>
+<ul>
+<li><a href="#org5466de7">8.2.1. Logging &amp; Telemetry</a></li>
+<li><a href="#org2a3a7c4">8.2.2. Security &amp; Griefing</a></li>
+<li><a href="#orgd7bde5a">8.2.3. Documentation generation</a></li>
+<li><a href="#orge8e1ea6">8.2.4. Automated testing</a>
+<ul>
+<li><a href="#orgba3028d">8.2.4.1. Unit</a></li>
+<li><a href="#orgf32af1a">8.2.4.2. Integration</a></li>
+<li><a href="#orgc93f729">8.2.4.3. Database?</a></li>
+</ul>
+</li>
+<li><a href="#orga92f436">8.2.5. Command pattern, undo/redo trees</a></li>
+<li><a href="#org52239f8">8.2.6. Well-known APIs</a>
+<ul>
+<li><a href="#org20f3a37">8.2.6.1. Documenting with something like Swagger</a></li>
+</ul>
+</li>
+<li><a href="#org6b9e4c8">8.2.7. Data export/import</a></li>
+<li><a href="#org05a5461">8.2.8. Packaging &#x2013; how the entire project is structed</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org37f239b" class="outline-2">
-<h2 id="org37f239b"><span class="section-number-2">1</span> Overview</h2>
+<div id="outline-container-orgbe71225" class="outline-2">
+<h2 id="orgbe71225"><span class="section-number-2">1</span> Overview</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 I'm going to keep a diary of my effort to develop a web app from soup to nuts.
@@ -313,8 +348,8 @@ The initial plans are in <a href="README.html">README.org</a>.
 </div>
 </div>
 
-<div id="outline-container-org0263334" class="outline-2">
-<h2 id="org0263334"><span class="section-number-2">2</span> Java</h2>
+<div id="outline-container-org42475a0" class="outline-2">
+<h2 id="org42475a0"><span class="section-number-2">2</span> Java</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Currently running my wiki on JSPWiki on Tomcat 8 on Java 8.  I'd like to run a different process
@@ -331,8 +366,8 @@ openjdk is legal to use.  Yay.
 </p>
 </div>
 
-<div id="outline-container-org19af84f" class="outline-3">
-<h3 id="org19af84f"><span class="section-number-3">2.1</span> On a Mac</h3>
+<div id="outline-container-org21ba971" class="outline-3">
+<h3 id="org21ba971"><span class="section-number-3">2.1</span> On a Mac</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 On a Mac, the OpenJDK 8 installer puts files in
@@ -342,8 +377,8 @@ symlink them in to <code>/usr/bin</code>.
 </div>
 </div>
 
-<div id="outline-container-orgba0b7db" class="outline-3">
-<h3 id="orgba0b7db"><span class="section-number-3">2.2</span> Java EE</h3>
+<div id="outline-container-org60b8286" class="outline-3">
+<h3 id="org60b8286"><span class="section-number-3">2.2</span> Java EE</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 Well, first off, a <i>lot</i> has happened in the Java world since I left it, around 2005 or so.
@@ -357,7 +392,7 @@ getting new versions from <a href="https://jakarta.ee/">https://jakarta.ee/</a>.
 </p>
 </div>
 
-<div id="outline-container-org69c4edf" class="outline-4">
+<div id="outline-container-orgdeadfef" class="outline-4">
 <h4 id="jakarta-java-version-question"><span class="section-number-4">2.2.1</span> Question: Does Jakarta EE run on any version of Java &gt;= 8?  Answer: apparently not. :(</h4>
 <div class="outline-text-4" id="text-jakarta-java-version-question">
 <p>
@@ -369,12 +404,12 @@ Based on this quote: <i>"We also have to move the APIs to support JDK 11."</i> f
 </div>
 </div>
 
-<div id="outline-container-org98f9c8a" class="outline-2">
-<h2 id="org98f9c8a"><span class="section-number-2">3</span> Tomcat</h2>
+<div id="outline-container-org567e5d1" class="outline-2">
+<h2 id="org567e5d1"><span class="section-number-2">3</span> Tomcat</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgea7ac28" class="outline-3">
-<h3 id="orgea7ac28"><span class="section-number-3">3.1</span> On a Mac</h3>
+<div id="outline-container-org4441998" class="outline-3">
+<h3 id="org4441998"><span class="section-number-3">3.1</span> On a Mac</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 Unzipped Tomcat 9 to <code>/opt</code>.
@@ -434,8 +469,8 @@ want.  See the instructions at the adoptopenjdk.
 </div>
 </div>
 
-<div id="outline-container-org0095887" class="outline-3">
-<h3 id="org0095887"><span class="section-number-3">3.2</span> On Ubuntu Linux 16.04</h3>
+<div id="outline-container-org6eaefce" class="outline-3">
+<h3 id="org6eaefce"><span class="section-number-3">3.2</span> On Ubuntu Linux 16.04</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 See <a href="http://tarheel-nc.s3-website-us-east-1.amazonaws.com/tomcat-9-setup.html">http://tarheel-nc.s3-website-us-east-1.amazonaws.com/tomcat-9-setup.html</a>.
@@ -443,8 +478,8 @@ See <a href="http://tarheel-nc.s3-website-us-east-1.amazonaws.com/tomcat-9-setup
 </div>
 </div>
 
-<div id="outline-container-org82d954d" class="outline-3">
-<h3 id="org82d954d"><span class="section-number-3">3.3</span> Deploy code</h3>
+<div id="outline-container-org49f8596" class="outline-3">
+<h3 id="org49f8596"><span class="section-number-3">3.3</span> Deploy code</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 Well, first you have to write some code.  See <a href="#hello-world">Simplest possible code</a>.
@@ -453,18 +488,17 @@ Well, first you have to write some code.  See <a href="#hello-world">Simplest po
 </div>
 </div>
 
-<div id="outline-container-orgfec4b44" class="outline-2">
-<h2 id="orgfec4b44"><span class="section-number-2">4</span> Database</h2>
+<div id="outline-container-org0be00f2" class="outline-2">
+<h2 id="org0be00f2"><span class="section-number-2">4</span> Database</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-orgd834179" class="outline-3">
-<h3 id="orgd834179"><span class="section-number-3">4.1</span> Consider an ORM of some sort</h3>
+<div id="outline-container-orgadca95c" class="outline-3">
+<h3 id="orgadca95c"><span class="section-number-3">4.1</span> Consider an ORM of some sort</h3>
 </div>
 </div>
 
-
-<div id="outline-container-org6c8265d" class="outline-2">
-<h2 id="org6c8265d"><span class="section-number-2">5</span> JavaEE dependencies</h2>
+<div id="outline-container-orge279bc1" class="outline-2">
+<h2 id="orge279bc1"><span class="section-number-2">5</span> JavaEE dependencies</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 I feel like there's a license restriction on the EE libs from Oracle.  So I need to find an
@@ -515,16 +549,16 @@ javac -cp /opt/apache-tomcat-9.0.31/lib/servlet-api.jar com/how_hard_can_it_be/p
 </div>
 </div>
 
-<div id="outline-container-org1c43c89" class="outline-2">
-<h2 id="org1c43c89"><span class="section-number-2">6</span> JS Framework</h2>
+<div id="outline-container-org702e741" class="outline-2">
+<h2 id="org702e741"><span class="section-number-2">6</span> JS Framework</h2>
 </div>
 
-<div id="outline-container-org47eafed" class="outline-2">
-<h2 id="org47eafed"><span class="section-number-2">7</span> Build system</h2>
+<div id="outline-container-org4e2cbb6" class="outline-2">
+<h2 id="org4e2cbb6"><span class="section-number-2">7</span> Build system</h2>
 <div class="outline-text-2" id="text-7">
 </div>
-<div id="outline-container-org0069722" class="outline-3">
-<h3 id="org0069722"><span class="section-number-3">7.1</span> Gradle</h3>
+<div id="outline-container-org97d08d5" class="outline-3">
+<h3 id="org97d08d5"><span class="section-number-3">7.1</span> Gradle</h3>
 <div class="outline-text-3" id="text-7-1">
 <p>
 Gradle is not the clean, well-documented system I had hoped for.  Maybe if this turns into a big,
@@ -534,16 +568,24 @@ code and (probably) StackOverflow answer, so&#x2026; maybe just use Maven.
 </div>
 </div>
 
-<div id="outline-container-orgc7c0093" class="outline-3">
-<h3 id="orgc7c0093"><span class="section-number-3">7.2</span> Maven</h3>
-<div class="outline-text-3" id="text-7-2">
+<div id="outline-container-org6a929e7" class="outline-3">
+<h3 id="maven"><span class="section-number-3">7.2</span> <span class="todo IN_PROGRESS">IN-PROGRESS</span> Maven</h3>
+<div class="outline-text-3" id="text-maven">
 <p>
 Back to Maven, until I give up on it again.
 </p>
+
+<p>
+Need to figure out how to download dependencies over https.
+</p>
+
+<p>
+Need to figure out a project structure.  Somewhere between simple-weapp and J2EE-webapp.
+</p>
 </div>
 
-<div id="outline-container-orgc4c72f2" class="outline-4">
-<h4 id="orgc4c72f2"><span class="section-number-4">7.2.1</span> Install/update</h4>
+<div id="outline-container-org10b183d" class="outline-4">
+<h4 id="org10b183d"><span class="section-number-4">7.2.1</span> Install/update</h4>
 <div class="outline-text-4" id="text-7-2-1">
 <p>
 Update maven, configure PATH.  (Is that really all I have to do?)  On a Mac.
@@ -556,19 +598,380 @@ executable files in the <code>bin</code> directory to <code>/usr/local/bin</code
 </div>
 </div>
 
-<div id="outline-container-org00a53fe" class="outline-4">
-<h4 id="org00a53fe"><span class="section-number-4">7.2.2</span> Make a project</h4>
+<div id="outline-container-org77a7f73" class="outline-4">
+<h4 id="org77a7f73"><span class="section-number-4">7.2.2</span> <span class="todo IN_PROGRESS">IN-PROGRESS</span> Make a project</h4>
+<div class="outline-text-4" id="text-7-2-2">
+<p>
+After much reading of Maven docs (finally), I think something like the J2EE project structure
+(below, but you probably don't need to go read it) is the way to go.  All I ever built in the
+past was a single Maven project, but a project (parent, packaging = <code>pom</code>) that has the
+following sub-projects shouldn't be too hard.
+</p>
+
+<ul class="org-ul">
+<li>business logic, with minimal dependencies (onion architecture core)</li>
+<li>utilities I will probably use in other projects (again, minimal dependencies, and particularly
+no dependencies on UI or d/b layers).  Maybe this is where I'd put interface/facade code for
+common stuff like logging.</li>
+<li>the actual web stuff, which would probably be a pretty thin layer around the business logic.
+One exception to the "thin layer" concept is that I guess this is where I'd stick all my
+super-fancy javascript UI stuff.  The server would probably concentrate on returning JSON
+responses to RESTful (?) queries.</li>
+</ul>
+
+<p>
+Wonder if I can create these as completely independent of each other (i.e., in different
+directories, not subdirectories) and then tie them all together with the parent POM.  See
+<a href="https://maven.apache.org/pom.html#Aggregation">https://maven.apache.org/pom.html#Aggregation</a>.  Answer: yes.  (But I'm not doing it right away.)
+</p>
+
+<p>
+Basically: (1) create a parent project (once), cd into the parent project directory, and (2)
+create sub-projects, Archetypes to be used:
+</p>
+
+<ul class="org-ul">
+<li>maven-archetype-quickstart (parent and jar-type subs)</li>
+<li>maven-archetype-webapp (probably just need one of these)</li>
+</ul>
+
+<blockquote>
+<p>
+(Note: there might be some scary warnings at the beginning about HTTPS being required, but it works
+ok for setting up the initial project.  In my case, they came from my old <code>.m2</code> repository, and
+when I blew it away, the errors cleared up (because new versions got downloaded).)
+</p>
+</blockquote>
+
+<p>
+Then, change the packaging of the parent project to <code>pom</code>, add the subprojects, etc., etc., as
+documented at
+<a href="https://maven.apache.org/guides/getting-started/index.html#How_do_I_build_more_than_one_project_at_once">https://maven.apache.org/guides/getting-started/index.html#How_do_I_build_more_than_one_project_at_once</a>.
+</p>
+</div>
+
+<div id="outline-container-org6c13670" class="outline-5">
+<h5 id="org6c13670"><span class="section-number-5">7.2.2.1</span> Effective POM</h5>
+<div class="outline-text-5" id="text-7-2-2-1">
+<pre class="example">
+mvn help:effective-pom
+</pre>
+
+
+<p>
+Shows super-POM merged w/your POM (or inherited POM hierarchy, if you are so bold).
+</p>
+</div>
+</div>
+
+<div id="outline-container-org883559a" class="outline-5">
+<h5 id="org883559a"><span class="section-number-5">7.2.2.2</span> Patching up generated POMs</h5>
+<div class="outline-text-5" id="text-7-2-2-2">
+<p>
+Looks like Maven generates POMs that need a little more detail.  (Or sometimes, they have too
+much detail, like for really old JDK versions.)
+</p>
+
+<p>
+I put these property definitions at the end of the "header" section of the POM:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="color: #0000ff;">properties</span>&gt;
+  &lt;<span style="color: #0000ff;">maven.compiler.source</span>&gt;11&lt;/<span style="color: #0000ff;">maven.compiler.source</span>&gt;
+  &lt;<span style="color: #0000ff;">maven.compiler.target</span>&gt;11&lt;/<span style="color: #0000ff;">maven.compiler.target</span>&gt;
+  &lt;<span style="color: #0000ff;">project.build.sourceEncoding</span>&gt;UTF-8&lt;/<span style="color: #0000ff;">project.build.sourceEncoding</span>&gt;
+&lt;/<span style="color: #0000ff;">properties</span>&gt;
+</pre>
 </div>
 </div>
 </div>
 
+<div id="outline-container-org1fdc5c3" class="outline-5">
+<h5 id="org1fdc5c3"><span class="section-number-5">7.2.2.3</span> How to define servlets (where the source code goes)</h5>
+<div class="outline-text-5" id="text-7-2-2-3">
+<p>
+Servlet source code goes in web project, in directory
+<code>src/main/java/&lt;package-directory-structure&gt;/Foo.java</code>.  Binary winds up in the war file in
+<code>WEB-INF/classes</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgbd65a17" class="outline-5">
+<h5 id="orgbd65a17"><span class="section-number-5">7.2.2.4</span> How to make <code>javax.servlet</code> dependencies available</h5>
+<div class="outline-text-5" id="text-7-2-2-4">
+<p>
+Tomcat 9 provides:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
-<div id="outline-container-orgf9cd067" class="outline-2">
-<h2 id="orgf9cd067"><span class="section-number-2">8</span> App code</h2>
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><b>Spec</b></td>
+<td class="org-right"><b>Version</b></td>
+</tr>
+
+<tr>
+<td class="org-left">Servlet</td>
+<td class="org-right">4.0</td>
+</tr>
+
+<tr>
+<td class="org-left">JSP</td>
+<td class="org-right">2.3</td>
+</tr>
+
+<tr>
+<td class="org-left">EL</td>
+<td class="org-right">3.0</td>
+</tr>
+
+<tr>
+<td class="org-left">WebSocket</td>
+<td class="org-right">1.1</td>
+</tr>
+
+<tr>
+<td class="org-left">JASIC (authentication)</td>
+<td class="org-right">1.1</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+I'm <i>guessing</i> we won't need the JSP and EL specs, since we'll (probably) be emiting JSON, not
+HTML.
+</p>
+
+<p>
+So, we need something like the following:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="color: #0000ff;">dependency</span>&gt;
+  &lt;<span style="color: #0000ff;">groupId</span>&gt;javax.servlet&lt;/<span style="color: #0000ff;">groupId</span>&gt;
+  &lt;<span style="color: #0000ff;">artifactId</span>&gt;javax.servlet-api&lt;/<span style="color: #0000ff;">artifactId</span>&gt;
+  &lt;<span style="color: #0000ff;">version</span>&gt;3.0.1&lt;/<span style="color: #0000ff;">version</span>&gt;
+  &lt;<span style="color: #0000ff;">scope</span>&gt;provided&lt;/<span style="color: #0000ff;">scope</span>&gt;  <span style="color: #36648b; font-style: italic;">&lt;!--  "provided" means we need this JAR for a successful compile, but it won't be included in</span>
+<span style="color: #36648b; font-style: italic;">                                 the generated output, because we expect the container to which the generated WAR is</span>
+<span style="color: #36648b; font-style: italic;">                                 deployed to provide its own compatible version of the JAR.</span>
+<span style="color: #36648b; font-style: italic;">                           --&gt;</span>
+&lt;/<span style="color: #0000ff;">dependency</span>&gt;
+</pre>
+</div>
+
+<p>
+But the version we need is probably 4.0.x?
+</p>
+
+<p>
+The effective POM has Maven Central at <a href="https://repo.maven.apache.org/maven2">https://repo.maven.apache.org/maven2</a>.  So&#x2026; from the
+versions listed at <a href="https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/">https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/</a>, it
+looks like maybe 4.0.1 is the version we want.
+</p>
+
+<p>
+Searching at <a href="https://search.maven.org/">https://search.maven.org/</a> with search <code>g:javax.servlet a:javax.servlet-api</code> yields
+a hit.  Clicking on the result (try the artifact id or the version count) yields a snippet of
+info, including the GitHub repository and home page.
+</p>
+
+<p>
+And, finally, after all that&#x2026; we build (<code>mvn package</code>), and&#x2026; voila!  (It got automatically
+downloaded and the compile succeeds, after we updated our tiny class to have a dependency on
+<code>HttpServlet</code>.)
+</p>
+
+<pre class="example">
+deimos$ pwd
+/Users/john/.m2/repository/javax/servlet/javax.servlet-api/4.0.1
+
+deimos$ lscf
+_remote.repositories                      javax.servlet-api-4.0.1.jar
+javax.servlet-api-4.0.1-javadoc.jar       javax.servlet-api-4.0.1.jar.sha1
+javax.servlet-api-4.0.1-javadoc.jar.sha1  javax.servlet-api-4.0.1.pom
+javax.servlet-api-4.0.1-sources.jar       javax.servlet-api-4.0.1.pom.sha1
+javax.servlet-api-4.0.1-sources.jar.sha1  m2e-lastUpdated.properties
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org5b67f2a" class="outline-5">
+<h5 id="org5b67f2a"><span class="section-number-5">7.2.2.5</span> How to define routings so that URLs map to servlets</h5>
+</div>
+
+<div id="outline-container-org162f5c1" class="outline-5">
+<h5 id="j2ee-project-structure"><span class="section-number-5">7.2.2.6</span> File structure for "simple J2EE" (ha)</h5>
+<div class="outline-text-5" id="text-j2ee-project-structure">
+<p>
+I don't think I need all of the J2EE project stuff, such as the EJBs and the "ear" folder, but
+the rest are probably good.  I guess I could just delete the unwanted directories and remove
+references to them from the ancester POMs.  Then, the final deliverable is the "servlets" (or
+"servlets/servlet") project, packaged as war.
+</p>
+
+<p>
+The project dir root contains the following:
+</p>
+
+<ul class="org-ul">
+<li>pom.xml &#x2013; overall POM</li>
+<li>primary-source &#x2013; core/unique business logic
+<ul class="org-ul">
+<li>pom.xml &#x2013; sub-POM for the main source, which is a jar</li>
+<li>src
+<ul class="org-ul">
+<li>main
+<ul class="org-ul">
+<li>java
+<ul class="org-ul">
+<li>com
+<ul class="org-ul">
+<li>how_hard_can_it_be.com
+<ul class="org-ul">
+<li>offtotheraces</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>test
+<ul class="org-ul">
+<li>java</li>
+</ul></li>
+</ul></li>
+<li>target &#x2013; all the magic that Maven does, probably includes the jar generated from primary-source</li>
+</ul></li>
+<li>projects &#x2013; <span class="open-question"> secondary/reusable source, I guess </span>
+<ul class="org-ul">
+<li>pom.xml</li>
+<li>logging &#x2013; sample project
+<ul class="org-ul">
+<li>pom.xml &#x2013; each project gets its own POM</li>
+<li>src
+<ul class="org-ul">
+<li>main
+<ul class="org-ul">
+<li>java</li>
+</ul></li>
+<li>test
+<ul class="org-ul">
+<li>java</li>
+</ul></li>
+</ul></li>
+<li>target &#x2013; Maven-generated</li>
+</ul></li>
+</ul></li>
+<li>servlets (plural) &#x2013; actual JSPs and servlets, which should be thin logic around the business
+logic.  Note also that, buried below here, are the static files for the web app (js, css,
+images, etc.)
+<ul class="org-ul">
+<li>pom.xml</li>
+<li>servlet (singular) &#x2013; <span class="open-question"> Not sure why there's a singular
+"servlet" directory under the plural "servlets" directory. </span>
+<ul class="org-ul">
+<li>src
+<ul class="org-ul">
+<li>main
+<ul class="org-ul">
+<li>java</li>
+<li>webapp
+<ul class="org-ul">
+<li>WEB-INF
+<ul class="org-ul">
+<li>web.xml</li>
+</ul></li>
+<li>index.jsp</li>
+<li><i>(other JSPs and static resources (css, js, images, etc.), presumably</i></li>
+</ul></li>
+</ul></li>
+<li>test
+<ul class="org-ul">
+<li>java</li>
+</ul></li>
+</ul></li>
+<li>target</li>
+</ul></li>
+</ul></li>
+<li>ejbs &#x2013; <span class="open-question"> I guess these are also thin layers around
+business logic </span> 
+<ul class="org-ul">
+<li>pom.xml</li>
+<li>src
+<ul class="org-ul">
+<li>main
+<ul class="org-ul">
+<li>java</li>
+<li>resource &#x2013; resource bundles for configuration, i18n, similar stuff?
+<ul class="org-ul">
+<li>META-INF
+<ul class="org-ul">
+<li>ejb-jar.xml - <span class="open-question"> No idea what this is
+</span></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>test
+<ul class="org-ul">
+<li>java</li>
+</ul></li>
+</ul></li>
+<li>target</li>
+</ul></li>
+<li>ear &#x2013; <span class="open-question"> I have no idea what goes in here </span> 
+<ul class="org-ul">
+<li>pom.xml</li>
+<li>src
+<ul class="org-ul">
+<li>main
+<ul class="org-ul">
+<li>java</li>
+</ul></li>
+<li>test
+<ul class="org-ul">
+<li>java</li>
+</ul></li>
+</ul></li>
+<li>target</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org4d54b4c" class="outline-5">
+<h5 id="org4d54b4c"><span class="section-number-5">7.2.2.7</span> Further info on the "simple" J2EE packaging, from reference docs</h5>
+<div class="outline-text-5" id="text-7-2-2-7">
+<p>
+<a href="https://maven.apache.org/archetypes/maven-archetype-j2ee-simple/index.html">https://maven.apache.org/archetypes/maven-archetype-j2ee-simple/index.html</a>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc829285" class="outline-4">
+<h4 id="orgc829285"><span class="section-number-4">7.2.3</span> Reactor?  What's that?</h4>
+<div class="outline-text-4" id="text-7-2-3">
+<p>
+Built-in part of Maven that decides in what order to build component modules (sub-projects),
+given their interdependencies.  Not a plug-in; don't sweat it.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd371886" class="outline-2">
+<h2 id="orgd371886"><span class="section-number-2">8</span> App code</h2>
 <div class="outline-text-2" id="text-8">
 </div>
-<div id="outline-container-org287042c" class="outline-3">
+<div id="outline-container-org52bb36f" class="outline-3">
 <h3 id="hello-world"><span class="section-number-3">8.1</span> Simplest possible code</h3>
 <div class="outline-text-3" id="text-hello-world">
 <p>
@@ -576,10 +979,60 @@ Uh&#x2026;
 </p>
 </div>
 </div>
+<div id="outline-container-org0afcce6" class="outline-3">
+<h3 id="org0afcce6"><span class="section-number-3">8.2</span> Other aspects to consider</h3>
+<div class="outline-text-3" id="text-8-2">
+</div>
+<div id="outline-container-org5466de7" class="outline-4">
+<h4 id="org5466de7"><span class="section-number-4">8.2.1</span> Logging &amp; Telemetry</h4>
+</div>
+<div id="outline-container-org2a3a7c4" class="outline-4">
+<h4 id="org2a3a7c4"><span class="section-number-4">8.2.2</span> Security &amp; Griefing</h4>
+</div>
+<div id="outline-container-orgd7bde5a" class="outline-4">
+<h4 id="orgd7bde5a"><span class="section-number-4">8.2.3</span> Documentation generation</h4>
+</div>
+<div id="outline-container-orge8e1ea6" class="outline-4">
+<h4 id="orge8e1ea6"><span class="section-number-4">8.2.4</span> Automated testing</h4>
+<div class="outline-text-4" id="text-8-2-4">
+</div>
+<div id="outline-container-orgba3028d" class="outline-5">
+<h5 id="orgba3028d"><span class="section-number-5">8.2.4.1</span> Unit</h5>
+</div>
+<div id="outline-container-orgf32af1a" class="outline-5">
+<h5 id="orgf32af1a"><span class="section-number-5">8.2.4.2</span> Integration</h5>
+</div>
+<div id="outline-container-orgc93f729" class="outline-5">
+<h5 id="orgc93f729"><span class="section-number-5">8.2.4.3</span> Database?</h5>
+</div>
+</div>
+<div id="outline-container-orga92f436" class="outline-4">
+<h4 id="orga92f436"><span class="section-number-4">8.2.5</span> Command pattern, undo/redo trees</h4>
+</div>
+<div id="outline-container-org52239f8" class="outline-4">
+<h4 id="org52239f8"><span class="section-number-4">8.2.6</span> Well-known APIs</h4>
+<div class="outline-text-4" id="text-8-2-6">
+</div>
+<div id="outline-container-org20f3a37" class="outline-5">
+<h5 id="org20f3a37"><span class="section-number-5">8.2.6.1</span> Documenting with something like Swagger</h5>
+</div>
+</div>
+<div id="outline-container-org6b9e4c8" class="outline-4">
+<h4 id="org6b9e4c8"><span class="section-number-4">8.2.7</span> Data export/import</h4>
+</div>
+<div id="outline-container-org05a5461" class="outline-4">
+<h4 id="org05a5461"><span class="section-number-4">8.2.8</span> Packaging &#x2013; how the entire project is structed</h4>
+<div class="outline-text-4" id="text-8-2-8">
+<p>
+Maybe&#x2026; web stuff in the war, but business logic and persistence in other jars?  See <a href="#maven">Maven</a>.
+</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Created: 2020-03-22 Sun 23:56</p>
+<p class="date">Created: 2020-03-29 Sun 22:36</p>
 <p class="creator"><a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.1 (<a href="https://orgmode.org">Org</a> mode 9.2.3)</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>

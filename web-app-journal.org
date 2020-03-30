@@ -6,7 +6,7 @@
 # `^:nil' means raw underscores and carets are not interpreted to mean sub- and superscript.  (Use {} to force interpretation.)
 #+OPTIONS: author:nil creator:t H:9 ^:{}
 #+HTML_HEAD: <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400,400i,600,600i|IBM+Plex+Sans:400,400i,600,600i|IBM+Plex+Serif:400,400i,600,600i">
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/org-mode.css" />
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="org-mode.css" />
 
 # Generates "up" and "home" links ("." is "current directory").  Can comment one out.
 #+HTML_LINK_UP: .
@@ -16,7 +16,9 @@
 # See https://emacs.stackexchange.com/a/18943/17421
 # 
 #+HTML_HEAD: <style type="text/css">
-#+HTML_HEAD:  ol.lower-alpha { list-style-type: lower-alpha; }
+#+HTML_HEAD:   /* BODY { background: black; color: white; } */
+#+HTML_HEAD:   ol.lower-alpha { list-style-type: lower-alpha; }
+#+HTML_HEAD:   .open-question { background: rgba( 255, 0, 255, 0.3); }
 #+HTML_HEAD: </style>
 
 * Overview
@@ -110,7 +112,6 @@
 
 ** Consider an ORM of some sort
 
-
 * JavaEE dependencies
 
   I feel like there's a license restriction on the EE libs from Oracle.  So I need to find an
@@ -154,9 +155,16 @@
    giant project, it might pay off, but there seems to be a ton black magic documented in example
    code and (probably) StackOverflow answer, so... maybe just use Maven.
 
-** Maven
+** IN-PROGRESS Maven
+   :PROPERTIES:
+   :CUSTOM_ID: maven
+   :END:
 
    Back to Maven, until I give up on it again.
+
+   Need to figure out how to download dependencies over https.
+
+   Need to figure out a project structure.  Somewhere between simple-weapp and J2EE-webapp.
 
 *** Install/update
     
@@ -165,9 +173,209 @@
    Ok, so, I just downloaded the zip from Apache, unzipped it into =/opt= and symlinked the /three/
    executable files in the =bin= directory to =/usr/local/bin=, which is already on the path.
 
-*** Make a project
+*** IN-PROGRESS Make a project
 
-    
+    After much reading of Maven docs (finally), I think something like the J2EE project structure
+    (below, but you probably don't need to go read it) is the way to go.  All I ever built in the
+    past was a single Maven project, but a project (parent, packaging = =pom=) that has the
+    following sub-projects shouldn't be too hard.
+
+    - business logic, with minimal dependencies (onion architecture core)
+    - utilities I will probably use in other projects (again, minimal dependencies, and particularly
+      no dependencies on UI or d/b layers).  Maybe this is where I'd put interface/facade code for
+      common stuff like logging.
+    - the actual web stuff, which would probably be a pretty thin layer around the business logic.
+      One exception to the "thin layer" concept is that I guess this is where I'd stick all my
+      super-fancy javascript UI stuff.  The server would probably concentrate on returning JSON
+      responses to RESTful (?) queries.
+
+    Wonder if I can create these as completely independent of each other (i.e., in different
+    directories, not subdirectories) and then tie them all together with the parent POM.  See
+    https://maven.apache.org/pom.html#Aggregation.  Answer: yes.  (But I'm not doing it right away.)
+
+    Basically: (1) create a parent project (once), cd into the parent project directory, and (2)
+    create sub-projects, Archetypes to be used:
+
+    - maven-archetype-quickstart (parent and jar-type subs)
+    - maven-archetype-webapp (probably just need one of these)
+
+    #+BEGIN_QUOTE 
+    (Note: there might be some scary warnings at the beginning about HTTPS being required, but it works
+    ok for setting up the initial project.  In my case, they came from my old =.m2= repository, and
+    when I blew it away, the errors cleared up (because new versions got downloaded).)
+    #+END_QUOTE 
+
+    Then, change the packaging of the parent project to =pom=, add the subprojects, etc., etc., as
+    documented at
+    https://maven.apache.org/guides/getting-started/index.html#How_do_I_build_more_than_one_project_at_once.
+
+**** Effective POM
+
+     : mvn help:effective-pom
+
+     Shows super-POM merged w/your POM (or inherited POM hierarchy, if you are so bold).
+
+**** Patching up generated POMs
+
+     Looks like Maven generates POMs that need a little more detail.  (Or sometimes, they have too
+     much detail, like for really old JDK versions.)
+
+     I put these property definitions at the end of the "header" section of the POM:
+
+     #+BEGIN_SRC xml
+       <properties>
+         <maven.compiler.source>11</maven.compiler.source>
+         <maven.compiler.target>11</maven.compiler.target>
+         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+       </properties>
+     #+END_SRC
+
+**** How to define servlets (where the source code goes)
+
+     Servlet source code goes in web project, in directory
+     =src/main/java/<package-directory-structure>/Foo.java=.  Binary winds up in the war file in
+     =WEB-INF/classes=.
+
+**** How to make =javax.servlet= dependencies available
+
+     Tomcat 9 provides:
+
+     | *Spec*                 | *Version* |
+     | Servlet                |       4.0 |
+     | JSP                    |       2.3 |
+     | EL                     |       3.0 |
+     | WebSocket              |       1.1 |
+     | JASIC (authentication) |       1.1 |
+
+     I'm /guessing/ we won't need the JSP and EL specs, since we'll (probably) be emiting JSON, not
+     HTML.
+
+     So, we need something like the following:
+
+     #+BEGIN_SRC xml
+       <dependency>
+         <groupId>javax.servlet</groupId>
+         <artifactId>javax.servlet-api</artifactId>
+         <version>3.0.1</version>
+         <scope>provided</scope>  <!--  "provided" means we need this JAR for a successful compile, but it won't be included in
+                                        the generated output, because we expect the container to which the generated WAR is
+                                        deployed to provide its own compatible version of the JAR.
+                                  -->
+       </dependency>
+     #+END_SRC
+
+     But the version we need is probably 4.0.x?
+
+     The effective POM has Maven Central at https://repo.maven.apache.org/maven2.  So... from the
+     versions listed at https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/, it
+     looks like maybe 4.0.1 is the version we want.
+
+     Searching at https://search.maven.org/ with search =g:javax.servlet a:javax.servlet-api= yields
+     a hit.  Clicking on the result (try the artifact id or the version count) yields a snippet of
+     info, including the GitHub repository and home page.
+
+     And, finally, after all that... we build (=mvn package=), and... voila!  (It got automatically
+     downloaded and the compile succeeds, after we updated our tiny class to have a dependency on
+     =HttpServlet=.)
+
+     #+BEGIN_EXAMPLE
+       deimos$ pwd
+       /Users/john/.m2/repository/javax/servlet/javax.servlet-api/4.0.1
+
+       deimos$ lscf
+       _remote.repositories                      javax.servlet-api-4.0.1.jar
+       javax.servlet-api-4.0.1-javadoc.jar       javax.servlet-api-4.0.1.jar.sha1
+       javax.servlet-api-4.0.1-javadoc.jar.sha1  javax.servlet-api-4.0.1.pom
+       javax.servlet-api-4.0.1-sources.jar       javax.servlet-api-4.0.1.pom.sha1
+       javax.servlet-api-4.0.1-sources.jar.sha1  m2e-lastUpdated.properties
+     #+END_EXAMPLE 
+
+     (Whether it runs is something we'll find out later.)
+
+     The next step, I think, is to fix up routing so a url will go to the servlet.  See [[#servlet-routing][Servlet
+     Routing]].
+
+**** File structure for "simple J2EE" (ha)
+     :PROPERTIES:
+     :CUSTOM_ID: j2ee-project-structure
+     :END:
+
+     I don't think I need all of the J2EE project stuff, such as the EJBs and the "ear" folder, but
+     the rest are probably good.  I guess I could just delete the unwanted directories and remove
+     references to them from the ancester POMs.  Then, the final deliverable is the "servlets" (or
+     "servlets/servlet") project, packaged as war.
+
+    The project dir root contains the following:
+
+    - pom.xml -- overall POM
+    - primary-source -- core/unique business logic
+      - pom.xml -- sub-POM for the main source, which is a jar
+      - src
+        - main
+          - java
+            - com
+              - how_hard_can_it_be.com
+                - offtotheraces
+        - test
+          - java
+      - target -- all the magic that Maven does, probably includes the jar generated from primary-source
+    - projects -- @@html:<span class="open-question">@@ secondary/reusable source, I guess @@html:</span>@@
+      - pom.xml
+      - logging -- sample project
+        - pom.xml -- each project gets its own POM
+        - src
+          - main
+            - java
+          - test
+            - java
+        - target -- Maven-generated
+    - servlets (plural) -- actual JSPs and servlets, which should be thin logic around the business
+      logic.  Note also that, buried below here, are the static files for the web app (js, css,
+      images, etc.)
+      - pom.xml
+      - servlet (singular) -- @@html:<span class="open-question">@@ Not sure why there's a singular
+        "servlet" directory under the plural "servlets" directory. @@html:</span>@@
+        - src
+          - main
+            - java
+            - webapp
+              - WEB-INF
+                - web.xml
+              - index.jsp
+              - /(other JSPs and static resources (css, js, images, etc.), presumably/
+          - test
+            - java
+        - target
+    - ejbs -- @@html:<span class="open-question">@@ I guess these are also thin layers around
+      business logic @@html:</span>@@ 
+      - pom.xml
+      - src
+        - main
+          - java
+          - resource -- resource bundles for configuration, i18n, similar stuff?
+            - META-INF
+              - ejb-jar.xml - @@html:<span class="open-question">@@ No idea what this is
+                @@html:</span>@@ 
+        - test
+          - java
+      - target
+    - ear -- @@html:<span class="open-question">@@ I have no idea what goes in here @@html:</span>@@ 
+      - pom.xml
+      - src
+        - main
+          - java
+        - test
+          - java
+      - target
+
+**** Further info on the "simple" J2EE packaging, from reference docs
+
+     https://maven.apache.org/archetypes/maven-archetype-j2ee-simple/index.html
+
+*** Reactor?  What's that?
+
+    Built-in part of Maven that decides in what order to build component modules (sub-projects),
+    given their interdependencies.  Not a plug-in; don't sweat it.
 
 * App code
 
@@ -177,3 +385,27 @@
    :END:
 
    Uh...
+** Other aspects to consider
+*** Servlet Routing
+    :PROPERTIES:
+    :CUSTOM_ID: servlet-routing
+    :END:
+
+    How to define routings so that URLs map to servlets.
+
+    
+
+*** Logging & Telemetry
+*** Security & Griefing
+*** Documentation generation
+*** Automated testing
+**** Unit
+**** Integration
+**** Database?
+*** Command pattern, undo/redo trees
+*** Well-known APIs
+**** Documenting with something like Swagger
+*** Data export/import
+*** Packaging -- how the entire project is structed
+
+    Maybe... web stuff in the war, but business logic and persistence in other jars?  See [[#maven][Maven]].
