@@ -60,6 +60,15 @@
     Based on this quote: /"We also have to move the APIs to support JDK 11."/ from this article:
     https://dzone.com/articles/jakarta-ee-8-and-beyond. 
 
+** Editing in emacs
+
+   This might be a lost cause, but if you want to get away from magic tools like IntelliJ, Eclipse,
+   Vs Code, ...
+
+   https://www.emacswiki.org/emacs/JavaDevelopmentEnvironment
+
+   https://blog.jmibanez.com/2019/03/31/emacs-as-java-ide-revisited.html
+
 * Tomcat
 
 ** On a Mac
