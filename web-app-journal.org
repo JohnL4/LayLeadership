@@ -37,6 +37,9 @@
 
   https://adoptopenjdk.net/index.html has the builds for download.
 
+  https://docs.oracle.com/en/java/javase/11/ has tool documentation (=javac=, =java=, etc.).  I
+  haven't yet found these docs in any downloaded packages.
+
 ** On a Mac
    
   On a Mac, the OpenJDK 8 installer puts files in
@@ -52,18 +55,22 @@
    of <2020-03-09 Mon>, Java EE 8 is the download (from Oracle), but, in future, I guess we'll be
    getting new versions from https://jakarta.ee/.
 
-*** Question: Does Jakarta EE run on any version of Java >= 8?  Answer: apparently not. :(
+*** Question: Does Jakarta EE support any version of Java >= 8?  Answer: apparently not. :(
     :PROPERTIES:
     :CUSTOM_ID: jakarta-java-version-question
     :END:
 
     Based on this quote: /"We also have to move the APIs to support JDK 11."/ from this article:
-    https://dzone.com/articles/jakarta-ee-8-and-beyond. 
+    https://dzone.com/articles/jakarta-ee-8-and-beyond.
+
+    (Note: the jars probably still run just fine on higher versions of Java, I guess they just don't
+    take advantage of the latest features of the language.  I kinda don't care, so long as they run
+    properly.) 
 
 ** Editing in emacs
 
    This might be a lost cause, but if you want to get away from magic tools like IntelliJ, Eclipse,
-   Vs Code, ...
+   VS Code, ...
 
    https://www.emacswiki.org/emacs/JavaDevelopmentEnvironment
 
@@ -151,8 +158,8 @@
 
 ** Apache Derby
 
-   All-java embedded database, but probably not as widely used as Sqlite.  Advantage: probably works
-   well with Hibernate and other Java technologies.  Derby seems to perform better.
+   Pure Java embedded database, but probably not as widely used as Sqlite.  Advantage: probably
+   works well with Hibernate and other Java technologies.  Derby seems to perform better.
 
    As if I care, with my 12-record database.
    
@@ -188,8 +195,8 @@
 ** Gradle
    
    Gradle is not the clean, well-documented system I had hoped for.  Maybe if this turns into a big,
-   giant project, it might pay off, but there seems to be a ton black magic documented in example
-   code and (probably) StackOverflow answer, so... maybe just use Maven.
+   giant project, it might pay off, but there seems to be a ton of black magic documented in example
+   code and (probably) StackOverflow answers, so... maybe just use Maven.
 
 ** RESEARCH-DONE Maven
    CLOSED: [2020-03-30 Mon 22:06]
@@ -199,7 +206,8 @@
 
    Back to Maven, until I give up on it again.
 
-   Need to figure out how to download dependencies over https.
+   Need to figure out how to download dependencies over https.  (Answer: switch the urls to be
+   "https" instead of "http".  Also, purge your local =.m2= repository and let it get repopulated.)
 
    Need to figure out a project structure.  Somewhere between simple-weapp and J2EE-webapp.
 
@@ -215,8 +223,8 @@
 
     After much reading of Maven docs (finally), I think something like the J2EE project structure
     (below, but you probably don't need to go read it) is the way to go.  All I ever built in the
-    past was a single Maven project, but a project (parent, packaging = =pom=) that has the
-    following sub-projects shouldn't be too hard.
+    past was a single Maven project, but a project (parent or aggregate, packaging = =pom=) that has
+    the following sub-projects shouldn't be too hard.
 
     - business logic, with minimal dependencies (onion architecture core)
     - utilities I will probably use in other projects (again, minimal dependencies, and particularly
@@ -271,8 +279,8 @@
 **** How to define servlets (where the source code goes)
 
      Servlet source code goes in web project, in directory
-     =src/main/java/<package-directory-structure>/Foo.java=.  Binary winds up in the war file in
-     =WEB-INF/classes=.
+     =src/main/java/<package-directory-structure>/FooServlet.java=.  Binary winds up in the war file
+     in =WEB-INF/classes=.
 
 **** How to make =javax.servlet= dependencies available
      :PROPERTIES:
@@ -331,7 +339,7 @@
        javax.servlet-api-4.0.1-sources.jar.sha1  m2e-lastUpdated.properties
      #+END_EXAMPLE 
 
-     (Whether it runs is something we'll find out later.)
+     (Whether it runs is something we'll find out later.  (Answer: it does.))
 
      The next step, I think, is to fix up routing so a url will go to the servlet.  See [[#servlet-routing][Servlet
      Routing]].
@@ -346,7 +354,8 @@
      references to them from the ancester POMs.  Then, the final deliverable is the "servlets" (or
      "servlets/servlet") project, packaged as war.
 
-    The project dir root contains the following:
+    The project dir root contains the following (@@html:<span class="open-question">@@ open
+    questions @@html:</span>@@ are presented in the indicated style):
 
     - pom.xml -- overall POM
     - primary-source -- core/unique business logic
@@ -417,6 +426,16 @@
 
     Built-in part of Maven that decides in what order to build component modules (sub-projects),
     given their interdependencies.  Not a plug-in; don't sweat it.
+
+*** Useful sites
+
+    - https://mvnrepository.com
+
+    - https://repo.maven.apache.org/maven2/
+
+    - https://search.maven.org/ (i.e., Sonatype, a major supporter of Maven)
+
+    - https://javadoc.io/
 
 * App code
 
