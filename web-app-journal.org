@@ -393,7 +393,8 @@
 
     How to define routings so that URLs map to servlets.
 
-    
+    Servlet mappings.  Chapter 12 of the Servlet 4.0 spec, available at
+    https://javaee.github.io/servlet-spec/downloads/servlet-4.0/servlet-4_0_FINAL.pdf. 
 
 *** Logging & Telemetry
 *** Security & Griefing
