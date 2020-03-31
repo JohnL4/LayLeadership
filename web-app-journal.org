@@ -112,6 +112,41 @@
 
 ** Consider an ORM of some sort
 
+   This might require using a "more real" database than Sqlite.  Although it might be fun to try. :)
+
+   https://www.eversql.com/i-followed-hibernate-orm-to-hell-and-came-back-alive-to-tell-about-it/
+
+   https://hackr.io/blog/java-frameworks -- Hibernate's in here, along with a /ton/ of other
+   frameworks.  Sounds like a good page to refer back to.
+
+** SQLite
+   
+*** How much does it scale?
+
+    For a toy app (on a toy server), I don't need much.
+
+    But... it looks like it scales quite well, actually.
+
+    https://blog.expensify.com/2018/01/08/scaling-sqlite-to-4m-qps-on-a-single-server/
+
+    https://stackoverflow.com/a/62220
+
+    https://news.ycombinator.com/item?id=11934826
+
+    https://www.whoishostingthis.com/compare/sqlite/optimize/
+
+** Postgresql
+
+   Well, after all the Sqlite awesomeness, maybe I'll put this bad boy off a while more.  I don't
+   really intend to become a d/b geek.
+
+** Apache Derby
+
+   All-java embedded database, but probably not as widely used as Sqlite.  Advantage: probably works
+   well with Hibernate and other Java technologies.  Derby seems to perform better.
+
+   As if I care, with my 12-record database.
+   
 * JavaEE dependencies
 
   I feel like there's a license restriction on the EE libs from Oracle.  So I need to find an
@@ -135,15 +170,7 @@
   /I think/ you can also add them via Maven (from
   https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api/4.0.1):
 
-  #+BEGIN_SRC xml
-    <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
-    <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>javax.servlet-api</artifactId>
-        <version>4.0.1</version>
-        <scope>provided</scope>
-    </dependency>
-  #+END_SRC 
+  See [[#how-to-make-javax-servlet-dependencies-available][How to make =javax.servlet= dependencies available]], below.
 
 * JS Framework
 
@@ -155,7 +182,8 @@
    giant project, it might pay off, but there seems to be a ton black magic documented in example
    code and (probably) StackOverflow answer, so... maybe just use Maven.
 
-** IN-PROGRESS Maven
+** RESEARCH-DONE Maven
+   CLOSED: [2020-03-30 Mon 22:06]
    :PROPERTIES:
    :CUSTOM_ID: maven
    :END:
@@ -173,7 +201,8 @@
    Ok, so, I just downloaded the zip from Apache, unzipped it into =/opt= and symlinked the /three/
    executable files in the =bin= directory to =/usr/local/bin=, which is already on the path.
 
-*** IN-PROGRESS Make a project
+*** RESEARCH-DONE Make a project
+    CLOSED: [2020-03-30 Mon 22:06]
 
     After much reading of Maven docs (finally), I think something like the J2EE project structure
     (below, but you probably don't need to go read it) is the way to go.  All I ever built in the
@@ -237,6 +266,9 @@
      =WEB-INF/classes=.
 
 **** How to make =javax.servlet= dependencies available
+     :PROPERTIES:
+     :CUSTOM_ID: how-to-make-javax-servlet-dependencies-available
+     :END:
 
      Tomcat 9 provides:
 
@@ -384,7 +416,18 @@
    :CUSTOM_ID: hello-world
    :END:
 
-   Uh...
+   #+BEGIN_SRC java
+     @WebServlet(urlPatterns = { "/hello" })
+     public class HelloServlet extends HttpServlet
+     {
+        public void doGet(HttpServletRequest aRequest, HttpServletResponse aResponse) 
+           throws ServletException, IOException
+        {
+           aRequest.getServletContext().getRequestDispatcher("/index.jsp").forward(aRequest, aResponse);
+        }
+     }
+   #+END_SRC 
+
 ** Other aspects to consider
 *** Servlet Routing
     :PROPERTIES:
@@ -394,7 +437,31 @@
     How to define routings so that URLs map to servlets.
 
     Servlet mappings.  Chapter 12 of the Servlet 4.0 spec, available at
-    https://javaee.github.io/servlet-spec/downloads/servlet-4.0/servlet-4_0_FINAL.pdf. 
+    https://javaee.github.io/servlet-spec/downloads/servlet-4.0/servlet-4_0_FINAL.pdf.
+
+    Also, use the =WebServlet= annotation to specify mappings at the level of each servlet, so you
+    don't have to go edit =web.xml=.
+
+*** JSON output
+
+    Is there an easy way?  Or do I just call =toJson()= on some object and write it to the response
+    stream?
+
+    Actually, it looks pretty simple.
+
+    See https://www.baeldung.com/servlet-json-response, but basically, it's:
+
+    #+BEGIN_SRC java
+      String employeeJsonString = new Gson().toJson(employee);
+      PrintWriter out = response.getWriter();
+      response.setContentType("application/json");
+      response.setCharacterEncoding("UTF-8");
+      out.print(employeeJsonString);
+      out.flush();
+    #+END_SRC
+
+    /Gson/ is Google's JSON serializer.  /Jackson/ is the more "standard" java-world serializer,
+    and, like all things Java-world, it's both more complex and more powerful (I guess).
 
 *** Logging & Telemetry
 *** Security & Griefing
