@@ -495,9 +495,13 @@
     /Gson/ is Google's JSON serializer.  /Jackson/ is the more "standard" java-world serializer,
     and, like all things Java-world, it's both more complex and more powerful (I guess).
 
-*** Dependency Injection
+*** IN-PROGRESS Dependency Injection
 
     Implementations of CDI spec.
+
+    Servlet construction-time parameters, injection?
+
+    Or do we just have a global resolver and use it all over the place?
     
 *** Logging & Telemetry
 *** Security & Griefing
