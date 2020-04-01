@@ -7,12 +7,22 @@
   <version>1.0-SNAPSHOT</version>
   <name>Web Maven Webapp</name>
   <url>http://maven.apache.org</url>
+  <parent>
+   <groupId>com.how_hard_can_it_be</groupId>
+   <artifactId>LLWebJ</artifactId>
+   <version>1.0-SNAPSHOT</version>
+  </parent>
   <properties>
      <maven.compiler.source>11</maven.compiler.source>
      <maven.compiler.target>11</maven.compiler.target>
      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
+   <dependency>
+      <groupId>com.how_hard_can_it_be</groupId>
+      <artifactId>Bus</artifactId>
+      <version>1.0-SNAPSHOT</version>
+   </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -30,6 +40,11 @@
       <artifactId>javax.servlet.jsp-api</artifactId>
       <version>2.3.3</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.8.6</version>
     </dependency>
   </dependencies>
   <build>

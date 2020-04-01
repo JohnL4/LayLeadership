@@ -255,6 +255,10 @@
     documented at
     https://maven.apache.org/guides/getting-started/index.html#How_do_I_build_more_than_one_project_at_once.
 
+    <2020-03-31 Tue> This works.  The trick is to run =mvn install= at the root (parent) level, so
+    all depdendent projects /plus/ the parent POM get installed to the local repository (=~/.m2= by
+    default).  Apparently, that parent POM is important.
+
 **** Effective POM
 
      : mvn help:effective-pom
@@ -491,6 +495,10 @@
     /Gson/ is Google's JSON serializer.  /Jackson/ is the more "standard" java-world serializer,
     and, like all things Java-world, it's both more complex and more powerful (I guess).
 
+*** Dependency Injection
+
+    Implementations of CDI spec.
+    
 *** Logging & Telemetry
 *** Security & Griefing
 *** Documentation generation
