@@ -34,5 +34,6 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.jboss.spec.javax.el:jboss-el-api_3.0_spec:2.0.0.Final" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.jboss.logging:jboss-logging:3.2.1.Final" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.jboss.classfilewriter:jboss-classfilewriter:1.2.4.Final" level="project" />
+    <orderEntry type="module" module-name="Svc" />
   </component>
 </module>

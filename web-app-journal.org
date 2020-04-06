@@ -528,6 +528,15 @@
     supported by Weld" (specifically, the sections on "Servlet containers" and "Tomcat").  It's
     mostly a matter of adding the Maven dependency blobs specified in the reference manual to your
     pom.xml, web.xml, and context.xml.
+
+***** DONE Creating injected beans in another module
+      CLOSED: [2020-04-06 Mon 09:29]
+
+      Trying to move injected beans to another module (jar packaging) and I need to get a
+      META-INF/beans.xml file in it, somehow (I think).
+
+      Answer: =META-INF= goes in =resources= directory.  Only java code goes in =java= directory.
+      See https://stackoverflow.com/a/13057183.
     
 **** Background info
 
