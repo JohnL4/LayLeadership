@@ -22,16 +22,14 @@ public class JsonServlet extends HttpServlet
    public void doGet(HttpServletRequest aRequest, HttpServletResponse aResponse)
       throws IOException
    {
-      var mario = new Person();
-      mario.name = "Mario";
-      mario.introduction = "It's-a me, Mario!";
+      var mario = new Person( "Mario", "It's-a me, Mario!" );
 
-      var gson = new Gson();
-      var personJsonString = gson.toJson( mario);
-      aResponse.setContentType("application/json");
-      aResponse.setCharacterEncoding("UTF-8");
+      var gson             = new Gson();
+      var personJsonString = gson.toJson( mario );
+      aResponse.setContentType( "application/json" );
+      aResponse.setCharacterEncoding( "UTF-8" );
       var out = aResponse.getWriter();
-      out.print( personJsonString);
+      out.print( personJsonString );
       out.flush();
    }
 }

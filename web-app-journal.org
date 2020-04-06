@@ -163,7 +163,7 @@
 
    As if I care, with my 12-record database.
    
-* JavaEE dependencies
+* JavaEE
 
   I feel like there's a license restriction on the EE libs from Oracle.  So I need to find an
   implementation I can use.
@@ -183,10 +183,22 @@
 
   : javac -cp /opt/apache-tomcat-9.0.31/lib/servlet-api.jar com/how_hard_can_it_be/play/Main.java
 
+** Dependencies
+   
   /I think/ you can also add them via Maven (from
   https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api/4.0.1):
 
   See [[#how-to-make-javax-servlet-dependencies-available][How to make =javax.servlet= dependencies available]], below.
+
+** JavaEE (JakartaEE) specs
+
+   JavaEE is a big umbrella.  Here's a table listing all the subparts and versions:
+
+   https://javaee.github.io/javaee-spec/Specifications
+
+   or
+
+   https://jakarta.ee/
 
 * JS Framework
 
@@ -502,7 +514,43 @@
     Servlet construction-time parameters, injection?
 
     Or do we just have a global resolver and use it all over the place?
+
+    Note that the full-blown CDI spec builds on the "dependency injection" spec, so we may not need
+    the full-blown CDI.  (On the other hand, maybe we /do/ want to go ahead and use it, so we don't
+    have to make the transition to it later, when my project becomes a huge enterprise church CRM
+    system with thousands of subscribers.  Or just so I can learn it.)
+
+**** Setup
+     
+    Supposedly simple tutorial at https://hradecek.github.io/posts/cdi-in-tomcat.
+
+    Also, the Weld reference manual has info in the chapter on "Application servers and environments
+    supported by Weld" (specifically, the sections on "Servlet containers" and "Tomcat").  It's
+    mostly a matter of adding the Maven dependency blobs specified in the reference manual to your
+    pom.xml, web.xml, and context.xml.
     
+**** Background info
+
+     From https://projects.eclipse.org/proposals/jakarta-contexts-and-dependency-injection:
+
+     #+BEGIN_QUOTE
+     Unlike most of the Java EE specifications, Contexts and Dependency Injection was led by a
+     non-Oracle organization, namely Red Hat.
+
+     The project aims to continue the standardization work of the Contexts and Dependency Injection
+     (CDI) specification, which is part of the Java EE platform, but which also is designed since
+     version 2.0 for use in Java SE environments. Previous revisions of that specification were
+     created under the Java Community Process (JCP):
+
+     - CDI 1.0 (JSR 299), part of Java EE 6
+     - CDI 1.1 and 1.2 (JSR 346), part of Java EE 7
+     - CDI 2.0 (JSR 365), part of Java EE 8
+     #+END_QUOTE 
+    
+*** Lombok
+
+    https://projectlombok.org/
+
 *** Logging & Telemetry
 *** Security & Griefing
 *** Documentation generation
