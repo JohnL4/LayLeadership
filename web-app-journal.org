@@ -537,6 +537,16 @@
 
       Answer: =META-INF= goes in =resources= directory.  Only java code goes in =java= directory.
       See https://stackoverflow.com/a/13057183.
+
+****** TODO Bean scoping
+
+       I have a bean injected as the private data member of a servlet.  Is there a default scope?
+       What is it?  Should I explicitly scope my bean?  To =@Dependent=, maybe?
+
+****** TODO =beans.xml= is optional, supposedly
+
+       I guess that means all beans have to have scope annotations?  Is there a more generic
+       =@InjectedBean= annotation I can use, or do I just slap on scope annotations?
     
 **** Background info
 
