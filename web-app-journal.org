@@ -200,6 +200,13 @@
 
    https://jakarta.ee/
 
+** JavaEE tutorial
+
+   Version 8: https://javaee.github.io/tutorial/
+
+   This thing is monstrous.  Also, this "tutorial" isn't very gentle; it's more like a reference (I
+   like that).
+
 * JS Framework
 
 * Build system
@@ -473,6 +480,7 @@
    #+END_SRC 
 
 ** Other aspects to consider
+   
 *** Servlet Routing
     :PROPERTIES:
     :CUSTOM_ID: servlet-routing
@@ -566,9 +574,35 @@
      - CDI 2.0 (JSR 365), part of Java EE 8
      #+END_QUOTE 
     
+*** IN-PROGRESS Persistence
+
+**** TODO SQLite (for now)
+
+     But maybe Derby later as an exercise in another d/b layer.
+
+**** IN-PROGRESS Java Persistence API (JPA)
+
+***** "Criteria" queries:  Yikes.
+
+      Typesafe queries, but it seems (a) like a lot of work, and (b) to assume I have a knowledge of
+      JPQL.  Accordingly, let's learn about JPQL first.
+
+***** TODO JPQL
+
+      Java Persistence Query Language.  Requires typecasting of query results, but is closer to SQL,
+      so maybe easier to learn.
+
+      (Obviously, the advantage of abstracting over the particular relational d/b is the code can be
+      neutral with respect to vendor SQL dialects.)
+
 *** Lombok
 
     https://projectlombok.org/
+
+    MvnRepository has it at https://mvnrepository.com/artifact/org.projectlombok/lombok.
+
+    Might be simplest to just slap a =@Data= annotation on things you expect to use it on.  (Business
+    objects, mostly?  I assume not DTOs, really).
 
 *** Logging & Telemetry
 *** Security & Griefing
@@ -581,6 +615,32 @@
 *** Well-known APIs
 **** Documenting with something like Swagger
 *** Data export/import
-*** Packaging -- how the entire project is structed
+*** Packaging -- how the entire project is structured
 
-    Maybe... web stuff in the war, but business logic and persistence in other jars?  See [[#maven][Maven]].
+    Maybe... web stuff in the war, but business logic and persistence in other jars?  Yes, see
+    [[#maven][Maven]].
+
+*** Stress testing, esp. for database
+
+    Want to test multiple, concurrent writes.
+
+    Want to test concurrency in general.
+
+*** SQL profiling, tracing
+
+    Want to see what kinds of queries are actually created by whatever ORM system/framework I
+    choose.
+    
+*** Object mappers (Domain/DTO)
+
+    Would be nice to be able to automagically transform DTOs to Domain objects and vice versa.
+
+    Consider:
+
+    - MapStruct (https://mapstruct.org/)
+    - modelmapper (http://modelmapper.org/)
+
+    See also:
+
+    - https://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
+    - https://www.baeldung.com/java-performance-mapping-frameworks
