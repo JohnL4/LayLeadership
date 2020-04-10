@@ -135,6 +135,8 @@
    https://hackr.io/blog/java-frameworks -- Hibernate's in here, along with a /ton/ of other
    frameworks.  Sounds like a good page to refer back to.
 
+   EclipseLink is the reference implementation for JPA.
+
 ** SQLite
    
 *** How much does it scale?
@@ -515,7 +517,8 @@
     /Gson/ is Google's JSON serializer.  /Jackson/ is the more "standard" java-world serializer,
     and, like all things Java-world, it's both more complex and more powerful (I guess).
 
-*** IN-PROGRESS Dependency Injection
+*** DONE Dependency Injection
+    CLOSED: [2020-04-09 Thu 22:34]
 
     Implementations of CDI spec.
 
@@ -580,14 +583,46 @@
 
      But maybe Derby later as an exercise in another d/b layer.
 
-**** IN-PROGRESS Java Persistence API (JPA)
+***** DONE Create a play sqlite database
+      CLOSED: [2020-04-09 Thu 22:51]
+
+      Before we play around with JPQL and EclipseLink and all that, we need a database.  The one
+      from http://tarheel-nc.s3-website-us-east-1.amazonaws.com/sql-basics.html should do.
+
+      But first, since "Entity" is such a terrible name for entities, I edited the "load" sql script
+      to replace "Entity" with "Monster", so it's a database of monsters, with tags.
+
+      To load it... use SQLite Studio.  (Or you could do it from the command line, I guess, but I
+      don't know how to do that easily.)
+
+      Create a new database and connect to it.
+
+      Open a SQL editor, load the "load" file, select all the text and run it.  (Apparently, running
+      w/out selecting all text results in only one statement being run.)
+
+      Results in a 28k database file, so, not too big.
+
+**** Connect to SQLite d/b using JDBC
+
+***** sqlite driver
+
+      Looks like the Xerial one is the most commonly-used.
+
+      
+
+**** HOLD Java Persistence API (JPA)
+     CLOSED: [2020-04-10 Fri 17:51]
 
 ***** "Criteria" queries:  Yikes.
 
       Typesafe queries, but it seems (a) like a lot of work, and (b) to assume I have a knowledge of
       JPQL.  Accordingly, let's learn about JPQL first.
 
-***** TODO JPQL
+***** DONE JPQL
+      CLOSED: [2020-04-09 Thu 15:27]
+
+      - CLOSING NOTE [2020-04-09 Thu 15:27] \\
+        Well, I *read* about it.
 
       Java Persistence Query Language.  Requires typecasting of query results, but is closer to SQL,
       so maybe easier to learn.
@@ -595,6 +630,22 @@
       (Obviously, the advantage of abstracting over the particular relational d/b is the code can be
       neutral with respect to vendor SQL dialects.)
 
+****** TODO fetch plans
+
+       Need to figure out how to get these (and whether they're useful).
+
+****** HOLD EclipseLink
+       CLOSED: [2020-04-10 Fri 17:50]
+
+       - State "HOLD"       from "IN-PROGRESS" [2020-04-10 Fri 17:50] \\
+         Waiting for a simple JDBC connection.
+
+       Need to get started writing some code with this.
+       
+******* Download & install
+
+        Bleah, maybe I should start with a simple JDBC connection before I go crazy on JPA.
+       
 *** Lombok
 
     https://projectlombok.org/
@@ -631,7 +682,7 @@
     Want to see what kinds of queries are actually created by whatever ORM system/framework I
     choose.
     
-*** Object mappers (Domain/DTO)
+*** TODO Object mappers (Domain/DTO)
 
     Would be nice to be able to automagically transform DTOs to Domain objects and vice versa.
 
