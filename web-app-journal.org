@@ -124,6 +124,22 @@
 
    Well, first you have to write some code.  See [[#hello-world][Simplest possible code]].
    
+** IN-PROGRESS JDBC connection and other external configs preserved between version upgrade
+   :PROPERTIES:
+   :CUSTOM_ID: tomcat-jndi-resources
+   :END:
+
+   See https://serverfault.com/a/751477
+
+   From =/opt/apache-tomcat-9.0.31/conf/server.xml=:
+
+   #+BEGIN_EXAMPLE
+     <!-- Global JNDI resources
+          Documentation at /docs/jndi-resources-howto.html
+     -->
+   #+END_EXAMPLE 
+
+
 * Database
 
 ** Consider an ORM of some sort
@@ -579,7 +595,11 @@
     
 *** IN-PROGRESS Persistence
 
-**** TODO SQLite (for now)
+**** DONE SQLite (for now)
+     CLOSED: [2020-04-12 Sun 12:17]
+
+     - CLOSING NOTE [2020-04-12 Sun 12:17] \\
+       Picked SQLite, now handling sub-issues (see below).
 
      But maybe Derby later as an exercise in another d/b layer.
 
@@ -602,13 +622,44 @@
 
       Results in a 28k database file, so, not too big.
 
+****** TODO Where to put it?
+
+       I dunno, but probably not in the resource directory, since that'll be inside the jar and
+       probably not updateable.  Maybe put an empty copy of the d/b in the resources directory so at
+       runtime, it can be used as a template for a new d/b (if needed), and have a property
+       specifying the location of the actual d/b somewhere?
+
+       Which begs the question: how to specify properties, both outside (actual value) and inside
+       (default value) the jar?
+
+****** DONE jar properties
+       CLOSED: [2020-04-12 Sun 15:06]
+
+       - CLOSING NOTE [2020-04-12 Sun 15:06] \\
+         Not the answer.
+
+       The property I want is the location of the database.
+
+       Actually, this isn't the answer, but read on ([[#command-line-properties][Command-line (or otherwise run-time) properties]]).
+
+****** IN-PROGRESS Command-line (or otherwise run-time) properties
+       :PROPERTIES:
+       :CUSTOM_ID: command-line-properties
+       :END:
+
+       =System.getProperty()= ?
+
+       Gets more complicated for a webapp, because you don't get a command line to fiddle around with.
+
+       Looks like the answer is JNDI (great! another thing to learn!)
+
+       See [[#tomcat-jndi-resources][JDBC connection and other external configs preserved between version upgrade]].
+
 **** Connect to SQLite d/b using JDBC
 
-***** sqlite driver
+***** IN-PROGRESS sqlite driver
 
-      Looks like the Xerial one is the most commonly-used.
-
-      
+      Looks like the Xerial one is the most commonly-used.  Not hard to find at https://mvnrepository.com.
 
 **** HOLD Java Persistence API (JPA)
      CLOSED: [2020-04-10 Fri 17:51]
