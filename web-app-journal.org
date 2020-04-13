@@ -164,7 +164,7 @@
      <GlobalNamingResources>
        <!-- ...stuff... -->
        <Resource name="jdbc/LayLeadershipTasks"
-                 auto="Container"
+                 auth="Container"
                  type="javax.sql.DataSource"
                  driverClassName="org.sqlite.JDBC"
                  url="jdbc:sqlite:/usr/local/var/LayLeadership/tasks.db"
