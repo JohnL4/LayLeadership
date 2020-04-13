@@ -27,10 +27,17 @@
 
   The initial plans are in [[file:README.org][README.org]].
 
+** A note on horrible colors in source code
+
+   Sometimes, I generate this file running emacs in character mode via an =ssh= terminal session.
+   In that case, I use colors appropriate to "dark mode" and they come out looking horrible.  Sorry
+   about that.  Hopefully, you're reading this after I've generated it via light-mode GUI and emacs
+   is using different colors.
+
 * Java
 
   Currently running my wiki on JSPWiki on Tomcat 8 on Java 8.  I'd like to run a different process
-  on Java whatever-is-the-latest.  (Note: I can't.  See [[#jakarta-java-version-question][the Jakarta/Java version question]].
+  on Java whatever-is-the-latest.  (Note: see [[#jakarta-java-version-question][the Jakarta/Java version question]].)
 
   Looks like some process has kept Java up to date on my AWS server.  Yay.  Also, apparently,
   openjdk is legal to use.  Yay.
@@ -129,7 +136,10 @@
    :CUSTOM_ID: tomcat-jndi-resources
    :END:
 
-   See https://serverfault.com/a/751477
+   See
+
+   - https://serverfault.com/a/751477
+   - https://newfivefour.com/category_sqlite.html
 
    From =/opt/apache-tomcat-9.0.31/conf/server.xml=:
 
@@ -187,7 +197,10 @@
    EclipseLink is the reference implementation for JPA.
 
 ** SQLite
-   
+
+   See
+   - https://newfivefour.com/category_sqlite.html
+
 *** How much does it scale?
 
     For a toy app (on a toy server), I don't need much.
@@ -233,6 +246,32 @@
   This at least satisfies the compiler:
 
   : javac -cp /opt/apache-tomcat-9.0.31/lib/servlet-api.jar com/how_hard_can_it_be/play/Main.java
+
+  Where the code looks like this:
+
+  #+BEGIN_SRC java
+    package com.how_hard_can_it_be.play;
+
+    import java.nio.file.Paths;
+    import javax.servlet.http.HttpServlet;
+
+    public class Main
+    {
+       public static void main( String[] args)
+       {
+          System.out.println( "Hello!");
+
+          var path = Paths.get("./test-data.txt");
+
+          System.out.println(  String.format( "Path: %s", path.normalize().toAbsolutePath()));
+       }
+
+       private void handleServlet( HttpServlet aServlet)
+       {
+
+       }
+    }
+  #+END_SRC 
 
 ** Dependencies
    
@@ -290,6 +329,9 @@
 
 *** RESEARCH-DONE Make a project
     CLOSED: [2020-03-30 Mon 22:06]
+    :PROPERTIES:
+    :CUSTOM_ID: maven-project-structure
+    :END:
 
     After much reading of Maven docs (finally), I think something like the J2EE project structure
     (below, but you probably don't need to go read it) is the way to go.  All I ever built in the
@@ -513,6 +555,13 @@
 
 * App code
 
+  Because this is where it gets real.
+
+  Note that, at some point, I switched over to using JetBrains's IntelliJ IDEA community-edition
+  Java IDE, and it started getting magic.  In particular, it can be set to automatically download
+  Maven artifacts as you include them in the POM, so you no longer see them get downloaded as part
+  of your Maven build process.
+
 ** Simplest possible code
    :PROPERTIES:
    :CUSTOM_ID: hello-world
@@ -532,6 +581,11 @@
 
 ** Other aspects to consider
    
+*** Packaging -- how the entire project is structured
+
+    Maybe... web stuff in the war, but business logic and persistence in other jars?  Yes, see
+    [[#maven][Maven]] (specifically, [[#maven-project-structure][Make a project]]).
+
 *** Servlet Routing
     :PROPERTIES:
     :CUSTOM_ID: servlet-routing
@@ -595,8 +649,8 @@
       Trying to move injected beans to another module (jar packaging) and I need to get a
       META-INF/beans.xml file in it, somehow (I think).
 
-      Answer: =META-INF= goes in =resources= directory.  Only java code goes in =java= directory.
-      See https://stackoverflow.com/a/13057183.
+      Answer: =META-INF= goes in =resources= directory, a /peer/ to the =java= directory.  Only java
+      code goes in =java= directory.  See https://stackoverflow.com/a/13057183.
 
 ****** TODO Bean scoping
 
@@ -730,7 +784,14 @@
 
         Bleah, maybe I should start with a simple JDBC connection before I go crazy on JPA.
        
-*** Lombok
+*** DONE Lombok
+    CLOSED: [2020-04-13 Mon 15:18]
+
+    - CLOSING NOTE [2020-04-13 Mon 15:18] \\
+      Actually, I gave up on this, due to complexities of annotation processing and Java 11 (i.e.,
+      post-Jigsaw).  Both Maven and IntelliJ IDEA are having a hard time with it.  Anyway, it bollixes up
+      debugging (post-compile code) and smart IDEs can just insert the stuff we need more or less
+      automatically.
 
     https://projectlombok.org/
 
@@ -750,11 +811,6 @@
 *** Well-known APIs
 **** Documenting with something like Swagger
 *** Data export/import
-*** Packaging -- how the entire project is structured
-
-    Maybe... web stuff in the war, but business logic and persistence in other jars?  Yes, see
-    [[#maven][Maven]].
-
 *** Stress testing, esp. for database
 
     Want to test multiple, concurrent writes.
