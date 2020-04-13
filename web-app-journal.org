@@ -137,8 +137,41 @@
      <!-- Global JNDI resources
           Documentation at /docs/jndi-resources-howto.html
      -->
-   #+END_EXAMPLE 
+   #+END_EXAMPLE
 
+   ...which is https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html
+
+   There's a section on JDBC data sources:
+   https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html#JDBC_Data_Sources
+
+   (https://tomcat.apache.org/tomcat-9.0-doc/jndi-datasource-examples-howto.html might also be interesting.)
+
+   So, rather than learn all of JNDI, I think all you need to know is that it's essentially a
+   directory of resources available for lookup by code in your app.  Said directory can be served by
+   a local server (e.g., your Tomcat instance creating an ersatz read-only version out of whole
+   cloth) or it could be served by another server and magically looked up.  Said other server could
+   be a JNDI server, an LDAP server or a Microsoft Active Directory server; we sort of don't care
+   because it should be transparent to our code.  More or less.
+
+   We're doing the ersatz-out-of-whole-cloth version here.
+
+   | SQLite =driverClassName= | ~org.sqlite.JDBC~ (at least, that's what we'll try) |
+   | SQLite connection url    | ~jdbc:sqlite:/usr/local/var/LayLeadership/tasks.db~ |
+
+   So, we'll try this, in =/opt/apache-tomcat-9.0.31/conf/server.xml=:
+
+   #+BEGIN_SRC xml
+     <GlobalNamingResources>
+       <!-- ...stuff... -->
+       <Resource name="jdbc/LayLeadershipTasks"
+                 auto="Container"
+                 type="javax.sql.DataSource"
+                 driverClassName="org.sqlite.JDBC"
+                 url="jdbc:sqlite:/usr/local/var/LayLeadership/tasks.db"
+                 />
+       <!-- ...stuff... -->
+     </GlobalNamingResources>
+   #+END_SRC 
 
 * Database
 

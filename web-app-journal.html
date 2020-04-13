@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-04-12 Sun 15:07 -->
+<!-- 2020-04-12 Sun 22:02 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Being a Journal of my Java Web-App Development Journey</title>
@@ -257,117 +257,117 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orga11ed1b">1. Overview</a></li>
-<li><a href="#org16a41b2">2. Java</a>
+<li><a href="#org2c8601a">1. Overview</a></li>
+<li><a href="#org5714733">2. Java</a>
 <ul>
-<li><a href="#org5258471">2.1. On a Mac</a></li>
-<li><a href="#org57c2854">2.2. Java EE</a>
+<li><a href="#orgcee8f64">2.1. On a Mac</a></li>
+<li><a href="#org3594aec">2.2. Java EE</a>
 <ul>
 <li><a href="#jakarta-java-version-question">2.2.1. Question: Does Jakarta EE support any version of Java &gt;= 8?  Answer: apparently not. :(</a></li>
 </ul>
 </li>
-<li><a href="#org98bcbb5">2.3. Editing in emacs</a></li>
+<li><a href="#orgafc3d58">2.3. Editing in emacs</a></li>
 </ul>
 </li>
-<li><a href="#org5381830">3. Tomcat</a>
+<li><a href="#org694c077">3. Tomcat</a>
 <ul>
-<li><a href="#orgebcf494">3.1. On a Mac</a></li>
-<li><a href="#orga5d4f4a">3.2. On Ubuntu Linux 16.04</a></li>
-<li><a href="#org6473f99">3.3. Deploy code</a></li>
+<li><a href="#orgae5edb2">3.1. On a Mac</a></li>
+<li><a href="#org2dbc8cb">3.2. On Ubuntu Linux 16.04</a></li>
+<li><a href="#org0968e37">3.3. Deploy code</a></li>
 <li><a href="#tomcat-jndi-resources">3.4. <span class="todo IN_PROGRESS">IN-PROGRESS</span> JDBC connection and other external configs preserved between version upgrade</a></li>
 </ul>
 </li>
-<li><a href="#org0d29df6">4. Database</a>
+<li><a href="#org2025168">4. Database</a>
 <ul>
-<li><a href="#org1096c0b">4.1. Consider an ORM of some sort</a></li>
-<li><a href="#orgdb65424">4.2. SQLite</a>
+<li><a href="#org25e1911">4.1. Consider an ORM of some sort</a></li>
+<li><a href="#orga188c91">4.2. SQLite</a>
 <ul>
-<li><a href="#orgda84e41">4.2.1. How much does it scale?</a></li>
+<li><a href="#orgb603d5d">4.2.1. How much does it scale?</a></li>
 </ul>
 </li>
-<li><a href="#org8682258">4.3. Postgresql</a></li>
-<li><a href="#org82c0827">4.4. Apache Derby</a></li>
+<li><a href="#org1f17594">4.3. Postgresql</a></li>
+<li><a href="#org26913b7">4.4. Apache Derby</a></li>
 </ul>
 </li>
-<li><a href="#org4d907b5">5. JavaEE</a>
+<li><a href="#org7ddd1c3">5. JavaEE</a>
 <ul>
-<li><a href="#org2425ed6">5.1. Dependencies</a></li>
-<li><a href="#org0bee24e">5.2. JavaEE (JakartaEE) specs</a></li>
-<li><a href="#org3794fb5">5.3. JavaEE tutorial</a></li>
+<li><a href="#orgece4c97">5.1. Dependencies</a></li>
+<li><a href="#orgfb27e6c">5.2. JavaEE (JakartaEE) specs</a></li>
+<li><a href="#org3ff318f">5.3. JavaEE tutorial</a></li>
 </ul>
 </li>
-<li><a href="#orgea998d0">6. JS Framework</a></li>
-<li><a href="#orgcf6cd5d">7. Build system</a>
+<li><a href="#org4ca1b74">6. JS Framework</a></li>
+<li><a href="#orgd8571b2">7. Build system</a>
 <ul>
-<li><a href="#org20cc3c3">7.1. Gradle</a></li>
+<li><a href="#org397aedc">7.1. Gradle</a></li>
 <li><a href="#maven">7.2. <span class="done RESEARCH_DONE">RESEARCH-DONE</span> Maven</a>
 <ul>
-<li><a href="#org04665b9">7.2.1. Install/update</a></li>
-<li><a href="#orgeb9fa89">7.2.2. <span class="done RESEARCH_DONE">RESEARCH-DONE</span> Make a project</a>
+<li><a href="#org50b0944">7.2.1. Install/update</a></li>
+<li><a href="#org6fb1d77">7.2.2. <span class="done RESEARCH_DONE">RESEARCH-DONE</span> Make a project</a>
 <ul>
-<li><a href="#org4d03ce7">7.2.2.1. Effective POM</a></li>
-<li><a href="#orga56250c">7.2.2.2. Patching up generated POMs</a></li>
-<li><a href="#orgd175865">7.2.2.3. How to define servlets (where the source code goes)</a></li>
+<li><a href="#orge7f70ef">7.2.2.1. Effective POM</a></li>
+<li><a href="#org9f0b63e">7.2.2.2. Patching up generated POMs</a></li>
+<li><a href="#org530d9db">7.2.2.3. How to define servlets (where the source code goes)</a></li>
 <li><a href="#how-to-make-javax-servlet-dependencies-available">7.2.2.4. How to make <code>javax.servlet</code> dependencies available</a></li>
 <li><a href="#j2ee-project-structure">7.2.2.5. File structure for "simple J2EE" (ha)</a></li>
-<li><a href="#org0c6a647">7.2.2.6. Further info on the "simple" J2EE packaging, from reference docs</a></li>
+<li><a href="#orgb5fcc14">7.2.2.6. Further info on the "simple" J2EE packaging, from reference docs</a></li>
 </ul>
 </li>
-<li><a href="#orgf97d2b3">7.2.3. Reactor?  What's that?</a></li>
-<li><a href="#org3603277">7.2.4. Useful sites</a></li>
+<li><a href="#orgbc39360">7.2.3. Reactor?  What's that?</a></li>
+<li><a href="#org86ce6ab">7.2.4. Useful sites</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orgfd8b220">8. App code</a>
+<li><a href="#org86c1791">8. App code</a>
 <ul>
 <li><a href="#hello-world">8.1. Simplest possible code</a></li>
-<li><a href="#org2eeb9b0">8.2. Other aspects to consider</a>
+<li><a href="#org8a9d1dd">8.2. Other aspects to consider</a>
 <ul>
 <li><a href="#servlet-routing">8.2.1. Servlet Routing</a></li>
-<li><a href="#org814ada6">8.2.2. JSON output</a></li>
-<li><a href="#org07e9e2c">8.2.3. <span class="done DONE">DONE</span> Dependency Injection</a>
+<li><a href="#org273b6ea">8.2.2. JSON output</a></li>
+<li><a href="#org23102ae">8.2.3. <span class="done DONE">DONE</span> Dependency Injection</a>
 <ul>
-<li><a href="#org9ac5dc6">8.2.3.1. Setup</a>
+<li><a href="#org61327de">8.2.3.1. Setup</a>
 <ul>
-<li><a href="#org0f58461">8.2.3.1.1. <span class="done DONE">DONE</span> Creating injected beans in another module</a>
+<li><a href="#orge739905">8.2.3.1.1. <span class="done DONE">DONE</span> Creating injected beans in another module</a>
 <ul>
-<li><a href="#org6a47b08">8.2.3.1.1.1. <span class="todo TODO">TODO</span> Bean scoping</a></li>
-<li><a href="#orgc02ad0e">8.2.3.1.1.2. <span class="todo TODO">TODO</span> <code>beans.xml</code> is optional, supposedly</a></li>
+<li><a href="#orgcaac676">8.2.3.1.1.1. <span class="todo TODO">TODO</span> Bean scoping</a></li>
+<li><a href="#org9fd5f04">8.2.3.1.1.2. <span class="todo TODO">TODO</span> <code>beans.xml</code> is optional, supposedly</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org0933105">8.2.3.2. Background info</a></li>
+<li><a href="#org73a0238">8.2.3.2. Background info</a></li>
 </ul>
 </li>
-<li><a href="#org3a0e730">8.2.4. <span class="todo IN_PROGRESS">IN-PROGRESS</span> Persistence</a>
+<li><a href="#orgd9545f8">8.2.4. <span class="todo IN_PROGRESS">IN-PROGRESS</span> Persistence</a>
 <ul>
-<li><a href="#org4ae819e">8.2.4.1. <span class="done DONE">DONE</span> SQLite (for now)</a>
+<li><a href="#orge351bee">8.2.4.1. <span class="done DONE">DONE</span> SQLite (for now)</a>
 <ul>
-<li><a href="#orgd81a2eb">8.2.4.1.1. <span class="done DONE">DONE</span> Create a play sqlite database</a>
+<li><a href="#org30ada6f">8.2.4.1.1. <span class="done DONE">DONE</span> Create a play sqlite database</a>
 <ul>
-<li><a href="#org08f7419">8.2.4.1.1.1. <span class="todo TODO">TODO</span> Where to put it?</a></li>
-<li><a href="#org44928fe">8.2.4.1.1.2. <span class="done DONE">DONE</span> jar properties</a></li>
+<li><a href="#org9a27035">8.2.4.1.1.1. <span class="todo TODO">TODO</span> Where to put it?</a></li>
+<li><a href="#org7d827e0">8.2.4.1.1.2. <span class="done DONE">DONE</span> jar properties</a></li>
 <li><a href="#command-line-properties">8.2.4.1.1.3. <span class="todo IN_PROGRESS">IN-PROGRESS</span> Command-line (or otherwise run-time) properties</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#orga81dbf9">8.2.4.2. Connect to SQLite d/b using JDBC</a>
+<li><a href="#orge21875a">8.2.4.2. Connect to SQLite d/b using JDBC</a>
 <ul>
-<li><a href="#org4bd68f6">8.2.4.2.1. <span class="todo IN_PROGRESS">IN-PROGRESS</span> sqlite driver</a></li>
+<li><a href="#org99811d5">8.2.4.2.1. <span class="todo IN_PROGRESS">IN-PROGRESS</span> sqlite driver</a></li>
 </ul>
 </li>
-<li><a href="#orgdcfcef6">8.2.4.3. <span class="done HOLD">HOLD</span> Java Persistence API (JPA)</a>
+<li><a href="#orgc27a0de">8.2.4.3. <span class="done HOLD">HOLD</span> Java Persistence API (JPA)</a>
 <ul>
-<li><a href="#org9a60f96">8.2.4.3.1. "Criteria" queries:  Yikes.</a></li>
-<li><a href="#org3bf0811">8.2.4.3.2. <span class="done DONE">DONE</span> JPQL</a>
+<li><a href="#orgccb9a8e">8.2.4.3.1. "Criteria" queries:  Yikes.</a></li>
+<li><a href="#org6a2296f">8.2.4.3.2. <span class="done DONE">DONE</span> JPQL</a>
 <ul>
-<li><a href="#org40e82ea">8.2.4.3.2.1. <span class="todo TODO">TODO</span> fetch plans</a></li>
-<li><a href="#orgbdcb150">8.2.4.3.2.2. <span class="done HOLD">HOLD</span> EclipseLink</a>
+<li><a href="#orgac8c46e">8.2.4.3.2.1. <span class="todo TODO">TODO</span> fetch plans</a></li>
+<li><a href="#orgd213d89">8.2.4.3.2.2. <span class="done HOLD">HOLD</span> EclipseLink</a>
 <ul>
-<li><a href="#org90e3098">8.2.4.3.2.2.1. Download &amp; install</a></li>
+<li><a href="#org5bda8cd">8.2.4.3.2.2.1. Download &amp; install</a></li>
 </ul>
 </li>
 </ul>
@@ -376,28 +376,28 @@ for the JavaScript code in this tag.
 </li>
 </ul>
 </li>
-<li><a href="#org07d0c78">8.2.5. Lombok</a></li>
-<li><a href="#orgab3989e">8.2.6. Logging &amp; Telemetry</a></li>
-<li><a href="#orge2ae957">8.2.7. Security &amp; Griefing</a></li>
-<li><a href="#orgd589bf0">8.2.8. Documentation generation</a></li>
-<li><a href="#org3462226">8.2.9. Automated testing</a>
+<li><a href="#org46f2023">8.2.5. Lombok</a></li>
+<li><a href="#org679fc27">8.2.6. Logging &amp; Telemetry</a></li>
+<li><a href="#org7188cb9">8.2.7. Security &amp; Griefing</a></li>
+<li><a href="#orgf275df7">8.2.8. Documentation generation</a></li>
+<li><a href="#orge451c61">8.2.9. Automated testing</a>
 <ul>
-<li><a href="#orgdb52646">8.2.9.1. Unit</a></li>
-<li><a href="#org6ceeaa2">8.2.9.2. Integration</a></li>
-<li><a href="#org0727932">8.2.9.3. Database?</a></li>
+<li><a href="#orgaaa0d4a">8.2.9.1. Unit</a></li>
+<li><a href="#org36fad74">8.2.9.2. Integration</a></li>
+<li><a href="#org9e6e9d1">8.2.9.3. Database?</a></li>
 </ul>
 </li>
-<li><a href="#org8e7201d">8.2.10. Command pattern, undo/redo trees</a></li>
-<li><a href="#org81ebbd3">8.2.11. Well-known APIs</a>
+<li><a href="#org53d8289">8.2.10. Command pattern, undo/redo trees</a></li>
+<li><a href="#org5a73554">8.2.11. Well-known APIs</a>
 <ul>
-<li><a href="#orgbeb80f9">8.2.11.1. Documenting with something like Swagger</a></li>
+<li><a href="#org1240df4">8.2.11.1. Documenting with something like Swagger</a></li>
 </ul>
 </li>
-<li><a href="#org3ae68e8">8.2.12. Data export/import</a></li>
-<li><a href="#org7773b5c">8.2.13. Packaging &#x2013; how the entire project is structured</a></li>
-<li><a href="#org931e9d6">8.2.14. Stress testing, esp. for database</a></li>
-<li><a href="#orga109618">8.2.15. SQL profiling, tracing</a></li>
-<li><a href="#orgd3ba334">8.2.16. <span class="todo TODO">TODO</span> Object mappers (Domain/DTO)</a></li>
+<li><a href="#orgffd7b5f">8.2.12. Data export/import</a></li>
+<li><a href="#orgf9cbe02">8.2.13. Packaging &#x2013; how the entire project is structured</a></li>
+<li><a href="#orge715740">8.2.14. Stress testing, esp. for database</a></li>
+<li><a href="#orga1da7e3">8.2.15. SQL profiling, tracing</a></li>
+<li><a href="#org0eb2f4c">8.2.16. <span class="todo TODO">TODO</span> Object mappers (Domain/DTO)</a></li>
 </ul>
 </li>
 </ul>
@@ -406,8 +406,8 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orga11ed1b" class="outline-2">
-<h2 id="orga11ed1b"><span class="section-number-2">1</span> Overview</h2>
+<div id="outline-container-org2c8601a" class="outline-2">
+<h2 id="org2c8601a"><span class="section-number-2">1</span> Overview</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 I'm going to keep a diary of my effort to develop a web app from soup to nuts.
@@ -419,8 +419,8 @@ The initial plans are in <a href="README.html">README.org</a>.
 </div>
 </div>
 
-<div id="outline-container-org16a41b2" class="outline-2">
-<h2 id="org16a41b2"><span class="section-number-2">2</span> Java</h2>
+<div id="outline-container-org5714733" class="outline-2">
+<h2 id="org5714733"><span class="section-number-2">2</span> Java</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 Currently running my wiki on JSPWiki on Tomcat 8 on Java 8.  I'd like to run a different process
@@ -442,8 +442,8 @@ haven't yet found these docs in any downloaded packages.
 </p>
 </div>
 
-<div id="outline-container-org5258471" class="outline-3">
-<h3 id="org5258471"><span class="section-number-3">2.1</span> On a Mac</h3>
+<div id="outline-container-orgcee8f64" class="outline-3">
+<h3 id="orgcee8f64"><span class="section-number-3">2.1</span> On a Mac</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 On a Mac, the OpenJDK 8 installer puts files in
@@ -453,8 +453,8 @@ symlink them in to <code>/usr/bin</code>.
 </div>
 </div>
 
-<div id="outline-container-org57c2854" class="outline-3">
-<h3 id="org57c2854"><span class="section-number-3">2.2</span> Java EE</h3>
+<div id="outline-container-org3594aec" class="outline-3">
+<h3 id="org3594aec"><span class="section-number-3">2.2</span> Java EE</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 Well, first off, a <i>lot</i> has happened in the Java world since I left it, around 2005 or so.
@@ -468,7 +468,7 @@ getting new versions from <a href="https://jakarta.ee/">https://jakarta.ee/</a>.
 </p>
 </div>
 
-<div id="outline-container-org320a0aa" class="outline-4">
+<div id="outline-container-org71b8f41" class="outline-4">
 <h4 id="jakarta-java-version-question"><span class="section-number-4">2.2.1</span> Question: Does Jakarta EE support any version of Java &gt;= 8?  Answer: apparently not. :(</h4>
 <div class="outline-text-4" id="text-jakarta-java-version-question">
 <p>
@@ -485,8 +485,8 @@ properly.)
 </div>
 </div>
 
-<div id="outline-container-org98bcbb5" class="outline-3">
-<h3 id="org98bcbb5"><span class="section-number-3">2.3</span> Editing in emacs</h3>
+<div id="outline-container-orgafc3d58" class="outline-3">
+<h3 id="orgafc3d58"><span class="section-number-3">2.3</span> Editing in emacs</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 This might be a lost cause, but if you want to get away from magic tools like IntelliJ, Eclipse,
@@ -504,12 +504,12 @@ VS Code, &#x2026;
 </div>
 </div>
 
-<div id="outline-container-org5381830" class="outline-2">
-<h2 id="org5381830"><span class="section-number-2">3</span> Tomcat</h2>
+<div id="outline-container-org694c077" class="outline-2">
+<h2 id="org694c077"><span class="section-number-2">3</span> Tomcat</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgebcf494" class="outline-3">
-<h3 id="orgebcf494"><span class="section-number-3">3.1</span> On a Mac</h3>
+<div id="outline-container-orgae5edb2" class="outline-3">
+<h3 id="orgae5edb2"><span class="section-number-3">3.1</span> On a Mac</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 Unzipped Tomcat 9 to <code>/opt</code>.
@@ -569,8 +569,8 @@ want.  See the instructions at the adoptopenjdk.
 </div>
 </div>
 
-<div id="outline-container-orga5d4f4a" class="outline-3">
-<h3 id="orga5d4f4a"><span class="section-number-3">3.2</span> On Ubuntu Linux 16.04</h3>
+<div id="outline-container-org2dbc8cb" class="outline-3">
+<h3 id="org2dbc8cb"><span class="section-number-3">3.2</span> On Ubuntu Linux 16.04</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 See <a href="http://tarheel-nc.s3-website-us-east-1.amazonaws.com/tomcat-9-setup.html">http://tarheel-nc.s3-website-us-east-1.amazonaws.com/tomcat-9-setup.html</a>.
@@ -578,8 +578,8 @@ See <a href="http://tarheel-nc.s3-website-us-east-1.amazonaws.com/tomcat-9-setup
 </div>
 </div>
 
-<div id="outline-container-org6473f99" class="outline-3">
-<h3 id="org6473f99"><span class="section-number-3">3.3</span> Deploy code</h3>
+<div id="outline-container-org0968e37" class="outline-3">
+<h3 id="org0968e37"><span class="section-number-3">3.3</span> Deploy code</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 Well, first you have to write some code.  See <a href="#hello-world">Simplest possible code</a>.
@@ -587,7 +587,7 @@ Well, first you have to write some code.  See <a href="#hello-world">Simplest po
 </div>
 </div>
 
-<div id="outline-container-orgb0c5e12" class="outline-3">
+<div id="outline-container-org669c552" class="outline-3">
 <h3 id="tomcat-jndi-resources"><span class="section-number-3">3.4</span> <span class="todo IN_PROGRESS">IN-PROGRESS</span> JDBC connection and other external configs preserved between version upgrade</h3>
 <div class="outline-text-3" id="text-tomcat-jndi-resources">
 <p>
@@ -603,17 +603,81 @@ From <code>/opt/apache-tomcat-9.0.31/conf/server.xml</code>:
      Documentation at /docs/jndi-resources-howto.html
 --&gt;
 </pre>
+
+<p>
+&#x2026;which is <a href="https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html">https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html</a>
+</p>
+
+<p>
+There's a section on JDBC data sources:
+<a href="https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html#JDBC_Data_Sources">https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html#JDBC_Data_Sources</a>
+</p>
+
+<p>
+(<a href="https://tomcat.apache.org/tomcat-9.0-doc/jndi-datasource-examples-howto.html">https://tomcat.apache.org/tomcat-9.0-doc/jndi-datasource-examples-howto.html</a> might also be interesting.)
+</p>
+
+<p>
+So, rather than learn all of JNDI, I think all you need to know is that it's essentially a
+directory of resources available for lookup by code in your app.  Said directory can be served by
+a local server (e.g., your Tomcat instance creating an ersatz read-only version out of whole
+cloth) or it could be served by another server and magically looked up.  Said other server could
+be a JNDI server, an LDAP server or a Microsoft Active Directory server; we sort of don't care
+because it should be transparent to our code.  More or less.
+</p>
+
+<p>
+We're doing the ersatz-out-of-whole-cloth version here.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">SQLite <code>driverClassName</code></td>
+<td class="org-left"><code>org.sqlite.JDBC</code> (at least, that's what we'll try)</td>
+</tr>
+
+<tr>
+<td class="org-left">SQLite connection url</td>
+<td class="org-left"><code>jdbc:sqlite:/usr/local/var/LayLeadership/tasks.db</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>
+So, we'll try this, in <code>/opt/apache-tomcat-9.0.31/conf/server.xml</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-xml">&lt;<span style="color: #0000ff;">GlobalNamingResources</span>&gt;
+  <span style="color: #36648b; font-style: italic;">&lt;!-- ...stuff... --&gt;</span>
+  &lt;<span style="color: #0000ff;">Resource</span> <span style="color: #8b6914;">name</span>=<span style="color: #b22222;">"jdbc/LayLeadershipTasks"</span>
+            <span style="color: #8b6914;">auto</span>=<span style="color: #b22222;">"Container"</span>
+            <span style="color: #8b6914;">type</span>=<span style="color: #b22222;">"javax.sql.DataSource"</span>
+            <span style="color: #8b6914;">driverClassName</span>=<span style="color: #b22222;">"org.sqlite.JDBC"</span>
+            <span style="color: #8b6914;">url</span>=<span style="color: #b22222;">"jdbc:sqlite:/usr/local/var/LayLeadership/tasks.db"</span>
+            /&gt;
+  <span style="color: #36648b; font-style: italic;">&lt;!-- ...stuff... --&gt;</span>
+&lt;/<span style="color: #0000ff;">GlobalNamingResources</span>&gt;
+</pre>
+</div>
 </div>
 </div>
 </div>
 
-
-<div id="outline-container-org0d29df6" class="outline-2">
-<h2 id="org0d29df6"><span class="section-number-2">4</span> Database</h2>
+<div id="outline-container-org2025168" class="outline-2">
+<h2 id="org2025168"><span class="section-number-2">4</span> Database</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<div id="outline-container-org1096c0b" class="outline-3">
-<h3 id="org1096c0b"><span class="section-number-3">4.1</span> Consider an ORM of some sort</h3>
+<div id="outline-container-org25e1911" class="outline-3">
+<h3 id="org25e1911"><span class="section-number-3">4.1</span> Consider an ORM of some sort</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 This might require using a "more real" database than Sqlite.  Although it might be fun to try. :)
@@ -634,12 +698,12 @@ EclipseLink is the reference implementation for JPA.
 </div>
 </div>
 
-<div id="outline-container-orgdb65424" class="outline-3">
-<h3 id="orgdb65424"><span class="section-number-3">4.2</span> SQLite</h3>
+<div id="outline-container-orga188c91" class="outline-3">
+<h3 id="orga188c91"><span class="section-number-3">4.2</span> SQLite</h3>
 <div class="outline-text-3" id="text-4-2">
 </div>
-<div id="outline-container-orgda84e41" class="outline-4">
-<h4 id="orgda84e41"><span class="section-number-4">4.2.1</span> How much does it scale?</h4>
+<div id="outline-container-orgb603d5d" class="outline-4">
+<h4 id="orgb603d5d"><span class="section-number-4">4.2.1</span> How much does it scale?</h4>
 <div class="outline-text-4" id="text-4-2-1">
 <p>
 For a toy app (on a toy server), I don't need much.
@@ -668,8 +732,8 @@ But&#x2026; it looks like it scales quite well, actually.
 </div>
 </div>
 
-<div id="outline-container-org8682258" class="outline-3">
-<h3 id="org8682258"><span class="section-number-3">4.3</span> Postgresql</h3>
+<div id="outline-container-org1f17594" class="outline-3">
+<h3 id="org1f17594"><span class="section-number-3">4.3</span> Postgresql</h3>
 <div class="outline-text-3" id="text-4-3">
 <p>
 Well, after all the Sqlite awesomeness, maybe I'll put this bad boy off a while more.  I don't
@@ -678,8 +742,8 @@ really intend to become a d/b geek.
 </div>
 </div>
 
-<div id="outline-container-org82c0827" class="outline-3">
-<h3 id="org82c0827"><span class="section-number-3">4.4</span> Apache Derby</h3>
+<div id="outline-container-org26913b7" class="outline-3">
+<h3 id="org26913b7"><span class="section-number-3">4.4</span> Apache Derby</h3>
 <div class="outline-text-3" id="text-4-4">
 <p>
 Pure Java embedded database, but probably not as widely used as Sqlite.  Advantage: probably
@@ -693,8 +757,8 @@ As if I care, with my 12-record database.
 </div>
 </div>
 
-<div id="outline-container-org4d907b5" class="outline-2">
-<h2 id="org4d907b5"><span class="section-number-2">5</span> JavaEE</h2>
+<div id="outline-container-org7ddd1c3" class="outline-2">
+<h2 id="org7ddd1c3"><span class="section-number-2">5</span> JavaEE</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 I feel like there's a license restriction on the EE libs from Oracle.  So I need to find an
@@ -727,8 +791,8 @@ javac -cp /opt/apache-tomcat-9.0.31/lib/servlet-api.jar com/how_hard_can_it_be/p
 </pre>
 </div>
 
-<div id="outline-container-org2425ed6" class="outline-3">
-<h3 id="org2425ed6"><span class="section-number-3">5.1</span> Dependencies</h3>
+<div id="outline-container-orgece4c97" class="outline-3">
+<h3 id="orgece4c97"><span class="section-number-3">5.1</span> Dependencies</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 <i>I think</i> you can also add them via Maven (from
@@ -741,8 +805,8 @@ See <a href="#how-to-make-javax-servlet-dependencies-available">How to make <cod
 </div>
 </div>
 
-<div id="outline-container-org0bee24e" class="outline-3">
-<h3 id="org0bee24e"><span class="section-number-3">5.2</span> JavaEE (JakartaEE) specs</h3>
+<div id="outline-container-orgfb27e6c" class="outline-3">
+<h3 id="orgfb27e6c"><span class="section-number-3">5.2</span> JavaEE (JakartaEE) specs</h3>
 <div class="outline-text-3" id="text-5-2">
 <p>
 JavaEE is a big umbrella.  Here's a table listing all the subparts and versions:
@@ -762,8 +826,8 @@ or
 </div>
 </div>
 
-<div id="outline-container-org3794fb5" class="outline-3">
-<h3 id="org3794fb5"><span class="section-number-3">5.3</span> JavaEE tutorial</h3>
+<div id="outline-container-org3ff318f" class="outline-3">
+<h3 id="org3ff318f"><span class="section-number-3">5.3</span> JavaEE tutorial</h3>
 <div class="outline-text-3" id="text-5-3">
 <p>
 Version 8: <a href="https://javaee.github.io/tutorial/">https://javaee.github.io/tutorial/</a>
@@ -777,16 +841,16 @@ like that).
 </div>
 </div>
 
-<div id="outline-container-orgea998d0" class="outline-2">
-<h2 id="orgea998d0"><span class="section-number-2">6</span> JS Framework</h2>
+<div id="outline-container-org4ca1b74" class="outline-2">
+<h2 id="org4ca1b74"><span class="section-number-2">6</span> JS Framework</h2>
 </div>
 
-<div id="outline-container-orgcf6cd5d" class="outline-2">
-<h2 id="orgcf6cd5d"><span class="section-number-2">7</span> Build system</h2>
+<div id="outline-container-orgd8571b2" class="outline-2">
+<h2 id="orgd8571b2"><span class="section-number-2">7</span> Build system</h2>
 <div class="outline-text-2" id="text-7">
 </div>
-<div id="outline-container-org20cc3c3" class="outline-3">
-<h3 id="org20cc3c3"><span class="section-number-3">7.1</span> Gradle</h3>
+<div id="outline-container-org397aedc" class="outline-3">
+<h3 id="org397aedc"><span class="section-number-3">7.1</span> Gradle</h3>
 <div class="outline-text-3" id="text-7-1">
 <p>
 Gradle is not the clean, well-documented system I had hoped for.  Maybe if this turns into a big,
@@ -796,7 +860,7 @@ code and (probably) StackOverflow answers, so&#x2026; maybe just use Maven.
 </div>
 </div>
 
-<div id="outline-container-orgc3c4093" class="outline-3">
+<div id="outline-container-org7ca00a2" class="outline-3">
 <h3 id="maven"><span class="section-number-3">7.2</span> <span class="done RESEARCH_DONE">RESEARCH-DONE</span> Maven</h3>
 <div class="outline-text-3" id="text-maven">
 <p>
@@ -813,8 +877,8 @@ Need to figure out a project structure.  Somewhere between simple-weapp and J2EE
 </p>
 </div>
 
-<div id="outline-container-org04665b9" class="outline-4">
-<h4 id="org04665b9"><span class="section-number-4">7.2.1</span> Install/update</h4>
+<div id="outline-container-org50b0944" class="outline-4">
+<h4 id="org50b0944"><span class="section-number-4">7.2.1</span> Install/update</h4>
 <div class="outline-text-4" id="text-7-2-1">
 <p>
 Update maven, configure PATH.  (Is that really all I have to do?)  On a Mac.
@@ -827,8 +891,8 @@ executable files in the <code>bin</code> directory to <code>/usr/local/bin</code
 </div>
 </div>
 
-<div id="outline-container-orgeb9fa89" class="outline-4">
-<h4 id="orgeb9fa89"><span class="section-number-4">7.2.2</span> <span class="done RESEARCH_DONE">RESEARCH-DONE</span> Make a project</h4>
+<div id="outline-container-org6fb1d77" class="outline-4">
+<h4 id="org6fb1d77"><span class="section-number-4">7.2.2</span> <span class="done RESEARCH_DONE">RESEARCH-DONE</span> Make a project</h4>
 <div class="outline-text-4" id="text-7-2-2">
 <p>
 After much reading of Maven docs (finally), I think something like the J2EE project structure
@@ -885,8 +949,8 @@ default).  Apparently, that parent POM is important.
 </p>
 </div>
 
-<div id="outline-container-org4d03ce7" class="outline-5">
-<h5 id="org4d03ce7"><span class="section-number-5">7.2.2.1</span> Effective POM</h5>
+<div id="outline-container-orge7f70ef" class="outline-5">
+<h5 id="orge7f70ef"><span class="section-number-5">7.2.2.1</span> Effective POM</h5>
 <div class="outline-text-5" id="text-7-2-2-1">
 <pre class="example">
 mvn help:effective-pom
@@ -899,8 +963,8 @@ Shows super-POM merged w/your POM (or inherited POM hierarchy, if you are so bol
 </div>
 </div>
 
-<div id="outline-container-orga56250c" class="outline-5">
-<h5 id="orga56250c"><span class="section-number-5">7.2.2.2</span> Patching up generated POMs</h5>
+<div id="outline-container-org9f0b63e" class="outline-5">
+<h5 id="org9f0b63e"><span class="section-number-5">7.2.2.2</span> Patching up generated POMs</h5>
 <div class="outline-text-5" id="text-7-2-2-2">
 <p>
 Looks like Maven generates POMs that need a little more detail.  (Or sometimes, they have too
@@ -922,8 +986,8 @@ I put these property definitions at the end of the "header" section of the POM:
 </div>
 </div>
 
-<div id="outline-container-orgd175865" class="outline-5">
-<h5 id="orgd175865"><span class="section-number-5">7.2.2.3</span> How to define servlets (where the source code goes)</h5>
+<div id="outline-container-org530d9db" class="outline-5">
+<h5 id="org530d9db"><span class="section-number-5">7.2.2.3</span> How to define servlets (where the source code goes)</h5>
 <div class="outline-text-5" id="text-7-2-2-3">
 <p>
 Servlet source code goes in web project, in directory
@@ -933,7 +997,7 @@ in <code>WEB-INF/classes</code>.
 </div>
 </div>
 
-<div id="outline-container-org1da89b4" class="outline-5">
+<div id="outline-container-orgba186f6" class="outline-5">
 <h5 id="how-to-make-javax-servlet-dependencies-available"><span class="section-number-5">7.2.2.4</span> How to make <code>javax.servlet</code> dependencies available</h5>
 <div class="outline-text-5" id="text-how-to-make-javax-servlet-dependencies-available">
 <p>
@@ -1048,7 +1112,7 @@ Routing</a>.
 </div>
 </div>
 
-<div id="outline-container-orge72531b" class="outline-5">
+<div id="outline-container-org8baf9c2" class="outline-5">
 <h5 id="j2ee-project-structure"><span class="section-number-5">7.2.2.5</span> File structure for "simple J2EE" (ha)</h5>
 <div class="outline-text-5" id="text-j2ee-project-structure">
 <p>
@@ -1186,8 +1250,8 @@ business logic </span>
 </div>
 </div>
 
-<div id="outline-container-org0c6a647" class="outline-5">
-<h5 id="org0c6a647"><span class="section-number-5">7.2.2.6</span> Further info on the "simple" J2EE packaging, from reference docs</h5>
+<div id="outline-container-orgb5fcc14" class="outline-5">
+<h5 id="orgb5fcc14"><span class="section-number-5">7.2.2.6</span> Further info on the "simple" J2EE packaging, from reference docs</h5>
 <div class="outline-text-5" id="text-7-2-2-6">
 <p>
 <a href="https://maven.apache.org/archetypes/maven-archetype-j2ee-simple/index.html">https://maven.apache.org/archetypes/maven-archetype-j2ee-simple/index.html</a>
@@ -1196,8 +1260,8 @@ business logic </span>
 </div>
 </div>
 
-<div id="outline-container-orgf97d2b3" class="outline-4">
-<h4 id="orgf97d2b3"><span class="section-number-4">7.2.3</span> Reactor?  What's that?</h4>
+<div id="outline-container-orgbc39360" class="outline-4">
+<h4 id="orgbc39360"><span class="section-number-4">7.2.3</span> Reactor?  What's that?</h4>
 <div class="outline-text-4" id="text-7-2-3">
 <p>
 Built-in part of Maven that decides in what order to build component modules (sub-projects),
@@ -1206,8 +1270,8 @@ given their interdependencies.  Not a plug-in; don't sweat it.
 </div>
 </div>
 
-<div id="outline-container-org3603277" class="outline-4">
-<h4 id="org3603277"><span class="section-number-4">7.2.4</span> Useful sites</h4>
+<div id="outline-container-org86ce6ab" class="outline-4">
+<h4 id="org86ce6ab"><span class="section-number-4">7.2.4</span> Useful sites</h4>
 <div class="outline-text-4" id="text-7-2-4">
 <ul class="org-ul">
 <li><a href="https://mvnrepository.com">https://mvnrepository.com</a></li>
@@ -1223,11 +1287,11 @@ given their interdependencies.  Not a plug-in; don't sweat it.
 </div>
 </div>
 
-<div id="outline-container-orgfd8b220" class="outline-2">
-<h2 id="orgfd8b220"><span class="section-number-2">8</span> App code</h2>
+<div id="outline-container-org86c1791" class="outline-2">
+<h2 id="org86c1791"><span class="section-number-2">8</span> App code</h2>
 <div class="outline-text-2" id="text-8">
 </div>
-<div id="outline-container-orgf025b5e" class="outline-3">
+<div id="outline-container-org1cd5468" class="outline-3">
 <h3 id="hello-world"><span class="section-number-3">8.1</span> Simplest possible code</h3>
 <div class="outline-text-3" id="text-hello-world">
 <div class="org-src-container">
@@ -1245,11 +1309,11 @@ given their interdependencies.  Not a plug-in; don't sweat it.
 </div>
 </div>
 
-<div id="outline-container-org2eeb9b0" class="outline-3">
-<h3 id="org2eeb9b0"><span class="section-number-3">8.2</span> Other aspects to consider</h3>
+<div id="outline-container-org8a9d1dd" class="outline-3">
+<h3 id="org8a9d1dd"><span class="section-number-3">8.2</span> Other aspects to consider</h3>
 <div class="outline-text-3" id="text-8-2">
 </div>
-<div id="outline-container-orga4b3509" class="outline-4">
+<div id="outline-container-org51b6eaa" class="outline-4">
 <h4 id="servlet-routing"><span class="section-number-4">8.2.1</span> Servlet Routing</h4>
 <div class="outline-text-4" id="text-servlet-routing">
 <p>
@@ -1268,8 +1332,8 @@ don't have to go edit <code>web.xml</code>.
 </div>
 </div>
 
-<div id="outline-container-org814ada6" class="outline-4">
-<h4 id="org814ada6"><span class="section-number-4">8.2.2</span> JSON output</h4>
+<div id="outline-container-org273b6ea" class="outline-4">
+<h4 id="org273b6ea"><span class="section-number-4">8.2.2</span> JSON output</h4>
 <div class="outline-text-4" id="text-8-2-2">
 <p>
 Is there an easy way?  Or do I just call <code>toJson()</code> on some object and write it to the response
@@ -1301,8 +1365,8 @@ and, like all things Java-world, it's both more complex and more powerful (I gue
 </div>
 </div>
 
-<div id="outline-container-org07e9e2c" class="outline-4">
-<h4 id="org07e9e2c"><span class="section-number-4">8.2.3</span> <span class="done DONE">DONE</span> Dependency Injection</h4>
+<div id="outline-container-org23102ae" class="outline-4">
+<h4 id="org23102ae"><span class="section-number-4">8.2.3</span> <span class="done DONE">DONE</span> Dependency Injection</h4>
 <div class="outline-text-4" id="text-8-2-3">
 <p>
 Implementations of CDI spec.
@@ -1324,8 +1388,8 @@ system with thousands of subscribers.  Or just so I can learn it.)
 </p>
 </div>
 
-<div id="outline-container-org9ac5dc6" class="outline-5">
-<h5 id="org9ac5dc6"><span class="section-number-5">8.2.3.1</span> Setup</h5>
+<div id="outline-container-org61327de" class="outline-5">
+<h5 id="org61327de"><span class="section-number-5">8.2.3.1</span> Setup</h5>
 <div class="outline-text-5" id="text-8-2-3-1">
 <p>
 Supposedly simple tutorial at <a href="https://hradecek.github.io/posts/cdi-in-tomcat">https://hradecek.github.io/posts/cdi-in-tomcat</a>.
@@ -1339,8 +1403,8 @@ pom.xml, web.xml, and context.xml.
 </p>
 </div>
 
-<div id="outline-container-org0f58461" class="outline-6">
-<h6 id="org0f58461"><span class="section-number-6">8.2.3.1.1</span> <span class="done DONE">DONE</span> Creating injected beans in another module</h6>
+<div id="outline-container-orge739905" class="outline-6">
+<h6 id="orge739905"><span class="section-number-6">8.2.3.1.1</span> <span class="done DONE">DONE</span> Creating injected beans in another module</h6>
 <div class="outline-text-6" id="text-8-2-3-1-1">
 <p>
 Trying to move injected beans to another module (jar packaging) and I need to get a
@@ -1353,8 +1417,8 @@ See <a href="https://stackoverflow.com/a/13057183">https://stackoverflow.com/a/1
 </p>
 </div>
 
-<div id="outline-container-org6a47b08" class="outline-7">
-<h7 id="org6a47b08"><span class="section-number-7">8.2.3.1.1.1</span> <span class="todo TODO">TODO</span> Bean scoping</h7>
+<div id="outline-container-orgcaac676" class="outline-7">
+<h7 id="orgcaac676"><span class="section-number-7">8.2.3.1.1.1</span> <span class="todo TODO">TODO</span> Bean scoping</h7>
 <div class="outline-text-7" id="text-8-2-3-1-1-1">
 <p>
 I have a bean injected as the private data member of a servlet.  Is there a default scope?
@@ -1363,8 +1427,8 @@ What is it?  Should I explicitly scope my bean?  To <code>@Dependent</code>, may
 </div>
 </div>
 
-<div id="outline-container-orgc02ad0e" class="outline-7">
-<h7 id="orgc02ad0e"><span class="section-number-7">8.2.3.1.1.2</span> <span class="todo TODO">TODO</span> <code>beans.xml</code> is optional, supposedly</h7>
+<div id="outline-container-org9fd5f04" class="outline-7">
+<h7 id="org9fd5f04"><span class="section-number-7">8.2.3.1.1.2</span> <span class="todo TODO">TODO</span> <code>beans.xml</code> is optional, supposedly</h7>
 <div class="outline-text-7" id="text-8-2-3-1-1-2">
 <p>
 I guess that means all beans have to have scope annotations?  Is there a more generic
@@ -1375,8 +1439,8 @@ I guess that means all beans have to have scope annotations?  Is there a more ge
 </div>
 </div>
 
-<div id="outline-container-org0933105" class="outline-5">
-<h5 id="org0933105"><span class="section-number-5">8.2.3.2</span> Background info</h5>
+<div id="outline-container-org73a0238" class="outline-5">
+<h5 id="org73a0238"><span class="section-number-5">8.2.3.2</span> Background info</h5>
 <div class="outline-text-5" id="text-8-2-3-2">
 <p>
 From <a href="https://projects.eclipse.org/proposals/jakarta-contexts-and-dependency-injection">https://projects.eclipse.org/proposals/jakarta-contexts-and-dependency-injection</a>:
@@ -1405,12 +1469,12 @@ created under the Java Community Process (JCP):
 </div>
 </div>
 
-<div id="outline-container-org3a0e730" class="outline-4">
-<h4 id="org3a0e730"><span class="section-number-4">8.2.4</span> <span class="todo IN_PROGRESS">IN-PROGRESS</span> Persistence</h4>
+<div id="outline-container-orgd9545f8" class="outline-4">
+<h4 id="orgd9545f8"><span class="section-number-4">8.2.4</span> <span class="todo IN_PROGRESS">IN-PROGRESS</span> Persistence</h4>
 <div class="outline-text-4" id="text-8-2-4">
 </div>
-<div id="outline-container-org4ae819e" class="outline-5">
-<h5 id="org4ae819e"><span class="section-number-5">8.2.4.1</span> <span class="done DONE">DONE</span> SQLite (for now)</h5>
+<div id="outline-container-orge351bee" class="outline-5">
+<h5 id="orge351bee"><span class="section-number-5">8.2.4.1</span> <span class="done DONE">DONE</span> SQLite (for now)</h5>
 <div class="outline-text-5" id="text-8-2-4-1">
 <ul class="org-ul">
 <li>CLOSING NOTE <span class="timestamp-wrapper"><span class="timestamp">[2020-04-12 Sun 12:17] </span></span> <br />
@@ -1422,8 +1486,8 @@ But maybe Derby later as an exercise in another d/b layer.
 </p>
 </div>
 
-<div id="outline-container-orgd81a2eb" class="outline-6">
-<h6 id="orgd81a2eb"><span class="section-number-6">8.2.4.1.1</span> <span class="done DONE">DONE</span> Create a play sqlite database</h6>
+<div id="outline-container-org30ada6f" class="outline-6">
+<h6 id="org30ada6f"><span class="section-number-6">8.2.4.1.1</span> <span class="done DONE">DONE</span> Create a play sqlite database</h6>
 <div class="outline-text-6" id="text-8-2-4-1-1">
 <p>
 Before we play around with JPQL and EclipseLink and all that, we need a database.  The one
@@ -1454,8 +1518,8 @@ Results in a 28k database file, so, not too big.
 </p>
 </div>
 
-<div id="outline-container-org08f7419" class="outline-7">
-<h7 id="org08f7419"><span class="section-number-7">8.2.4.1.1.1</span> <span class="todo TODO">TODO</span> Where to put it?</h7>
+<div id="outline-container-org9a27035" class="outline-7">
+<h7 id="org9a27035"><span class="section-number-7">8.2.4.1.1.1</span> <span class="todo TODO">TODO</span> Where to put it?</h7>
 <div class="outline-text-7" id="text-8-2-4-1-1-1">
 <p>
 I dunno, but probably not in the resource directory, since that'll be inside the jar and
@@ -1471,8 +1535,8 @@ Which begs the question: how to specify properties, both outside (actual value) 
 </div>
 </div>
 
-<div id="outline-container-org44928fe" class="outline-7">
-<h7 id="org44928fe"><span class="section-number-7">8.2.4.1.1.2</span> <span class="done DONE">DONE</span> jar properties</h7>
+<div id="outline-container-org7d827e0" class="outline-7">
+<h7 id="org7d827e0"><span class="section-number-7">8.2.4.1.1.2</span> <span class="done DONE">DONE</span> jar properties</h7>
 <div class="outline-text-7" id="text-8-2-4-1-1-2">
 <ul class="org-ul">
 <li>CLOSING NOTE <span class="timestamp-wrapper"><span class="timestamp">[2020-04-12 Sun 15:06] </span></span> <br />
@@ -1489,7 +1553,7 @@ Actually, this isn't the answer, but read on (<a href="#command-line-properties"
 </div>
 </div>
 
-<div id="outline-container-orgb42b641" class="outline-7">
+<div id="outline-container-org6f29636" class="outline-7">
 <h7 id="command-line-properties"><span class="section-number-7">8.2.4.1.1.3</span> <span class="todo IN_PROGRESS">IN-PROGRESS</span> Command-line (or otherwise run-time) properties</h7>
 <div class="outline-text-7" id="text-command-line-properties">
 <p>
@@ -1512,12 +1576,12 @@ See <a href="#tomcat-jndi-resources">JDBC connection and other external configs 
 </div>
 </div>
 
-<div id="outline-container-orga81dbf9" class="outline-5">
-<h5 id="orga81dbf9"><span class="section-number-5">8.2.4.2</span> Connect to SQLite d/b using JDBC</h5>
+<div id="outline-container-orge21875a" class="outline-5">
+<h5 id="orge21875a"><span class="section-number-5">8.2.4.2</span> Connect to SQLite d/b using JDBC</h5>
 <div class="outline-text-5" id="text-8-2-4-2">
 </div>
-<div id="outline-container-org4bd68f6" class="outline-6">
-<h6 id="org4bd68f6"><span class="section-number-6">8.2.4.2.1</span> <span class="todo IN_PROGRESS">IN-PROGRESS</span> sqlite driver</h6>
+<div id="outline-container-org99811d5" class="outline-6">
+<h6 id="org99811d5"><span class="section-number-6">8.2.4.2.1</span> <span class="todo IN_PROGRESS">IN-PROGRESS</span> sqlite driver</h6>
 <div class="outline-text-6" id="text-8-2-4-2-1">
 <p>
 Looks like the Xerial one is the most commonly-used.  Not hard to find at <a href="https://mvnrepository.com">https://mvnrepository.com</a>.
@@ -1526,13 +1590,13 @@ Looks like the Xerial one is the most commonly-used.  Not hard to find at <a hre
 </div>
 </div>
 
-<div id="outline-container-orgdcfcef6" class="outline-5">
-<h5 id="orgdcfcef6"><span class="section-number-5">8.2.4.3</span> <span class="done HOLD">HOLD</span> Java Persistence API (JPA)</h5>
+<div id="outline-container-orgc27a0de" class="outline-5">
+<h5 id="orgc27a0de"><span class="section-number-5">8.2.4.3</span> <span class="done HOLD">HOLD</span> Java Persistence API (JPA)</h5>
 <div class="outline-text-5" id="text-8-2-4-3">
 </div>
 
-<div id="outline-container-org9a60f96" class="outline-6">
-<h6 id="org9a60f96"><span class="section-number-6">8.2.4.3.1</span> "Criteria" queries:  Yikes.</h6>
+<div id="outline-container-orgccb9a8e" class="outline-6">
+<h6 id="orgccb9a8e"><span class="section-number-6">8.2.4.3.1</span> "Criteria" queries:  Yikes.</h6>
 <div class="outline-text-6" id="text-8-2-4-3-1">
 <p>
 Typesafe queries, but it seems (a) like a lot of work, and (b) to assume I have a knowledge of
@@ -1541,8 +1605,8 @@ JPQL.  Accordingly, let's learn about JPQL first.
 </div>
 </div>
 
-<div id="outline-container-org3bf0811" class="outline-6">
-<h6 id="org3bf0811"><span class="section-number-6">8.2.4.3.2</span> <span class="done DONE">DONE</span> JPQL</h6>
+<div id="outline-container-org6a2296f" class="outline-6">
+<h6 id="org6a2296f"><span class="section-number-6">8.2.4.3.2</span> <span class="done DONE">DONE</span> JPQL</h6>
 <div class="outline-text-6" id="text-8-2-4-3-2">
 <ul class="org-ul">
 <li>CLOSING NOTE <span class="timestamp-wrapper"><span class="timestamp">[2020-04-09 Thu 15:27] </span></span> <br />
@@ -1560,8 +1624,8 @@ neutral with respect to vendor SQL dialects.)
 </p>
 </div>
 
-<div id="outline-container-org40e82ea" class="outline-7">
-<h7 id="org40e82ea"><span class="section-number-7">8.2.4.3.2.1</span> <span class="todo TODO">TODO</span> fetch plans</h7>
+<div id="outline-container-orgac8c46e" class="outline-7">
+<h7 id="orgac8c46e"><span class="section-number-7">8.2.4.3.2.1</span> <span class="todo TODO">TODO</span> fetch plans</h7>
 <div class="outline-text-7" id="text-8-2-4-3-2-1">
 <p>
 Need to figure out how to get these (and whether they're useful).
@@ -1569,8 +1633,8 @@ Need to figure out how to get these (and whether they're useful).
 </div>
 </div>
 
-<div id="outline-container-orgbdcb150" class="outline-7">
-<h7 id="orgbdcb150"><span class="section-number-7">8.2.4.3.2.2</span> <span class="done HOLD">HOLD</span> EclipseLink</h7>
+<div id="outline-container-orgd213d89" class="outline-7">
+<h7 id="orgd213d89"><span class="section-number-7">8.2.4.3.2.2</span> <span class="done HOLD">HOLD</span> EclipseLink</h7>
 <div class="outline-text-7" id="text-8-2-4-3-2-2">
 <ul class="org-ul">
 <li>State "HOLD"       from "IN-PROGRESS" <span class="timestamp-wrapper"><span class="timestamp">[2020-04-10 Fri 17:50] </span></span> <br />
@@ -1582,8 +1646,8 @@ Need to get started writing some code with this.
 </p>
 </div>
 
-<div id="outline-container-org90e3098" class="outline-8">
-<h8 id="org90e3098"><span class="section-number-8">8.2.4.3.2.2.1</span> Download &amp; install</h8>
+<div id="outline-container-org5bda8cd" class="outline-8">
+<h8 id="org5bda8cd"><span class="section-number-8">8.2.4.3.2.2.1</span> Download &amp; install</h8>
 <div class="outline-text-8" id="text-8-2-4-3-2-2-1">
 <p>
 Bleah, maybe I should start with a simple JDBC connection before I go crazy on JPA.
@@ -1595,8 +1659,8 @@ Bleah, maybe I should start with a simple JDBC connection before I go crazy on J
 </div>
 </div>
 
-<div id="outline-container-org07d0c78" class="outline-4">
-<h4 id="org07d0c78"><span class="section-number-4">8.2.5</span> Lombok</h4>
+<div id="outline-container-org46f2023" class="outline-4">
+<h4 id="org46f2023"><span class="section-number-4">8.2.5</span> Lombok</h4>
 <div class="outline-text-4" id="text-8-2-5">
 <p>
 <a href="https://projectlombok.org/">https://projectlombok.org/</a>
@@ -1613,45 +1677,45 @@ objects, mostly?  I assume not DTOs, really).
 </div>
 </div>
 
-<div id="outline-container-orgab3989e" class="outline-4">
-<h4 id="orgab3989e"><span class="section-number-4">8.2.6</span> Logging &amp; Telemetry</h4>
+<div id="outline-container-org679fc27" class="outline-4">
+<h4 id="org679fc27"><span class="section-number-4">8.2.6</span> Logging &amp; Telemetry</h4>
 </div>
-<div id="outline-container-orge2ae957" class="outline-4">
-<h4 id="orge2ae957"><span class="section-number-4">8.2.7</span> Security &amp; Griefing</h4>
+<div id="outline-container-org7188cb9" class="outline-4">
+<h4 id="org7188cb9"><span class="section-number-4">8.2.7</span> Security &amp; Griefing</h4>
 </div>
-<div id="outline-container-orgd589bf0" class="outline-4">
-<h4 id="orgd589bf0"><span class="section-number-4">8.2.8</span> Documentation generation</h4>
+<div id="outline-container-orgf275df7" class="outline-4">
+<h4 id="orgf275df7"><span class="section-number-4">8.2.8</span> Documentation generation</h4>
 </div>
-<div id="outline-container-org3462226" class="outline-4">
-<h4 id="org3462226"><span class="section-number-4">8.2.9</span> Automated testing</h4>
+<div id="outline-container-orge451c61" class="outline-4">
+<h4 id="orge451c61"><span class="section-number-4">8.2.9</span> Automated testing</h4>
 <div class="outline-text-4" id="text-8-2-9">
 </div>
-<div id="outline-container-orgdb52646" class="outline-5">
-<h5 id="orgdb52646"><span class="section-number-5">8.2.9.1</span> Unit</h5>
+<div id="outline-container-orgaaa0d4a" class="outline-5">
+<h5 id="orgaaa0d4a"><span class="section-number-5">8.2.9.1</span> Unit</h5>
 </div>
-<div id="outline-container-org6ceeaa2" class="outline-5">
-<h5 id="org6ceeaa2"><span class="section-number-5">8.2.9.2</span> Integration</h5>
+<div id="outline-container-org36fad74" class="outline-5">
+<h5 id="org36fad74"><span class="section-number-5">8.2.9.2</span> Integration</h5>
 </div>
-<div id="outline-container-org0727932" class="outline-5">
-<h5 id="org0727932"><span class="section-number-5">8.2.9.3</span> Database?</h5>
+<div id="outline-container-org9e6e9d1" class="outline-5">
+<h5 id="org9e6e9d1"><span class="section-number-5">8.2.9.3</span> Database?</h5>
 </div>
 </div>
-<div id="outline-container-org8e7201d" class="outline-4">
-<h4 id="org8e7201d"><span class="section-number-4">8.2.10</span> Command pattern, undo/redo trees</h4>
+<div id="outline-container-org53d8289" class="outline-4">
+<h4 id="org53d8289"><span class="section-number-4">8.2.10</span> Command pattern, undo/redo trees</h4>
 </div>
-<div id="outline-container-org81ebbd3" class="outline-4">
-<h4 id="org81ebbd3"><span class="section-number-4">8.2.11</span> Well-known APIs</h4>
+<div id="outline-container-org5a73554" class="outline-4">
+<h4 id="org5a73554"><span class="section-number-4">8.2.11</span> Well-known APIs</h4>
 <div class="outline-text-4" id="text-8-2-11">
 </div>
-<div id="outline-container-orgbeb80f9" class="outline-5">
-<h5 id="orgbeb80f9"><span class="section-number-5">8.2.11.1</span> Documenting with something like Swagger</h5>
+<div id="outline-container-org1240df4" class="outline-5">
+<h5 id="org1240df4"><span class="section-number-5">8.2.11.1</span> Documenting with something like Swagger</h5>
 </div>
 </div>
-<div id="outline-container-org3ae68e8" class="outline-4">
-<h4 id="org3ae68e8"><span class="section-number-4">8.2.12</span> Data export/import</h4>
+<div id="outline-container-orgffd7b5f" class="outline-4">
+<h4 id="orgffd7b5f"><span class="section-number-4">8.2.12</span> Data export/import</h4>
 </div>
-<div id="outline-container-org7773b5c" class="outline-4">
-<h4 id="org7773b5c"><span class="section-number-4">8.2.13</span> Packaging &#x2013; how the entire project is structured</h4>
+<div id="outline-container-orgf9cbe02" class="outline-4">
+<h4 id="orgf9cbe02"><span class="section-number-4">8.2.13</span> Packaging &#x2013; how the entire project is structured</h4>
 <div class="outline-text-4" id="text-8-2-13">
 <p>
 Maybe&#x2026; web stuff in the war, but business logic and persistence in other jars?  Yes, see
@@ -1660,8 +1724,8 @@ Maybe&#x2026; web stuff in the war, but business logic and persistence in other 
 </div>
 </div>
 
-<div id="outline-container-org931e9d6" class="outline-4">
-<h4 id="org931e9d6"><span class="section-number-4">8.2.14</span> Stress testing, esp. for database</h4>
+<div id="outline-container-orge715740" class="outline-4">
+<h4 id="orge715740"><span class="section-number-4">8.2.14</span> Stress testing, esp. for database</h4>
 <div class="outline-text-4" id="text-8-2-14">
 <p>
 Want to test multiple, concurrent writes.
@@ -1673,8 +1737,8 @@ Want to test concurrency in general.
 </div>
 </div>
 
-<div id="outline-container-orga109618" class="outline-4">
-<h4 id="orga109618"><span class="section-number-4">8.2.15</span> SQL profiling, tracing</h4>
+<div id="outline-container-orga1da7e3" class="outline-4">
+<h4 id="orga1da7e3"><span class="section-number-4">8.2.15</span> SQL profiling, tracing</h4>
 <div class="outline-text-4" id="text-8-2-15">
 <p>
 Want to see what kinds of queries are actually created by whatever ORM system/framework I
@@ -1683,8 +1747,8 @@ choose.
 </div>
 </div>
 
-<div id="outline-container-orgd3ba334" class="outline-4">
-<h4 id="orgd3ba334"><span class="section-number-4">8.2.16</span> <span class="todo TODO">TODO</span> Object mappers (Domain/DTO)</h4>
+<div id="outline-container-org0eb2f4c" class="outline-4">
+<h4 id="org0eb2f4c"><span class="section-number-4">8.2.16</span> <span class="todo TODO">TODO</span> Object mappers (Domain/DTO)</h4>
 <div class="outline-text-4" id="text-8-2-16">
 <p>
 Would be nice to be able to automagically transform DTOs to Domain objects and vice versa.
@@ -1713,7 +1777,7 @@ See also:
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Created: 2020-04-12 Sun 15:07</p>
+<p class="date">Created: 2020-04-12 Sun 22:02</p>
 <p class="creator"><a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.1 (<a href="https://orgmode.org">Org</a> mode 9.2.3)</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
