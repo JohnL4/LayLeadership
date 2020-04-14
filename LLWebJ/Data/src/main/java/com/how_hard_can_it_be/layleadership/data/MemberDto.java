@@ -1,4 +1,4 @@
-package com.how_hard_can_it_be.data;
+package com.how_hard_can_it_be.layleadership.data;
 
 import com.how_hard_can_it_be.layleadership.business.Member;
 
