@@ -181,7 +181,7 @@
                  />
        <!-- ...stuff... -->
      </GlobalNamingResources>
-   #+END_SRC 
+   #+END_SRC
 
 * Database
 
