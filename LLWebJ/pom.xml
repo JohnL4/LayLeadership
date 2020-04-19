@@ -21,6 +21,7 @@
     <module>Web</module>
     <module>Data</module>
     <module>Svc</module>
+    <module>Util</module>
   </modules>
   
 </project>

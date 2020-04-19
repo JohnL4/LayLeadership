@@ -7,6 +7,7 @@
       <li><a href="hello">HelloServlet</a></li>
       <li><a href="json">JsonServlet</a></li>
       <li><a href="hello-cdi">HelloCdiServlet</a></li>
+      <li><a href="members">Members</a></li>
    </ul>
 </p>
 </body>

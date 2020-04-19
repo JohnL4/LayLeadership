@@ -183,6 +183,18 @@
      </GlobalNamingResources>
    #+END_SRC
 
+   This will probably require deploying the SQLite jar(s) to the server's libs, since this
+   definition is at the server global level.
+
+   This is how I did that:
+
+   #+BEGIN_EXAMPLE
+     deimos# pwd
+     /opt/apache-tomcat-9.0.31/lib
+
+     deimos# cp ~/.m2/repository/org/xerial/sqlite-jdbc/3.30.1/sqlite-jdbc-3.30.1.jar .
+   #+END_EXAMPLE 
+
 * Database
 
 ** Consider an ORM of some sort
@@ -835,3 +847,114 @@
 
     - https://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
     - https://www.baeldung.com/java-performance-mapping-frameworks
+* Operations
+
+  Once the code is written....
+
+** Deploying
+
+   Deploying a web app via the Tomcat "manager" UI results in the first line in the log file
+   (=catalina.out=) looking like this:
+
+   : 17-Apr-2020 18:21:39.602 INFO [http-nio-8080-exec-53] org.apache.catalina.startup.HostConfig.deployWAR Deploying web application archive [/opt/apache-tomcat-9.0.31/webapps/Web.war]
+
+** Diagnosing Deploy-Time Errors
+
+*** Injection failures
+
+**** RESEARCH-TODO Unsatisfied dependencies
+
+     #+BEGIN_EXAMPLE
+       Unsatisfied dependencies for type LayLeadershipRepository with qualifiers @Default
+         at injection point [BackedAnnotatedField] @Inject private com.how_hard_can_it_be.layleadership.servlet.MembersServlet._layLeadershipRepository
+         at com.how_hard_can_it_be.layleadership.servlet.MembersServlet._layLeadershipRepository(MembersServlet.java:0)
+     #+END_EXAMPLE 
+
+     /Apparently/ the interface and the implementation must be in the same JAR file.  (Really? Do we
+     really believe that? No, right? Because then how could you have a third-party bean satisfy an
+     interface and be injected?).
+
+     TODO: figure out whether this is really true.
+
+**** DONE Ambiguous dependencies
+     CLOSED: [2020-04-18 Sat 18:41]
+
+     #+BEGIN_EXAMPLE
+               Caused by: org.jboss.weld.exceptions.DeploymentException: WELD-001409: Ambiguous dependencies for type LayLeadershipRepository with qualifiers @Default
+         at injection point [BackedAnnotatedField] @Inject private com.how_hard_can_it_be.layleadership.servlet.MembersServlet._layLeadershipRepository
+         at com.how_hard_can_it_be.layleadership.servlet.MembersServlet._layLeadershipRepository(MembersServlet.java:0)
+         Possible dependencies: 
+         - Managed Bean [class com.how_hard_can_it_be.layleadership.data.LayLeadershipSqliteRepository] with qualifiers [@Any @Default],
+         - Managed Bean [class com.how_hard_can_it_be.layleadership.data.LayLeadershipRepositoryScaffold] with qualifiers [@Any @Default]
+     #+END_EXAMPLE
+
+     I believe the problem here is that both injectable beans are defaulting to qualifiers =@Any=
+     and =@Default= because we haven't given them any other qualifiers.
+
+     The fix is to declare a =Mock= qualifier annotation and use it to annotate the "scaffold"
+     version so it no longer has the default =@Default= qualifier.
+
+     #+BEGIN_SRC java
+       @Qualifier
+       @Retention( RUNTIME )
+       @Target( {TYPE, FIELD, METHOD, PARAMETER} )
+       public @interface Mock {}
+     #+END_SRC 
+     
+***** On annotations
+
+      For those coming to this a bit raw, /annotations/ are Java's way of attaching extra
+      meta-information to various elements of Java code during the compile phase.  Reflection is
+      used to act on these annotations.
+
+      This particular definition breaks down as follows:
+
+      =@interface= is how you declare an annotation.  It's basically the =interface= keyword you're
+      used to, plus an extra =@= preceding it.  An annotation /is/ a kind of interface.
+
+      This annotation declaration is itself annotated with more annotations.
+
+      =@Retention= specifies how long the compiler is to retain this new piece of meta-information.
+      =RUNTIME= means this information is to be available at runtime, to the JVM, so basically:
+      forever.  Some other types of info are thrown away earlier and don't make it out to the final
+      byte-code.
+
+      =@Target= specifies which kinds of code elements are legal places for this new annotation.
+      We've specified classes (types), data members (fields), methods and parameters, which is kind
+      of everything normal.
+
+      And, finally, we sucked in the annotation =javax.inject.Qualifier=, which basically specifies
+      that this new annotation (=Mock=) is an injection /qualifier/.  When we use =Mock= to annotate
+      a class (our d/b "scaffold" implmentation), that means the class won't (by default) have the
+      =@Default= annotation, which should clear up our ambiguity (since now only /one/ class will
+      have the =@Default= qualifier).
+
+      The way we use this is, when we write our unit tests and we want to mock the d/b, we specify
+      an injection point in our unit test qualified with =@Mock=, so the injection container will
+      then inject our mock repository that doesn't actually hit the database.
+      
+*** IN-PROGRESS D/B connection problems
+
+    : java.sql.SQLException: Cannot create JDBC driver of class '' for connect URL 'null'
+
+** DONE Debugging
+   CLOSED: [2020-04-19 Sun 15:11]
+
+   Now you've got it deployed and it's messing up, so you need to debug.
+
+   Need to start Tomcat with these arguments:
+
+   : -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+
+   If you look at the =catalina.sh= scripts that comes with Tomcat, you'll see a section that
+   processes an argument of "jpda" by using environment variables like =JPDA_ADDRESS=.  In my case,
+   the only one that was different by default from the arguments given above was the address.  It's
+   probably better to use =localhost= instead of =*=, due to the need to either escape the =*= or
+   use quotes (which the script says won't work).  Override (in a separate
+   environment-variable-setting script) the variables you need to override and you should be good to
+   go, with a command-line invocation like =catalina.sh jpda start=.
+
+   A little vocabulary:
+
+   - JDWP :: Java Debug Wire Protocol
+   - JPDA :: Java Platform Debugger Architecture

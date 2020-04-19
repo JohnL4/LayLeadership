@@ -1,4 +1,4 @@
-package com.how_hard_can_it_be.layleadership.interfaces;
+package com.how_hard_can_it_be.layleadership.service_interfaces;
 
 public interface Greeter
 {

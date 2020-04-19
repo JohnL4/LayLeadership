@@ -4,11 +4,13 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 import com.how_hard_can_it_be.layleadership.business.Member;
-import com.how_hard_can_it_be.layleadership.interfaces.LayLeadershipRepository;
+import com.how_hard_can_it_be.layleadership.data_interfaces.LayLeadershipRepository;
+import com.how_hard_can_it_be.inject.Mock;
 
+@Mock
 public class LayLeadershipRepositoryScaffold implements LayLeadershipRepository
 {
-   public Collection<Member> getAllPersons()
+   public Collection<Member> getAllMembers()
    {
       var retval = new ArrayList<Member>();
       retval.add( new Member( 1, "John", "Lusk", "919-555-1212"

@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Util" />
         <module name="Data" />
         <module name="Bus" />
         <module name="Svc" />
@@ -17,6 +18,7 @@
       <module name="Data" target="11" />
       <module name="LLWebJ" target="11" />
       <module name="Svc" target="11" />
+      <module name="Util" target="11" />
       <module name="Web" target="11" />
     </bytecodeTargetLevel>
   </component>
