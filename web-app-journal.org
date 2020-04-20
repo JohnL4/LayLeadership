@@ -756,7 +756,8 @@
 
 **** Connect to SQLite d/b using JDBC
 
-***** IN-PROGRESS sqlite driver
+***** DONE sqlite driver
+      CLOSED: [2020-04-19 Sun 22:04]
 
       Looks like the Xerial one is the most commonly-used.  Not hard to find at https://mvnrepository.com.
 
