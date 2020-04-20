@@ -168,7 +168,7 @@
    | SQLite =driverClassName= | ~org.sqlite.JDBC~ (at least, that's what we'll try) |
    | SQLite connection url    | ~jdbc:sqlite:/usr/local/var/LayLeadership/tasks.db~ |
 
-   So, we'll try this, in =/opt/apache-tomcat-9.0.31/conf/server.xml=:
+   So, we'll try this, in =/opt/apache-tomcat-9.0.31/conf/server.xml= (TODO: move this fragment to =context.xml=):
 
    #+BEGIN_SRC xml
      <GlobalNamingResources>
@@ -933,9 +933,64 @@
       an injection point in our unit test qualified with =@Mock=, so the injection container will
       then inject our mock repository that doesn't actually hit the database.
       
-*** IN-PROGRESS D/B connection problems
+*** IN-PROGRESS D/B connection problems (JNDI problem)
 
     : java.sql.SQLException: Cannot create JDBC driver of class '' for connect URL 'null'
+
+    So, apparently, the JNDI lookup defined in [[#tomcat-jndi-resources][JDBC connection]] (GlobalNamingResources) isn't
+    returning a sqlite object.
+    
+**** DONE Direct JDBC connection
+     CLOSED: [2020-04-19 Sun 18:58]
+
+     Let's see if we've even got sqlite set up correctly.  We'll modify the injected bean to
+     directly connect to the d/b.
+
+     putting
+
+     : conn = DriverManager.getConnection( "jdbc:sqlite:/usr/local/var/LayLeadership/tasks.db");
+
+     in =LayLeadershipSqliteRepository.getAllMembers()= results in:
+
+     : No suitable driver found for jdbc:sqlite:/usr/local/var/LayLeadership/tasks.db
+
+     So... progress?
+
+     Debugging and dumping out the result of =System.getProperties()= (expression evaluation window)
+     gives:
+
+     - java.class.path :: "/opt/apache-tomcat-9.0.31/bin/bootstrap.jar:/opt/apache-tomcat-9.0.31/bin/tomcat-juli.jar"
+
+     Well, that's unhelpful.  Probably Tomcat has a separate classloader for each app, and this
+     system property is meaningless.
+
+     So... it turns out this works if you do a couple of things just right:
+
+     1) Get the url right.  Be sure you're referring to a d/b file that exists, and the "tomcat"
+        user has read/write permission to it.
+
+     2) Explicitly load the class in code with a call to =Class.forName( "org.sqlite.JDBC" )=.
+
+     3) Iterate through the drivers obtained via =DriverManager.getDrivers()=, asking each driver if
+        it can accept the url.
+
+     This doesn't seem right; Tomcat should be handling all this for us.  I suspect I've still got
+     something misconfigured, but at least we can access the database /somehow/.
+
+**** RESEARCH-DONE =web.xml= structure
+     CLOSED: [2020-04-19 Sun 21:45]
+
+     - CLOSING NOTE [2020-04-19 Sun 21:45] \\
+       This way lies madness.  Turn back, O mortal.
+
+     [head exploded after reading both the spec and the various =.xsd= files involved.]
+
+     Might be best to move the =server.xml= part out of the global naming whatsis and into
+     =context.xml= in the deployed files (=.war=).  Tomcat allows this file to be "externalized", by
+     placing it in the =conf= hierarchy, which allows it to be preserved between deploys (although
+     TODO: find out if the =copyXML= attribute of the host will overwrite this file; reading the
+     docs leaves the answer unclear (it's ok for "start" but what about "deploy".  Will deploying a
+     new version of the WAR file result in the copied =context.xml= being overwritten?).
 
 ** DONE Debugging
    CLOSED: [2020-04-19 Sun 15:11]

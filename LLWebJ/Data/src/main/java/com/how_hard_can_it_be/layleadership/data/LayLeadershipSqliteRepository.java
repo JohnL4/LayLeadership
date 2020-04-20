@@ -7,6 +7,9 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -18,37 +21,76 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
 
     public LayLeadershipSqliteRepository() throws NamingException
     {
+        try
+        {
+            try
+            {
+                var cls = Class.forName( "org.sqlite.JDBC" );
+                System.out.println( String.format( "Got class %s", cls.toString()));
+            }
+            catch (ClassNotFoundException exc)
+            {
+                exc.printStackTrace();
+            }
+            var drivers = DriverManager.getDrivers();
+            var nDrivers = 0;
+            while (drivers.hasMoreElements())
+            {
+                nDrivers++;
+                var drvr = drivers.nextElement();
+                if (drvr.acceptsURL( "jdbc:sqlite:/usr/local/var/LayLeadership/layleadership.db" ))
+                    System.out.println( String.format( "Driver %s accepts url", drvr.toString()));
+                else
+                    System.out.println( String.format( "Driver %s DOES NOT accept url", drvr.toString()));
+            }
+            System.out.println( String.format( "Found %d drivers", nDrivers));
+        }
+        catch (SQLException exc)
+        {
+            exc.printStackTrace();
+        }
+
         // Guessing it's ok to hold on to the DataSource for a long time.
         var initialContext = new InitialContext(  );
-        var envContext = (Context) initialContext.lookup( "java:comp/env");
-        _dataSource = (DataSource) envContext.lookup( DATABASE_JNDI_NAME);
+        _dataSource = (DataSource) initialContext.lookup( "java:comp/env/" + DATABASE_JNDI_NAME);
     }
 
     @Override
     public Collection<Member> getAllMembers() throws SQLException
     {
-        var conn = _dataSource.getConnection();
-        var stmt = conn.prepareStatement( ";SELECT MemberId,\n"
-                               + "       FirstName,\n"
-                               + "       LastName,\n"
-                               + "       PhoneNumber,\n"
-                               + "       EmailAddress,\n"
-                               + "       Active,\n"
-                               + "       Comments\n"
-                               + "  FROM Member\n" );
-        var          rs     = stmt.executeQuery();
-        Collection<Member> retval = new ArrayList<>();
-        while (rs.next())
+        Connection conn = null;
+        try
         {
-            retval.add( new Member(
-                    rs.getLong( "MemberId" )
-                    , rs.getString( "FirstName" )
-                    , rs.getString( "LastName" )
-                    , rs.getString( "PhoneNumber" )
-                    , rs.getString( "EmailAddress" )
-                    , rs.getBoolean( "Active" )
-                    , rs.getString( "Comments" ) ) );
+            conn = DriverManager.getConnection( "jdbc:sqlite:/usr/local/var/LayLeadership/layleadership.db");
+            conn.close();
+            conn = _dataSource.getConnection();
+            var stmt = conn.prepareStatement( ";SELECT MemberId,\n"
+                                   + "       FirstName,\n"
+                                   + "       LastName,\n"
+                                   + "       PhoneNumber,\n"
+                                   + "       EmailAddress,\n"
+                                   + "       Active,\n"
+                                   + "       Comments\n"
+                                   + "  FROM Member\n" );
+            var          rs     = stmt.executeQuery();
+            Collection<Member> retval = new ArrayList<>();
+            while (rs.next())
+            {
+                retval.add( new Member(
+                        rs.getLong( "MemberId" )
+                        , rs.getString( "FirstName" )
+                        , rs.getString( "LastName" )
+                        , rs.getString( "PhoneNumber" )
+                        , rs.getString( "EmailAddress" )
+                        , rs.getBoolean( "Active" )
+                        , rs.getString( "Comments" ) ) );
+            }
+            return retval;
         }
-        return retval;
+        finally
+        {
+            if (conn != null)
+                conn.close();
+        }
     }
 }
