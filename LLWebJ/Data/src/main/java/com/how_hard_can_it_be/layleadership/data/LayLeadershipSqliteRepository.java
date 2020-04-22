@@ -21,38 +21,38 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
 
     public LayLeadershipSqliteRepository() throws NamingException
     {
-        try
-        {
-            try
-            {
-                var cls = Class.forName( "org.sqlite.JDBC" );
-                System.out.println( String.format( "Got class %s", cls.toString()));
-            }
-            catch (ClassNotFoundException exc)
-            {
-                exc.printStackTrace();
-            }
-            var drivers = DriverManager.getDrivers();
-            var nDrivers = 0;
-            while (drivers.hasMoreElements())
-            {
-                nDrivers++;
-                var drvr = drivers.nextElement();
-                if (drvr.acceptsURL( "jdbc:sqlite:/usr/local/var/LayLeadership/layleadership.db" ))
-                    System.out.println( String.format( "Driver %s accepts url", drvr.toString()));
-                else
-                    System.out.println( String.format( "Driver %s DOES NOT accept url", drvr.toString()));
-            }
-            System.out.println( String.format( "Found %d drivers", nDrivers));
-        }
-        catch (SQLException exc)
-        {
-            exc.printStackTrace();
-        }
-
         // Guessing it's ok to hold on to the DataSource for a long time.
         var initialContext = new InitialContext(  );
         _dataSource = (DataSource) initialContext.lookup( "java:comp/env/" + DATABASE_JNDI_NAME);
+
+//        try
+//        {
+//            try
+//            {
+//                var cls = Class.forName( "org.sqlite.JDBC" );
+//                System.out.println( String.format( "Got class %s", cls.toString()));
+//            }
+//            catch (ClassNotFoundException exc)
+//            {
+//                exc.printStackTrace();
+//            }
+//            var drivers = DriverManager.getDrivers();
+//            var nDrivers = 0;
+//            while (drivers.hasMoreElements())
+//            {
+//                nDrivers++;
+//                var drvr = drivers.nextElement();
+//                if (drvr.acceptsURL( "jdbc:sqlite:/usr/local/var/LayLeadership/layleadership.db" ))
+//                    System.out.println( String.format( "Driver %s accepts url", drvr.toString()));
+//                else
+//                    System.out.println( String.format( "Driver %s DOES NOT accept url", drvr.toString()));
+//            }
+//            System.out.println( String.format( "Found %d drivers", nDrivers));
+//        }
+//        catch (SQLException exc)
+//        {
+//            exc.printStackTrace();
+//        }
     }
 
     @Override
@@ -61,8 +61,9 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
         Connection conn = null;
         try
         {
-            conn = DriverManager.getConnection( "jdbc:sqlite:/usr/local/var/LayLeadership/layleadership.db");
-            conn.close();
+//            conn = DriverManager.getConnection( "jdbc:sqlite:/usr/local/var/LayLeadership/layleadership.db");
+//            conn.close();
+
             conn = _dataSource.getConnection();
             var stmt = conn.prepareStatement( ";SELECT MemberId,\n"
                                    + "       FirstName,\n"
