@@ -131,14 +131,18 @@
 
    Well, first you have to write some code.  See [[#hello-world][Simplest possible code]].
    
-** IN-PROGRESS JDBC connection and other external configs preserved between version upgrade
+** DONE JDBC connection and other external configs preserved between version upgrade
+   CLOSED: [2020-04-21 Tue 22:08]
    :PROPERTIES:
    :CUSTOM_ID: tomcat-jndi-resources
    :END:
 
    See
 
-   - https://serverfault.com/a/751477
+   - +https://serverfault.com/a/751477+ *Note:* the advice to put the config in =server.xml= is
+     basically wrong.  Instead, follow the instructions at
+     https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html#JDBC_Data_Sources, and put
+     it in =context.xml=.
    - https://newfivefour.com/category_sqlite.html
 
    From =/opt/apache-tomcat-9.0.31/conf/server.xml=:
@@ -168,7 +172,7 @@
    | SQLite =driverClassName= | ~org.sqlite.JDBC~ (at least, that's what we'll try) |
    | SQLite connection url    | ~jdbc:sqlite:/usr/local/var/LayLeadership/tasks.db~ |
 
-   So, we'll try this, in =/opt/apache-tomcat-9.0.31/conf/server.xml= (TODO: move this fragment to =context.xml=):
+   So, we'll try this, in =/opt/apache-tomcat-9.0.31/conf/server.xml=:
 
    #+BEGIN_SRC xml
      <GlobalNamingResources>
@@ -194,6 +198,13 @@
 
      deimos# cp ~/.m2/repository/org/xerial/sqlite-jdbc/3.30.1/sqlite-jdbc-3.30.1.jar .
    #+END_EXAMPLE 
+
+*** DONE Move =Resource= from =server.xml= to =context.xml=
+    CLOSED: [2020-04-21 Tue 22:01]
+
+    It turns out (for whatever reason), putting this in =server.xml= =GlobalNamingResources= is not
+    the answer.  Instead, it should go into =META-INF/context.xml=, in a =Context= element, per
+    https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html#JDBC_Data_Sources. 
 
 * Database
 
@@ -692,8 +703,12 @@
      - CDI 2.0 (JSR 365), part of Java EE 8
      #+END_QUOTE 
     
-*** IN-PROGRESS Persistence
+*** DONE Persistence
+    CLOSED: [2020-04-21 Tue 22:29]
 
+    - CLOSING NOTE [2020-04-21 Tue 22:29] \\
+      Problems solved.  Still need to tackle JPA (below).
+c
 **** DONE SQLite (for now)
      CLOSED: [2020-04-12 Sun 12:17]
 
@@ -721,7 +736,15 @@
 
       Results in a 28k database file, so, not too big.
 
-****** TODO Where to put it?
+****** DONE Where to put it?
+       CLOSED: [2020-04-21 Tue 21:51]
+
+       - CLOSING NOTE [2020-04-21 Tue 21:51] \\
+         Answer: put it in some directory path completely independent of the webapp, make sure tomcat user
+         has read/write access, and specify the path to it in a JDBC connection url in webapp config files.
+         Preferred approach with Tomcat is to put it in =context.xml=, which can optionally be extracted to a
+         directory below the Tomcat =conf= directory, so it /might/ be persistent across app version upgrades
+         (that last part still needs testing).
 
        I dunno, but probably not in the resource directory, since that'll be inside the jar and
        probably not updateable.  Maybe put an empty copy of the d/b in the resources directory so at
@@ -731,28 +754,42 @@
        Which begs the question: how to specify properties, both outside (actual value) and inside
        (default value) the jar?
 
-****** DONE jar properties
-       CLOSED: [2020-04-12 Sun 15:06]
+******* DONE jar properties
+        CLOSED: [2020-04-12 Sun 15:06]
 
-       - CLOSING NOTE [2020-04-12 Sun 15:06] \\
-         Not the answer.
+        - CLOSING NOTE [2020-04-12 Sun 15:06] \\
+          Not the answer.
 
-       The property I want is the location of the database.
+        The property I want is the location of the database.
 
-       Actually, this isn't the answer, but read on ([[#command-line-properties][Command-line (or otherwise run-time) properties]]).
+        Actually, this isn't the answer, but read on ([[#command-line-properties][Command-line (or otherwise run-time) properties]]).
 
-****** IN-PROGRESS Command-line (or otherwise run-time) properties
-       :PROPERTIES:
-       :CUSTOM_ID: command-line-properties
-       :END:
+******* DONE Command-line (or otherwise run-time) properties
+        CLOSED: [2020-04-21 Tue 21:49]
+        :PROPERTIES:
+        :CUSTOM_ID: command-line-properties
+        :END:
 
-       =System.getProperty()= ?
+        - CLOSING NOTE [2020-04-21 Tue 21:49] \\
+          Not the answer.  Webapp config files (web.xml, context.xml) are the answer.
 
-       Gets more complicated for a webapp, because you don't get a command line to fiddle around with.
+        =System.getProperty()= ?
 
-       Looks like the answer is JNDI (great! another thing to learn!)
+        Gets more complicated for a webapp, because you don't get a command line to fiddle around
+        with.  And, even if you did, Tomcat hosts multiple web apps, so anything on the command line
+        (or in server.xml, for that matter) would be global to everything.
 
-       See [[#tomcat-jndi-resources][JDBC connection and other external configs preserved between version upgrade]].
+        TODO: Interesting side note: what happens if any code in a Tomcat webapp calls
+        =System.exit()=?  Does all of Tomcat shut down?
+
+        Looks like the answer is JNDI (great! another thing to learn!)
+
+        See [[#tomcat-jndi-resources][JDBC connection and other external configs preserved between version upgrade]].
+
+        Turns out the answer is what the Tomcat docs say
+        (https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html#JDBC_Data_Sources):  put
+        the context in a =<Context>= element in =context.xml=.  As opposed to some post on
+        StackOverflow saying to put it in =GlobalNamingResources= in =server.xml=.
 
 **** Connect to SQLite d/b using JDBC
 
@@ -761,8 +798,7 @@
 
       Looks like the Xerial one is the most commonly-used.  Not hard to find at https://mvnrepository.com.
 
-**** HOLD Java Persistence API (JPA)
-     CLOSED: [2020-04-10 Fri 17:51]
+**** TODO Java Persistence API (JPA)
 
 ***** "Criteria" queries:  Yikes.
 
@@ -785,8 +821,7 @@
 
        Need to figure out how to get these (and whether they're useful).
 
-****** HOLD EclipseLink
-       CLOSED: [2020-04-10 Fri 17:50]
+****** TODO EclipseLink
 
        - State "HOLD"       from "IN-PROGRESS" [2020-04-10 Fri 17:50] \\
          Waiting for a simple JDBC connection.
@@ -796,7 +831,7 @@
 ******* Download & install
 
         Bleah, maybe I should start with a simple JDBC connection before I go crazy on JPA.
-       
+        
 *** DONE Lombok
     CLOSED: [2020-04-13 Mon 15:18]
 
@@ -848,6 +883,7 @@
 
     - https://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
     - https://www.baeldung.com/java-performance-mapping-frameworks
+
 * Operations
 
   Once the code is written....
@@ -934,7 +970,11 @@
       an injection point in our unit test qualified with =@Mock=, so the injection container will
       then inject our mock repository that doesn't actually hit the database.
       
-*** IN-PROGRESS D/B connection problems (JNDI problem)
+*** DONE D/B connection problems (JNDI problem)
+    CLOSED: [2020-04-21 Tue 22:16]
+
+    - CLOSING NOTE [2020-04-21 Tue 22:16] \\
+      Fixed.  See [[file:web-app-journal.org::#web-xml-structure][=web.xml= structure]].
 
     : java.sql.SQLException: Cannot create JDBC driver of class '' for connect URL 'null'
 
@@ -980,6 +1020,9 @@
 
 **** RESEARCH-DONE =web.xml= structure
      CLOSED: [2020-04-19 Sun 21:45]
+     :PROPERTIES:
+     :CUSTOM_ID: web-xml-structure
+     :END:
 
      - CLOSING NOTE [2020-04-19 Sun 21:45] \\
        This way lies madness.  Turn back, O mortal.
