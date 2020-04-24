@@ -155,9 +155,6 @@
 
    ...which is https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html
 
-   There's a section on JDBC data sources:
-   https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html#JDBC_Data_Sources
-
    (https://tomcat.apache.org/tomcat-9.0-doc/jndi-datasource-examples-howto.html might also be interesting.)
 
    So, rather than learn all of JNDI, I think all you need to know is that it's essentially a
@@ -206,6 +203,31 @@
     the answer.  Instead, it should go into =META-INF/context.xml=, in a =Context= element, per
     https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html#JDBC_Data_Sources. 
 
+*** Cleanups, now that we got it working
+
+    After moving the JNDI entry definition to =context.xml=, we got it working, but with code like
+    the following in our SQL repository:
+
+    #+BEGIN_SRC java
+      // Guessing it's ok to hold on to the DataSource for a long time.
+      var initialContext = new InitialContext(  );
+      _dataSource = (DataSource) initialContext.lookup( "java:comp/env/" + DATABASE_JNDI_NAME);
+    #+END_SRC
+
+    So, (a) it'd be nice if we could inject the DataSource rather than create it ourselves, and (b)
+    there are possible glitches called out in
+    https://tomcat.apache.org/tomcat-9.0-doc/jndi-datasource-examples-howto.html.
+    
+**** Put the sqlite driver in =${CATALINA_BASE}/lib
+
+     Basically, at the top/system level for the entire Tomcat web server.
+
+**** Note on Context vs. GlobalNamingResources
+
+     tl;dr: It should have worked.
+
+     https://tomcat.apache.org/tomcat-9.0-doc/jndi-datasource-examples-howto.html#Context_versus_GlobalNamingResources
+
 * Database
 
 ** Consider an ORM of some sort
@@ -224,6 +246,21 @@
    See
    - https://newfivefour.com/category_sqlite.html
 
+*** Simple command-line use
+
+    #+BEGIN_SRC bash
+      sqlite3 <database-file>
+    #+END_SRC
+
+    (Database files will probably have a suffix like =.sqlite= or =.db=.)
+
+    #+BEGIN_SRC sql
+      .mode columns                   -- Normal format is "|"-delimited, which is great for awk
+      .headers on                     -- Column headers
+      select * from Member;           -- Don't forget the semicolon
+      .quit
+    #+END_SRC
+    
 *** How much does it scale?
 
     For a toy app (on a toy server), I don't need much.
@@ -1019,11 +1056,13 @@ c
      something misconfigured, but at least we can access the database /somehow/.
 
 **** RESEARCH-DONE =web.xml= structure
-     CLOSED: [2020-04-19 Sun 21:45]
+     CLOSED: [2020-04-22 Wed 21:50]
      :PROPERTIES:
      :CUSTOM_ID: web-xml-structure
      :END:
 
+     - CLOSING NOTE [2020-04-22 Wed 21:50] \\
+       Don't use =copyXML=.  Instead....
      - CLOSING NOTE [2020-04-19 Sun 21:45] \\
        This way lies madness.  Turn back, O mortal.
 
@@ -1035,6 +1074,14 @@ c
      TODO: find out if the =copyXML= attribute of the host will overwrite this file; reading the
      docs leaves the answer unclear (it's ok for "start" but what about "deploy".  Will deploying a
      new version of the WAR file result in the copied =context.xml= being overwritten?).
+
+     Answer: it overwrites the older, extracted version.  So, I guess the answer is: don't use
+     copyXML.  Instead, copy =context.xml= to =conf/<engine>/<host>/<context>.xml= and edit (once) as
+     needed.
+
+     Where =<engine>= is probably =Cataline= and =<host>= may be =localhost= and =<context>= is the
+     context path of the application (which may corresponds to the name of the WAR file used to
+     deploy it).
 
 ** DONE Debugging
    CLOSED: [2020-04-19 Sun 15:11]

@@ -17,6 +17,7 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
 {
     private static final String DATABASE_JNDI_NAME = "jdbc/LayLeadership";
 
+//    @Resource( name = DATABASE_JNDI_NAME)
     private DataSource _dataSource;
 
     public LayLeadershipSqliteRepository() throws NamingException
