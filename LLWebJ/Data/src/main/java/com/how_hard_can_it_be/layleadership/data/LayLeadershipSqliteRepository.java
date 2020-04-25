@@ -3,6 +3,8 @@ package com.how_hard_can_it_be.layleadership.data;
 import com.how_hard_can_it_be.layleadership.business.Member;
 import com.how_hard_can_it_be.layleadership.data_interfaces.LayLeadershipRepository;
 
+import javax.annotation.Resource;
+import javax.enterprise.context.ApplicationScoped;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -13,18 +15,19 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.*;
 
+@ApplicationScoped
 public class LayLeadershipSqliteRepository implements LayLeadershipRepository
 {
     private static final String DATABASE_JNDI_NAME = "jdbc/LayLeadership";
 
-//    @Resource( name = DATABASE_JNDI_NAME)
+    @Resource( name = DATABASE_JNDI_NAME) // Automatically prefixes "java:comp/env" onto this resource.  SUPPOSEDLY, you can use 'lookup =' to give a complete path.
     private DataSource _dataSource;
 
     public LayLeadershipSqliteRepository() throws NamingException
     {
         // Guessing it's ok to hold on to the DataSource for a long time.
-        var initialContext = new InitialContext(  );
-        _dataSource = (DataSource) initialContext.lookup( "java:comp/env/" + DATABASE_JNDI_NAME);
+//        var initialContext = new InitialContext();
+//        _dataSource = (DataSource) initialContext.lookup( "java:comp/env/" + DATABASE_JNDI_NAME );
 
 //        try
 //        {

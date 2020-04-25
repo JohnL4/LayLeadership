@@ -218,7 +218,7 @@
     there are possible glitches called out in
     https://tomcat.apache.org/tomcat-9.0-doc/jndi-datasource-examples-howto.html.
     
-**** Put the sqlite driver in =${CATALINA_BASE}/lib
+**** Put the sqlite driver in =${CATALINA_BASE}/lib=
 
      Basically, at the top/system level for the entire Tomcat web server.
 
@@ -227,6 +227,40 @@
      tl;dr: It should have worked.
 
      https://tomcat.apache.org/tomcat-9.0-doc/jndi-datasource-examples-howto.html#Context_versus_GlobalNamingResources
+
+**** Resource injection
+     :PROPERTIES:
+     :CUSTOM_ID: resource-injection
+     :END:
+
+     #+BEGIN_SRC java
+       @ApplicationScoped
+       public class LayLeadershipSqliteRepository implements LayLeadershipRepository
+       {
+          private static final String DATABASE_JNDI_NAME = "jdbc/LayLeadership";
+          @Resource( name = DATABASE_JNDI_NAME) // Automatically prefixes "java:comp/env" onto this resource.  SUPPOSEDLY, you can use 'lookup =' to give a complete path.
+          private DataSource _dataSource;
+     #+END_SRC
+
+     There are a couple of things going on here (I think):
+
+     1) We put =@ApplicationScoped= on the bean to make sure the container knows it's a managed bean
+        ("managed" by CDI).  I don't think the exact scope matters, so long as there's a CDI scope
+        attribute so the container knows it's managed.
+
+        (Note that we might need to do this anyway if we're going to move the "Repository" interface
+        back to another Maven module, like the =Svc= module.)
+
+     2) We put a =@Resource= attribute on the thing we want injected from the JNDI directory.  Since
+        we used the =name= argument, we automatically get shunted off to =java:comp/env=.
+
+        Internet rumor has it that you can use =resource= to specify an entirely different path in
+        the JNDI directory.
+
+        I noticed (by accident) that if you get the name of the resource wrong, you get a big, nasty
+        error in the web app itself (like... a faceful of stack trace), which is good.  At least you
+        know the lookup is being attempted.  If you put in an intentionally wrong resource name and
+        get no errors, you know the lookup isn't being attempted at all.  For what that's worth.
 
 * Database
 
@@ -745,7 +779,7 @@
 
     - CLOSING NOTE [2020-04-21 Tue 22:29] \\
       Problems solved.  Still need to tackle JPA (below).
-c
+
 **** DONE SQLite (for now)
      CLOSED: [2020-04-12 Sun 12:17]
 
@@ -892,6 +926,7 @@ c
 **** Unit
 **** Integration
 **** Database?
+*** Code coverage during [automated] testing
 *** Command pattern, undo/redo trees
 *** Well-known APIs
 **** Documenting with something like Swagger
