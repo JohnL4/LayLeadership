@@ -1,7 +1,7 @@
 package com.how_hard_can_it_be.layleadership.servlet;
 
 import com.google.gson.Gson;
-import com.how_hard_can_it_be.layleadership.data_interfaces.LayLeadershipRepository;
+import com.how_hard_can_it_be.layleadership.service_interfaces.LayLeadershipRepository;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;

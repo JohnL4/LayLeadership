@@ -1,17 +1,13 @@
 package com.how_hard_can_it_be.layleadership.data;
 
 import com.how_hard_can_it_be.layleadership.business.Member;
-import com.how_hard_can_it_be.layleadership.data_interfaces.LayLeadershipRepository;
+import com.how_hard_can_it_be.layleadership.service_interfaces.LayLeadershipRepository;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.*;
 

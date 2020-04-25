@@ -794,7 +794,8 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
       Answer: =META-INF= goes in =resources= directory, a /peer/ to the =java= directory.  Only java
       code goes in =java= directory.  See https://stackoverflow.com/a/13057183.
 
-****** TODO Bean scoping
+****** RESEARCH-DONE Bean scoping
+       CLOSED: [2020-04-25 Sat 12:38]
 
        I have a bean injected as the private data member of a servlet.  Is there a default scope?
        What is it?  Should I explicitly scope my bean?  To =@Dependent=, maybe?
@@ -1023,6 +1024,10 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
     - https://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
     - https://www.baeldung.com/java-performance-mapping-frameworks
+    
+**** TODO Is this required when using JPQL?
+
+**** TODO Is this required when using Criteria?
 
 * Operations
 
@@ -1039,7 +1044,11 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
 *** Injection failures
 
-**** RESEARCH-TODO Unsatisfied dependencies
+**** RESEARCH-DONE Unsatisfied dependencies
+     CLOSED: [2020-04-25 Sat 12:37]
+
+     - CLOSING NOTE [2020-04-25 Sat 12:37] \\
+       Annotate the beans properly, and you're good.
 
      #+BEGIN_EXAMPLE
        Unsatisfied dependencies for type LayLeadershipRepository with qualifiers @Default
@@ -1051,7 +1060,9 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
      really believe that? No, right? Because then how could you have a third-party bean satisfy an
      interface and be injected?).
 
-     TODO: figure out whether this is really true.
+     Answer: no, they don't have to be in the same JAR/module.  But, apparently, you /do/ have to
+     annotate the beans you expect this to work for, so the CDI container knows that they /are/
+     beans to be managed.
 
 **** DONE Ambiguous dependencies
      CLOSED: [2020-04-18 Sat 18:41]
