@@ -246,7 +246,8 @@
 
      1) We put =@ApplicationScoped= on the bean to make sure the container knows it's a managed bean
         ("managed" by CDI).  I don't think the exact scope matters, so long as there's a CDI scope
-        attribute so the container knows it's managed.
+        attribute so the container knows it's managed.  We do this because resource injection only
+        happens on managed objects.
 
         (Note that we might need to do this anyway if we're going to move the "Repository" interface
         back to another Maven module, like the =Svc= module.)
@@ -751,6 +752,21 @@
        I have a bean injected as the private data member of a servlet.  Is there a default scope?
        What is it?  Should I explicitly scope my bean?  To =@Dependent=, maybe?
 
+       Actually, probably not =@Dependent=, because most of the beans will already have some sort of
+       preconceived scope, probably one of either =@ApplicationScoped= or =@RequestScoped=.  Note,
+       also, that scoping happens where the bean is defined, not at the injection point (I think).
+
+       (Ideally, we'd stay away from HTTP sessions, because
+
+       1) They break load-balancing, unless you set session affinity for nodes in a farm;
+       2) They could, /conceivably/ suck up a bunch of memory if you jam a bunch of stuff in the
+          session; and (surprisingly)
+       3) If you have multiple simultaneous incoming requests (like a bunch of DIVs loaded with AJAX
+          calls), they can wind up either blocking on the session (single-threading) or overwriting
+          it with gay abandon, both of which are Bad Things.
+
+       )
+
 ****** TODO =beans.xml= is optional, supposedly
 
        I guess that means all beans have to have scope annotations?  Is there a more generic
@@ -923,6 +939,10 @@
 *** Security & Griefing
 *** Documentation generation
 *** Automated testing
+
+    Probably need to have the injection framework available and configured properly for unit
+    testing.
+
 **** Unit
 **** Integration
 **** Database?
@@ -1123,7 +1143,8 @@
 
    Now you've got it deployed and it's messing up, so you need to debug.
 
-   Need to start Tomcat with these arguments:
+   Need to start Tomcat with these arguments (which I found when I tried to configure remote
+   debuging in IntelliJ IDEA; different IDEs might have different requirements):
 
    : -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
 

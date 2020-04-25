@@ -20,43 +20,12 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
 {
     private static final String DATABASE_JNDI_NAME = "jdbc/LayLeadership";
 
+    // Guessing it's ok to hold on to the DataSource for a long time.
     @Resource( name = DATABASE_JNDI_NAME) // Automatically prefixes "java:comp/env" onto this resource.  SUPPOSEDLY, you can use 'lookup =' to give a complete path.
     private DataSource _dataSource;
 
     public LayLeadershipSqliteRepository() throws NamingException
     {
-        // Guessing it's ok to hold on to the DataSource for a long time.
-//        var initialContext = new InitialContext();
-//        _dataSource = (DataSource) initialContext.lookup( "java:comp/env/" + DATABASE_JNDI_NAME );
-
-//        try
-//        {
-//            try
-//            {
-//                var cls = Class.forName( "org.sqlite.JDBC" );
-//                System.out.println( String.format( "Got class %s", cls.toString()));
-//            }
-//            catch (ClassNotFoundException exc)
-//            {
-//                exc.printStackTrace();
-//            }
-//            var drivers = DriverManager.getDrivers();
-//            var nDrivers = 0;
-//            while (drivers.hasMoreElements())
-//            {
-//                nDrivers++;
-//                var drvr = drivers.nextElement();
-//                if (drvr.acceptsURL( "jdbc:sqlite:/usr/local/var/LayLeadership/layleadership.db" ))
-//                    System.out.println( String.format( "Driver %s accepts url", drvr.toString()));
-//                else
-//                    System.out.println( String.format( "Driver %s DOES NOT accept url", drvr.toString()));
-//            }
-//            System.out.println( String.format( "Found %d drivers", nDrivers));
-//        }
-//        catch (SQLException exc)
-//        {
-//            exc.printStackTrace();
-//        }
     }
 
     @Override
@@ -65,19 +34,17 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
         Connection conn = null;
         try
         {
-//            conn = DriverManager.getConnection( "jdbc:sqlite:/usr/local/var/LayLeadership/layleadership.db");
-//            conn.close();
-
             conn = _dataSource.getConnection();
-            var stmt = conn.prepareStatement( ";SELECT MemberId,\n"
-                                   + "       FirstName,\n"
-                                   + "       LastName,\n"
-                                   + "       PhoneNumber,\n"
-                                   + "       EmailAddress,\n"
-                                   + "       Active,\n"
-                                   + "       Comments\n"
-                                   + "  FROM Member\n" );
-            var          rs     = stmt.executeQuery();
+            var stmt = conn.prepareStatement(
+                    ";SELECT MemberId,\n"
+                    + "       FirstName,\n"
+                    + "       LastName,\n"
+                    + "       PhoneNumber,\n"
+                    + "       EmailAddress,\n"
+                    + "       Active,\n"
+                    + "       Comments\n"
+                    + "  FROM Member\n" );
+            var                rs     = stmt.executeQuery();
             Collection<Member> retval = new ArrayList<>();
             while (rs.next())
             {
