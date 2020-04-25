@@ -23,9 +23,27 @@
 
 * Overview
 
-  I'm going to keep a diary of my effort to develop a web app from soup to nuts.
+  I'm going to keep a diary of my effort to develop a web app from soup to nuts.  A very long time
+  ago (10-15 years??), I was a semi-competent Java web-app programmer, and I'd like to get back to
+  that.  I've spent enough time in the Microsoft world, which has a different character[fn:1], and I
+  miss the Java world.
 
-  The initial plans are in [[file:README.org][README.org]].
+  The initial plans are in [[file:README.org][README.org]].  (At https://github.com/JohnL4/LayLeadership.)
+
+[fn:1] Well... Most developers in the Microsoft world seem to have the attitude that if something
+isn't created by Microsoft or endorsed by them, it's not worth their attention.  So, that whole
+open-source world mostly just leaves them cold.  I know things have changed recently and MS has
+Turned Over a Whole New Leaf, but the attitudes of the zillions of developers haven't really
+changed, and there's still, even now, a ton of baggage.  Even now, open source is only cool because
+Microsoft has endorsed it.  \\
+\\
+The Microsoft world is still stuck with old Microsoft decisions from decades ago, and the result is
+still a bit hacky (mixed-mode compilations, anyone? interop libraries?). \\
+\\
+*Also...* the Java world seems to proceed mostly from specification to implementation (with really
+good javadocs), while the Microsoft world is more "whatever Microsoft implemented, that's the
+standard, and we just have to hope they documented it well and why would anybody else re-implement
+it?".  I just see the Java world as cleaner, really.
 
 ** A note on horrible colors in source code
 
@@ -194,7 +212,9 @@
      /opt/apache-tomcat-9.0.31/lib
 
      deimos# cp ~/.m2/repository/org/xerial/sqlite-jdbc/3.30.1/sqlite-jdbc-3.30.1.jar .
-   #+END_EXAMPLE 
+   #+END_EXAMPLE
+
+   (So I deployed exactly what I'm building with.)
 
 *** DONE Move =Resource= from =server.xml= to =context.xml=
     CLOSED: [2020-04-21 Tue 22:01]
@@ -970,6 +990,7 @@
 
     - MapStruct (https://mapstruct.org/)
     - modelmapper (http://modelmapper.org/)
+    - JMapper
 
     See also:
 
@@ -1100,7 +1121,8 @@
      So... it turns out this works if you do a couple of things just right:
 
      1) Get the url right.  Be sure you're referring to a d/b file that exists, and the "tomcat"
-        user has read/write permission to it.
+        user has read/write permission to it.  (At some point, I switched from =tasks.db= to
+        =layleadership.db=.)
 
      2) Explicitly load the class in code with a call to =Class.forName( "org.sqlite.JDBC" )=.
 
@@ -1160,3 +1182,5 @@
 
    - JDWP :: Java Debug Wire Protocol
    - JPDA :: Java Platform Debugger Architecture
+
+----------------------------------------------------------------
