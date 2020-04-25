@@ -45,6 +45,33 @@ good javadocs), while the Microsoft world is more "whatever Microsoft implemente
 standard, and we just have to hope they documented it well and why would anybody else re-implement
 it?".  I just see the Java world as cleaner, really.
 
+** More emo blather about "why Java"
+
+   (You can skip this; it's information-free.)
+
+   Some people will ask "Why Java?  Why not Node or Ruby [do people still say that?] or Kotlin or Go
+   or serverless or C# [seriously?[fn:2]] or Blazor or /<superior framework I haven't heard of
+   yet>/?  Java EE is /h-a-a-a-a-r-r-r-d/ [Barbie voice]."
+
+   Because:
+
+   - My roots.
+   - Performance:  Java is pretty zippy.
+   - Strong, static typing for the win.
+   - Universality.  COBOL of the 90s, if you know what I mean.
+   - Really good enterprise structuring.  When my little side project grows up to be the 800-lb
+     gorilla of church software, I'll be glad its foundations are solid.
+   - Less magic, if you stay away from all the stuff "smart" IDEs (like Eclipse) can do for/to you.
+     /Some/ languages are pretty tightly bound to their IDEs.  You know who I'm talking about.
+     [squinty eyes]
+   - Related to the "enterprise" point:  I really want the skill of being able to whip out,
+     /quickly/, a well-structured web-app solution for whatever situation.  For example, one of the
+     things I've seen recently with various social-activism groups is a call for "web development".
+     Wouldn't it be spiffy to pretty much immediately plunk down a complete, well-formed solution?
+
+[fn:2] Yeah, yeah, Mono, Linux, yada yada.  Seriously?  Why should I fight both Microsoft AND some
+open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
+
 ** A note on horrible colors in source code
 
    Sometimes, I generate this file running emacs in character mode via an =ssh= terminal session.
