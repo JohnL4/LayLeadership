@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/Data/Data.iml" filepath="$PROJECT_DIR$/Data/Data.iml" />
       <module fileurl="file://$PROJECT_DIR$/LLWebJ.iml" filepath="$PROJECT_DIR$/LLWebJ.iml" />
       <module fileurl="file://$PROJECT_DIR$/Svc/Svc.iml" filepath="$PROJECT_DIR$/Svc/Svc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Util/Util.iml" filepath="$PROJECT_DIR$/Util/Util.iml" />
       <module fileurl="file://$PROJECT_DIR$/Web/Web.iml" filepath="$PROJECT_DIR$/Web/Web.iml" />
     </modules>
   </component>

@@ -23,9 +23,68 @@
 
 * Overview
 
-  I'm going to keep a diary of my effort to develop a web app from soup to nuts.
+  I'm going to keep a diary of my effort to develop a web app from soup to nuts.  This is an emacs
+  org-mode file that's part "living document" and part journal.  I skip around a bit in writing it
+  because /this part/ goes with /that part/, but it's also a bit chronological as you get into
+  various sections and I'm problem-solving.
 
-  The initial plans are in [[file:README.org][README.org]].
+  A very long time ago (15 years??), I was a semi-competent Java web-app programmer, and I'd like to
+  get back to that.  I've spent enough time in the Microsoft world, which has a different
+  character[fn:1], and I miss the Java world.
+
+  My background is Java from the 90s (yes, it's that old) and early 2000s.  I worked for a startup
+  that made a web app in the days before "Web 2.0", and we were poor and crude.  (We did survive the
+  dot-com crash in some form, though.)  No JS framework (apart from the absolutely horrible one we
+  came up with on our own -- don't do that).  No persistence layer apart from direct JDBC calls
+  (even though TopLink was available, as were others such as Cayenne and Hibernate).  We used Apache
+  and Tomcat and JBoss on Windows NT.  No Spring.  No Nginx.  No Jetty.  (I still don't know Spring;
+  I might make it part of this project later.)  Lots of Unix experience (Perl, bash, awk, make, and
+  friends) from before that.
+
+  The initial plans for this project are in [[file:README.org][README.org]].  (At
+  https://github.com/JohnL4/LayLeadership.)
+
+[fn:1] Well... Most developers in the Microsoft world seem to have the attitude that if something
+isn't created by Microsoft or endorsed by them, it's not worth their attention.  So, that whole
+open-source world mostly just leaves them cold.  I know things have changed recently and MS has
+Turned Over a Whole New Leaf, but the attitudes of the zillions of developers haven't really
+changed, and there's still, even now, a ton of baggage.  Even now, open source is only cool because
+Microsoft has endorsed it.  \\
+\\
+The Microsoft world is still stuck with old Microsoft decisions from decades ago, and the result is
+still a bit hacky (mixed-mode compilations, anyone? interop libraries?). \\
+\\
+*Also...* the Java world seems to proceed mostly from specification to implementation (with really
+good javadocs), while the Microsoft world is more "whatever Microsoft implemented, that's the
+standard, and we just have to hope they documented it well and why would anybody else re-implement
+it?".  I just see the Java world as cleaner, really.
+
+** More emo blather about "why Java"
+
+   (You can skip this; it's information-free.)
+
+   Some people will ask "Why Java?  Why not Node or Ruby [do people still say that?] or Kotlin or Go
+   or serverless or C# [seriously?[fn:2]] or Blazor or /<superior framework I haven't heard of
+   yet>/?  Java EE is /h-a-a-a-a-r-r-r-d/ [Barbie voice]."
+
+   Because:
+
+   - My roots.
+   - Performance:  Java is pretty zippy.
+   - Strong, static typing for the win.
+   - Universality.  COBOL of the 90s, if you know what I mean.
+   - Really good enterprise structuring.  When my little side project grows up to be the 800-lb
+     gorilla of church software, I'll be glad its foundations are solid.
+   - Less magic, if you stay away from all the stuff "smart" IDEs (like Eclipse) can do for/to you.
+     /Some/ languages are pretty tightly bound to their IDEs.  You know who I'm talking about.
+     [squinty eyes]
+   - Related to the "enterprise" point:  I really want the skill of being able to whip out,
+     /quickly/, a well-structured web-app solution for whatever situation.  For example, one of the
+     things I've seen recently with various social-activism groups is a call for "web development".
+     Wouldn't it be spiffy to pretty much immediately plunk down a complete, well-formed solution?
+
+[fn:2] Yeah, yeah, Mono, Linux, yada yada.  Seriously?  Why should I fight both Microsoft AND some
+open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
 ** A note on horrible colors in source code
 
@@ -140,14 +199,18 @@
 
    Well, first you have to write some code.  See [[#hello-world][Simplest possible code]].
    
-** IN-PROGRESS JDBC connection and other external configs preserved between version upgrade
+** DONE JDBC connection and other external configs preserved between version upgrade
+   CLOSED: [2020-04-21 Tue 22:08]
    :PROPERTIES:
    :CUSTOM_ID: tomcat-jndi-resources
    :END:
 
    See
 
-   - https://serverfault.com/a/751477
+   - +https://serverfault.com/a/751477+ *Note:* the advice to put the config in =server.xml= is
+     basically wrong.  Instead, follow the instructions at
+     https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html#JDBC_Data_Sources, and put
+     it in =context.xml=.
    - https://newfivefour.com/category_sqlite.html
 
    From =/opt/apache-tomcat-9.0.31/conf/server.xml=:
@@ -159,9 +222,6 @@
    #+END_EXAMPLE
 
    ...which is https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html
-
-   There's a section on JDBC data sources:
-   https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html#JDBC_Data_Sources
 
    (https://tomcat.apache.org/tomcat-9.0-doc/jndi-datasource-examples-howto.html might also be interesting.)
 
@@ -192,6 +252,20 @@
      </GlobalNamingResources>
    #+END_SRC
 
+   This will probably require deploying the SQLite jar(s) to the server's libs, since this
+   definition is at the server global level.
+
+   This is how I did that:
+
+   #+BEGIN_EXAMPLE
+     deimos# pwd
+     /opt/apache-tomcat-9.0.31/lib
+
+     deimos# cp ~/.m2/repository/org/xerial/sqlite-jdbc/3.30.1/sqlite-jdbc-3.30.1.jar .
+   #+END_EXAMPLE
+
+   (So I deployed exactly what I'm building with.)
+
 *** TODO JNDI directory entry vs. injected CDI bean
 
     Note that, when the dust has settled, this is not a CDI bean we're injecting somewhere, but it is a JNDI directory
@@ -200,6 +274,73 @@
     might be obvious, but I was a little confused about it for a bit.
 
     Injected bean lifecycle events: =@PostConstruct=, =@PreDestroy=.
+
+*** DONE Move =Resource= from =server.xml= to =context.xml=
+    CLOSED: [2020-04-21 Tue 22:01]
+
+    It turns out (for whatever reason), putting this in =server.xml= =GlobalNamingResources= is not
+    the answer.  Instead, it should go into =META-INF/context.xml=, in a =Context= element, per
+    https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html#JDBC_Data_Sources. 
+
+*** Cleanups, now that we got it working
+
+    After moving the JNDI entry definition to =context.xml=, we got it working, but with code like
+    the following in our SQL repository:
+
+    #+BEGIN_SRC java
+      // Guessing it's ok to hold on to the DataSource for a long time.
+      var initialContext = new InitialContext(  );
+      _dataSource = (DataSource) initialContext.lookup( "java:comp/env/" + DATABASE_JNDI_NAME);
+    #+END_SRC
+
+    So, (a) it'd be nice if we could inject the DataSource rather than create it ourselves, and (b)
+    there are possible glitches called out in
+    https://tomcat.apache.org/tomcat-9.0-doc/jndi-datasource-examples-howto.html.
+    
+**** Put the sqlite driver in =${CATALINA_BASE}/lib=
+
+     Basically, at the top/system level for the entire Tomcat web server.
+
+**** Note on Context vs. GlobalNamingResources
+
+     tl;dr: It should have worked.
+
+     https://tomcat.apache.org/tomcat-9.0-doc/jndi-datasource-examples-howto.html#Context_versus_GlobalNamingResources
+
+**** Resource injection
+     :PROPERTIES:
+     :CUSTOM_ID: resource-injection
+     :END:
+
+     #+BEGIN_SRC java
+       @ApplicationScoped
+       public class LayLeadershipSqliteRepository implements LayLeadershipRepository
+       {
+          private static final String DATABASE_JNDI_NAME = "jdbc/LayLeadership";
+          @Resource( name = DATABASE_JNDI_NAME) // Automatically prefixes "java:comp/env" onto this resource.  SUPPOSEDLY, you can use 'lookup =' to give a complete path.
+          private DataSource _dataSource;
+     #+END_SRC
+
+     There are a couple of things going on here (I think):
+
+     1) We put =@ApplicationScoped= on the bean to make sure the container knows it's a managed bean
+        ("managed" by CDI).  I don't think the exact scope matters, so long as there's a CDI scope
+        attribute so the container knows it's managed.  We do this because resource injection only
+        happens on managed objects.
+
+        (Note that we might need to do this anyway if we're going to move the "Repository" interface
+        back to another Maven module, like the =Svc= module.)
+
+     2) We put a =@Resource= attribute on the thing we want injected from the JNDI directory.  Since
+        we used the =name= argument, we automatically get shunted off to =java:comp/env=.
+
+        Internet rumor has it that you can use =resource= to specify an entirely different path in
+        the JNDI directory.
+
+        I noticed (by accident) that if you get the name of the resource wrong, you get a big, nasty
+        error in the web app itself (like... a faceful of stack trace), which is good.  At least you
+        know the lookup is being attempted.  If you put in an intentionally wrong resource name and
+        get no errors, you know the lookup isn't being attempted at all.  For what that's worth.
 
 * Database
 
@@ -219,6 +360,21 @@
    See
    - https://newfivefour.com/category_sqlite.html
 
+*** Simple command-line use
+
+    #+BEGIN_SRC bash
+      sqlite3 <database-file>
+    #+END_SRC
+
+    (Database files will probably have a suffix like =.sqlite= or =.db=.)
+
+    #+BEGIN_SRC sql
+      .mode columns                   -- Normal format is "|"-delimited, which is great for awk
+      .headers on                     -- Column headers
+      select * from Member;           -- Don't forget the semicolon
+      .quit
+    #+END_SRC
+    
 *** How much does it scale?
 
     For a toy app (on a toy server), I don't need much.
@@ -333,8 +489,15 @@
 
    Back to Maven, until I give up on it again.
 
-   Need to figure out how to download dependencies over https.  (Answer: switch the urls to be
-   "https" instead of "http".  Also, purge your local =.m2= repository and let it get repopulated.)
+   Need to figure out how to download dependencies over https.
+
+   Answer: switch the urls to be "https" instead of "http".  Also, purge your local =.m2= repository
+   and let it get repopulated.  Before I figured this out, I wrote a bunch of notes on "oddities" of
+   Maven.  Turns out I had an ancient =.m2= repository with a bunch of old Maven poms (or whatever)
+   in it from older Java days and before the transition to HTTPS (from HTTP) for Maven Central, and
+   so and so forth.  Taking off and nuking the =.m2= repository from orbit turned out to be the
+   solution.  (Hopefully, my old/ancient projects will still build, but... eh.  Problem for another
+   day.)
 
    Need to figure out a project structure.  Somewhere between simple-weapp and J2EE-webapp.
 
@@ -356,7 +519,9 @@
     past was a single Maven project, but a project (parent or aggregate, packaging = =pom=) that has
     the following sub-projects shouldn't be too hard.
 
-    - business logic, with minimal dependencies (onion architecture core)
+    - business logic, with minimal dependencies (onion architecture core,
+      (https://jeffreypalermo.com/2008/07/the-onion-architecture-part-2/ (the other parts are good,
+      too)))
     - utilities I will probably use in other projects (again, minimal dependencies, and particularly
       no dependencies on UI or d/b layers).  Maybe this is where I'd put interface/facade code for
       common stuff like logging.
@@ -670,12 +835,32 @@
       Answer: =META-INF= goes in =resources= directory, a /peer/ to the =java= directory.  Only java
       code goes in =java= directory.  See https://stackoverflow.com/a/13057183.
 
-****** TODO Bean scoping
+****** RESEARCH-DONE Bean scoping
+       CLOSED: [2020-04-25 Sat 12:38]
 
        I have a bean injected as the private data member of a servlet.  Is there a default scope?
        What is it?  Should I explicitly scope my bean?  To =@Dependent=, maybe?
 
-****** TODO =beans.xml= is optional, supposedly
+       Actually, probably not =@Dependent=, because most of the beans will already have some sort of
+       preconceived scope, probably one of either =@ApplicationScoped= or =@RequestScoped=.  Note,
+       also, that scoping happens where the bean is defined, not at the injection point (I think).
+
+       (Ideally, we'd stay away from HTTP sessions, because
+
+       1) They break load-balancing, unless you set session affinity for nodes in a farm;
+       2) They could, /conceivably/ suck up a bunch of memory if you jam a bunch of stuff in the
+          session; and (surprisingly)
+       3) If you have multiple simultaneous incoming requests (like a bunch of DIVs loaded with AJAX
+          calls), they can wind up either blocking on the session (single-threading) or overwriting
+          it with gay abandon, both of which are Bad Things.
+
+       )
+
+****** HOLD =beans.xml= is optional, supposedly
+
+       - State "HOLD"       from "TODO"       [2020-04-25 Sat 13:06] \\
+         For now, I'll just live with plonking an empty =beans.xml= file in every module that has injection
+         beans.
 
        I guess that means all beans have to have scope annotations?  Is there a more generic
        =@InjectedBean= annotation I can use, or do I just slap on scope annotations?
@@ -698,7 +883,11 @@
      - CDI 2.0 (JSR 365), part of Java EE 8
      #+END_QUOTE 
     
-*** IN-PROGRESS Persistence
+*** DONE Persistence
+    CLOSED: [2020-04-21 Tue 22:29]
+
+    - CLOSING NOTE [2020-04-21 Tue 22:29] \\
+      Problems solved.  Still need to tackle JPA (below).
 
 **** DONE SQLite (for now)
      CLOSED: [2020-04-12 Sun 12:17]
@@ -727,7 +916,15 @@
 
       Results in a 28k database file, so, not too big.
 
-****** TODO Where to put it?
+****** DONE Where to put it?
+       CLOSED: [2020-04-21 Tue 21:51]
+
+       - CLOSING NOTE [2020-04-21 Tue 21:51] \\
+         Answer: put it in some directory path completely independent of the webapp, make sure tomcat user
+         has read/write access, and specify the path to it in a JDBC connection url in webapp config files.
+         Preferred approach with Tomcat is to put it in =context.xml=, which can optionally be extracted to a
+         directory below the Tomcat =conf= directory, so it /might/ be persistent across app version upgrades
+         (that last part still needs testing).
 
        I dunno, but probably not in the resource directory, since that'll be inside the jar and
        probably not updateable.  Maybe put an empty copy of the d/b in the resources directory so at
@@ -737,33 +934,47 @@
        Which begs the question: how to specify properties, both outside (actual value) and inside
        (default value) the jar?
 
-****** DONE jar properties
-       CLOSED: [2020-04-12 Sun 15:06]
+******* DONE jar properties
+        CLOSED: [2020-04-12 Sun 15:06]
 
-       - CLOSING NOTE [2020-04-12 Sun 15:06] \\
-         Not the answer.
+        - CLOSING NOTE [2020-04-12 Sun 15:06] \\
+          Not the answer.
 
-       The property I want is the location of the database.
+        The property I want is the location of the database.
 
-       Actually, this isn't the answer, but read on ([[#command-line-properties][Command-line (or otherwise run-time) properties]]).
+        Actually, this isn't the answer, but read on ([[#command-line-properties][Command-line (or otherwise run-time) properties]]).
 
-****** IN-PROGRESS Command-line (or otherwise run-time) properties
-       :PROPERTIES:
-       :CUSTOM_ID: command-line-properties
-       :END:
+******* DONE Command-line (or otherwise run-time) properties
+        CLOSED: [2020-04-21 Tue 21:49]
+        :PROPERTIES:
+        :CUSTOM_ID: command-line-properties
+        :END:
 
-       =System.getProperty()= ?
+        - CLOSING NOTE [2020-04-21 Tue 21:49] \\
+          Not the answer.  Webapp config files (web.xml, context.xml) are the answer.
 
-       Gets more complicated for a webapp, because you don't get a command line to fiddle around with.
+        =System.getProperty()= ?
 
-       Looks like the answer is JNDI (great! another thing to learn!)
+        Gets more complicated for a webapp, because you don't get a command line to fiddle around
+        with.  And, even if you did, Tomcat hosts multiple web apps, so anything on the command line
+        (or in server.xml, for that matter) would be global to everything.
 
-       See [[#tomcat-jndi-resources][JDBC connection and other external configs preserved between version upgrade]].
+        TODO: Interesting side note: what happens if any code in a Tomcat webapp calls
+        =System.exit()=?  Does all of Tomcat shut down?
+
+        Looks like the answer is JNDI (great! another thing to learn!)
+
+        See [[#tomcat-jndi-resources][JDBC connection and other external configs preserved between version upgrade]].
+
+        Turns out the answer is what the Tomcat docs say
+        (https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html#JDBC_Data_Sources):  put
+        the context in a =<Context>= element in =context.xml=.  As opposed to some post on
+        StackOverflow saying to put it in =GlobalNamingResources= in =server.xml=.
 
 **** IN-PROGRESS Connect to SQLite d/b using JDBC
 
-***** HOLD sqlite driver
-      CLOSED: [2020-04-14 Tue 13:01]
+***** DONE sqlite driver
+      CLOSED: [2020-04-19 Sun 22:04]
 
       - State "HOLD"       from "IN-PROGRESS" [2020-04-14 Tue 13:01] \\
         Found a way to connect, theoretically; now just waiting to see if it actually works (depends on writing a bunch of other
@@ -771,7 +982,11 @@
 
       Looks like the Xerial one is the most commonly-used.  Not hard to find at https://mvnrepository.com.
 
-***** IN-PROGRESS Getting DataSource from JNDI at the right time
+***** DONE Getting DataSource from JNDI at the right time
+      CLOSED: [2020-04-29 Wed 14:36]
+
+      - CLOSING NOTE [2020-04-29 Wed 14:36] \\
+        (Solved a week or two ago, but merging notes between two machines and may have lost the timestamp on this.)
 
       "Right time", ha.
 
@@ -783,8 +998,7 @@
       And... why are we doing this with bean injection?  Because we don't know which d/b we'll be hitting (sqlite,
       postgres, ...), so we can't hardcode the d/b connection setup.
 
-**** HOLD Java Persistence API (JPA)
-     CLOSED: [2020-04-10 Fri 17:51]
+**** TODO Java Persistence API (JPA)
 
 ***** "Criteria" queries:  Yikes.
 
@@ -807,18 +1021,25 @@
 
        Need to figure out how to get these (and whether they're useful).
 
-****** HOLD EclipseLink
-       CLOSED: [2020-04-10 Fri 17:50]
+****** IN-PROGRESS EclipseLink
 
        - State "HOLD"       from "IN-PROGRESS" [2020-04-10 Fri 17:50] \\
          Waiting for a simple JDBC connection.
 
        Need to get started writing some code with this.
+
+       <2020-04-25 Sat> Ok, now that I've got a working JDBC query, time to turn it into a JPQL query.
+
+******* Add EclipseLink to build/deploy
+
+        
+
+******* Use EclipseLink in code
        
 ******* Download & install
 
         Bleah, maybe I should start with a simple JDBC connection before I go crazy on JPA.
-       
+        
 *** DONE Lombok
     CLOSED: [2020-04-13 Mon 15:18]
 
@@ -836,12 +1057,20 @@
     objects, mostly?  I assume not DTOs, really).
 
 *** Logging & Telemetry
+
+**** Responsiveness, measured from the client
+     
 *** Security & Griefing
 *** Documentation generation
 *** Automated testing
+
+    Probably need to have the injection framework available and configured properly for unit
+    testing.
+
 **** Unit
 **** Integration
 **** Database?
+*** Code coverage during [automated] testing
 *** Command pattern, undo/redo trees
 *** Well-known APIs
 **** Documenting with something like Swagger
@@ -865,8 +1094,211 @@
 
     - MapStruct (https://mapstruct.org/)
     - modelmapper (http://modelmapper.org/)
+    - JMapper
 
     See also:
 
     - https://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
     - https://www.baeldung.com/java-performance-mapping-frameworks
+    
+**** TODO Is this required when using JPQL?
+
+**** TODO Is this required when using Criteria?
+
+* Operations
+
+  Once the code is written....
+
+** Deploying
+
+   Deploying a web app via the Tomcat "manager" UI results in the first line in the log file
+   (=catalina.out=) looking like this:
+
+   : 17-Apr-2020 18:21:39.602 INFO [http-nio-8080-exec-53] org.apache.catalina.startup.HostConfig.deployWAR Deploying web application archive [/opt/apache-tomcat-9.0.31/webapps/Web.war]
+
+*** Deploying as part of build (via Maven)
+
+    (Deploying to test server, obviously.)
+
+** Diagnosing Deploy-Time Errors
+
+*** Injection failures
+
+**** RESEARCH-DONE Unsatisfied dependencies
+     CLOSED: [2020-04-25 Sat 12:37]
+
+     - CLOSING NOTE [2020-04-25 Sat 12:37] \\
+       Annotate the beans properly, and you're good.
+
+     #+BEGIN_EXAMPLE
+       Unsatisfied dependencies for type LayLeadershipRepository with qualifiers @Default
+         at injection point [BackedAnnotatedField] @Inject private com.how_hard_can_it_be.layleadership.servlet.MembersServlet._layLeadershipRepository
+         at com.how_hard_can_it_be.layleadership.servlet.MembersServlet._layLeadershipRepository(MembersServlet.java:0)
+     #+END_EXAMPLE 
+
+     /Apparently/ the interface and the implementation must be in the same JAR file.  (Really? Do we
+     really believe that? No, right? Because then how could you have a third-party bean satisfy an
+     interface and be injected?).
+
+     Answer: no, they don't have to be in the same JAR/module.  But, apparently, you /do/ have to
+     annotate the beans you expect this to work for, so the CDI container knows that they /are/
+     beans to be managed.
+
+**** DONE Ambiguous dependencies
+     CLOSED: [2020-04-18 Sat 18:41]
+
+     #+BEGIN_EXAMPLE
+               Caused by: org.jboss.weld.exceptions.DeploymentException: WELD-001409: Ambiguous dependencies for type LayLeadershipRepository with qualifiers @Default
+         at injection point [BackedAnnotatedField] @Inject private com.how_hard_can_it_be.layleadership.servlet.MembersServlet._layLeadershipRepository
+         at com.how_hard_can_it_be.layleadership.servlet.MembersServlet._layLeadershipRepository(MembersServlet.java:0)
+         Possible dependencies: 
+         - Managed Bean [class com.how_hard_can_it_be.layleadership.data.LayLeadershipSqliteRepository] with qualifiers [@Any @Default],
+         - Managed Bean [class com.how_hard_can_it_be.layleadership.data.LayLeadershipRepositoryScaffold] with qualifiers [@Any @Default]
+     #+END_EXAMPLE
+
+     I believe the problem here is that both injectable beans are defaulting to qualifiers =@Any=
+     and =@Default= because we haven't given them any other qualifiers.
+
+     The fix is to declare a =Mock= qualifier annotation and use it to annotate the "scaffold"
+     version so it no longer has the default =@Default= qualifier.
+
+     #+BEGIN_SRC java
+       @Qualifier
+       @Retention( RUNTIME )
+       @Target( {TYPE, FIELD, METHOD, PARAMETER} )
+       public @interface Mock {}
+     #+END_SRC 
+     
+***** On annotations
+
+      For those coming to this a bit raw, /annotations/ are Java's way of attaching extra
+      meta-information to various elements of Java code during the compile phase.  Reflection is
+      used to act on these annotations.
+
+      This particular definition breaks down as follows:
+
+      =@interface= is how you declare an annotation.  It's basically the =interface= keyword you're
+      used to, plus an extra =@= preceding it.  An annotation /is/ a kind of interface.
+
+      This annotation declaration is itself annotated with more annotations.
+
+      =@Retention= specifies how long the compiler is to retain this new piece of meta-information.
+      =RUNTIME= means this information is to be available at runtime, to the JVM, so basically:
+      forever.  Some other types of info are thrown away earlier and don't make it out to the final
+      byte-code.
+
+      =@Target= specifies which kinds of code elements are legal places for this new annotation.
+      We've specified classes (types), data members (fields), methods and parameters, which is kind
+      of everything normal.
+
+      And, finally, we sucked in the annotation =javax.inject.Qualifier=, which basically specifies
+      that this new annotation (=Mock=) is an injection /qualifier/.  When we use =Mock= to annotate
+      a class (our d/b "scaffold" implmentation), that means the class won't (by default) have the
+      =@Default= annotation, which should clear up our ambiguity (since now only /one/ class will
+      have the =@Default= qualifier).
+
+      The way we use this is, when we write our unit tests and we want to mock the d/b, we specify
+      an injection point in our unit test qualified with =@Mock=, so the injection container will
+      then inject our mock repository that doesn't actually hit the database.
+      
+*** DONE D/B connection problems (JNDI problem)
+    CLOSED: [2020-04-21 Tue 22:16]
+
+    - CLOSING NOTE [2020-04-21 Tue 22:16] \\
+      Fixed.  See [[file:web-app-journal.org::#web-xml-structure][=web.xml= structure]].
+
+    : java.sql.SQLException: Cannot create JDBC driver of class '' for connect URL 'null'
+
+    So, apparently, the JNDI lookup defined in [[#tomcat-jndi-resources][JDBC connection]] (GlobalNamingResources) isn't
+    returning a sqlite object.
+    
+**** DONE Direct JDBC connection
+     CLOSED: [2020-04-19 Sun 18:58]
+
+     Let's see if we've even got sqlite set up correctly.  We'll modify the injected bean to
+     directly connect to the d/b.
+
+     putting
+
+     : conn = DriverManager.getConnection( "jdbc:sqlite:/usr/local/var/LayLeadership/tasks.db");
+
+     in =LayLeadershipSqliteRepository.getAllMembers()= results in:
+
+     : No suitable driver found for jdbc:sqlite:/usr/local/var/LayLeadership/tasks.db
+
+     So... progress?
+
+     Debugging and dumping out the result of =System.getProperties()= (expression evaluation window)
+     gives:
+
+     - java.class.path :: "/opt/apache-tomcat-9.0.31/bin/bootstrap.jar:/opt/apache-tomcat-9.0.31/bin/tomcat-juli.jar"
+
+     Well, that's unhelpful.  Probably Tomcat has a separate classloader for each app, and this
+     system property is meaningless.
+
+     So... it turns out this works if you do a couple of things just right:
+
+     1) Get the url right.  Be sure you're referring to a d/b file that exists, and the "tomcat"
+        user has read/write permission to it.  (At some point, I switched from =tasks.db= to
+        =layleadership.db=.)
+
+     2) Explicitly load the class in code with a call to =Class.forName( "org.sqlite.JDBC" )=.
+
+     3) Iterate through the drivers obtained via =DriverManager.getDrivers()=, asking each driver if
+        it can accept the url.
+
+     This doesn't seem right; Tomcat should be handling all this for us.  I suspect I've still got
+     something misconfigured, but at least we can access the database /somehow/.
+
+**** RESEARCH-DONE =web.xml= structure
+     CLOSED: [2020-04-22 Wed 21:50]
+     :PROPERTIES:
+     :CUSTOM_ID: web-xml-structure
+     :END:
+
+     - CLOSING NOTE [2020-04-22 Wed 21:50] \\
+       Don't use =copyXML=.  Instead....
+     - CLOSING NOTE [2020-04-19 Sun 21:45] \\
+       This way lies madness.  Turn back, O mortal.
+
+     [head exploded after reading both the spec and the various =.xsd= files involved.]
+
+     Might be best to move the =server.xml= part out of the global naming whatsis and into
+     =context.xml= in the deployed files (=.war=).  Tomcat allows this file to be "externalized", by
+     placing it in the =conf= hierarchy, which allows it to be preserved between deploys (although
+     TODO: find out if the =copyXML= attribute of the host will overwrite this file; reading the
+     docs leaves the answer unclear (it's ok for "start" but what about "deploy".  Will deploying a
+     new version of the WAR file result in the copied =context.xml= being overwritten?).
+
+     Answer: it overwrites the older, extracted version.  So, I guess the answer is: don't use
+     copyXML.  Instead, copy =context.xml= to =conf/<engine>/<host>/<context>.xml= and edit (once) as
+     needed.
+
+     Where =<engine>= is probably =Cataline= and =<host>= may be =localhost= and =<context>= is the
+     context path of the application (which may corresponds to the name of the WAR file used to
+     deploy it).
+
+** DONE Debugging
+   CLOSED: [2020-04-19 Sun 15:11]
+
+   Now you've got it deployed and it's messing up, so you need to debug.
+
+   Need to start Tomcat with these arguments (which I found when I tried to configure remote
+   debuging in IntelliJ IDEA; different IDEs might have different requirements):
+
+   : -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+
+   If you look at the =catalina.sh= scripts that comes with Tomcat, you'll see a section that
+   processes an argument of "jpda" by using environment variables like =JPDA_ADDRESS=.  In my case,
+   the only one that was different by default from the arguments given above was the address.  It's
+   probably better to use =localhost= instead of =*=, due to the need to either escape the =*= or
+   use quotes (which the script says won't work).  Override (in a separate
+   environment-variable-setting script) the variables you need to override and you should be good to
+   go, with a command-line invocation like =catalina.sh jpda start=.
+
+   A little vocabulary:
+
+   - JDWP :: Java Debug Wire Protocol
+   - JPDA :: Java Platform Debugger Architecture
+
+----------------------------------------------------------------

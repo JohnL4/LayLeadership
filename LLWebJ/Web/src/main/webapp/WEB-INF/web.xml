@@ -11,14 +11,8 @@
     </resource-env-ref-type>
   </resource-env-ref>
   <resource-ref>
-    <description>Resource reference to a factory for java.sql.Connection
-      instances that may be used for talking to the Lay Leadership "Contact Tasks"
-      database that is configured in the &lt;Context&gt;
-      configuration for the web application.
-    </description>
-    <res-ref-name>
-      jdbc/LayLeadership
-    </res-ref-name>
+    <description>Lay Leadership database</description>
+    <res-ref-name>jdbc/LayLeadership</res-ref-name>
     <res-type>javax.sql.DataSource</res-type>
     <res-auth>Container</res-auth>
   </resource-ref>

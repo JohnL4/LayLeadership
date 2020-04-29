@@ -1,6 +1,6 @@
 package com.how_hard_can_it_be.layleadership.servlet;
 
-import com.how_hard_can_it_be.layleadership.interfaces.Greeter;
+import com.how_hard_can_it_be.layleadership.service_interfaces.Greeter;
 
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
