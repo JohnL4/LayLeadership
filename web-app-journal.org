@@ -342,6 +342,11 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
         know the lookup is being attempted.  If you put in an intentionally wrong resource name and
         get no errors, you know the lookup isn't being attempted at all.  For what that's worth.
 
+* RESEARCH-TODO TomEE
+
+  Variant of Tomcat that has more JavaEE libraries.  It may be possible to deploy it as a webapp, somehow.  Offers
+  container-managed JPA, among many other things.  TODO: research feasibility.
+
 * Database
 
 ** Consider an ORM of some sort
