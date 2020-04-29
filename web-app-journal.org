@@ -23,12 +23,26 @@
 
 * Overview
 
-  I'm going to keep a diary of my effort to develop a web app from soup to nuts.  A very long time
-  ago (10-15 years??), I was a semi-competent Java web-app programmer, and I'd like to get back to
-  that.  I've spent enough time in the Microsoft world, which has a different character[fn:1], and I
-  miss the Java world.
+  I'm going to keep a diary of my effort to develop a web app from soup to nuts.  This is an emacs
+  org-mode file that's part "living document" and part journal.  I skip around a bit in writing it
+  because /this part/ goes with /that part/, but it's also a bit chronological as you get into
+  various sections and I'm problem-solving.
 
-  The initial plans are in [[file:README.org][README.org]].  (At https://github.com/JohnL4/LayLeadership.)
+  A very long time ago (15 years??), I was a semi-competent Java web-app programmer, and I'd like to
+  get back to that.  I've spent enough time in the Microsoft world, which has a different
+  character[fn:1], and I miss the Java world.
+
+  My background is Java from the 90s (yes, it's that old) and early 2000s.  I worked for a startup
+  that made a web app in the days before "Web 2.0", and we were poor and crude.  (We did survive the
+  dot-com crash in some form, though.)  No JS framework (apart from the absolutely horrible one we
+  came up with on our own -- don't do that).  No persistence layer apart from direct JDBC calls
+  (even though TopLink was available, as were others such as Cayenne and Hibernate).  We used Apache
+  and Tomcat and JBoss on Windows NT.  No Spring.  No Nginx.  No Jetty.  (I still don't know Spring;
+  I might make it part of this project later.)  Lots of Unix experience (Perl, bash, awk, make, and
+  friends) from before that.
+
+  The initial plans for this project are in [[file:README.org][README.org]].  (At
+  https://github.com/JohnL4/LayLeadership.)
 
 [fn:1] Well... Most developers in the Microsoft world seem to have the attitude that if something
 isn't created by Microsoft or endorsed by them, it's not worth their attention.  So, that whole
@@ -457,8 +471,15 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
    Back to Maven, until I give up on it again.
 
-   Need to figure out how to download dependencies over https.  (Answer: switch the urls to be
-   "https" instead of "http".  Also, purge your local =.m2= repository and let it get repopulated.)
+   Need to figure out how to download dependencies over https.
+
+   Answer: switch the urls to be "https" instead of "http".  Also, purge your local =.m2= repository
+   and let it get repopulated.  Before I figured this out, I wrote a bunch of notes on "oddities" of
+   Maven.  Turns out I had an ancient =.m2= repository with a bunch of old Maven poms (or whatever)
+   in it from older Java days and before the transition to HTTPS (from HTTP) for Maven Central, and
+   so and so forth.  Taking off and nuking the =.m2= repository from orbit turned out to be the
+   solution.  (Hopefully, my old/ancient projects will still build, but... eh.  Problem for another
+   day.)
 
    Need to figure out a project structure.  Somewhere between simple-weapp and J2EE-webapp.
 
@@ -480,7 +501,9 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
     past was a single Maven project, but a project (parent or aggregate, packaging = =pom=) that has
     the following sub-projects shouldn't be too hard.
 
-    - business logic, with minimal dependencies (onion architecture core)
+    - business logic, with minimal dependencies (onion architecture core,
+      (https://jeffreypalermo.com/2008/07/the-onion-architecture-part-2/ (the other parts are good,
+      too)))
     - utilities I will probably use in other projects (again, minimal dependencies, and particularly
       no dependencies on UI or d/b layers).  Maybe this is where I'd put interface/facade code for
       common stuff like logging.
@@ -815,7 +838,11 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
        )
 
-****** TODO =beans.xml= is optional, supposedly
+****** HOLD =beans.xml= is optional, supposedly
+
+       - State "HOLD"       from "TODO"       [2020-04-25 Sat 13:06] \\
+         For now, I'll just live with plonking an empty =beans.xml= file in every module that has injection
+         beans.
 
        I guess that means all beans have to have scope annotations?  Is there a more generic
        =@InjectedBean= annotation I can use, or do I just slap on scope annotations?
@@ -956,12 +983,20 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
        Need to figure out how to get these (and whether they're useful).
 
-****** TODO EclipseLink
+****** IN-PROGRESS EclipseLink
 
        - State "HOLD"       from "IN-PROGRESS" [2020-04-10 Fri 17:50] \\
          Waiting for a simple JDBC connection.
 
        Need to get started writing some code with this.
+
+       <2020-04-25 Sat> Ok, now that I've got a working JDBC query, time to turn it into a JPQL query.
+
+******* Add EclipseLink to build/deploy
+
+        
+
+******* Use EclipseLink in code
        
 ******* Download & install
 
@@ -984,6 +1019,9 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
     objects, mostly?  I assume not DTOs, really).
 
 *** Logging & Telemetry
+
+**** Responsiveness, measured from the client
+     
 *** Security & Griefing
 *** Documentation generation
 *** Automated testing
@@ -1039,6 +1077,10 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
    (=catalina.out=) looking like this:
 
    : 17-Apr-2020 18:21:39.602 INFO [http-nio-8080-exec-53] org.apache.catalina.startup.HostConfig.deployWAR Deploying web application archive [/opt/apache-tomcat-9.0.31/webapps/Web.war]
+
+*** Deploying as part of build (via Maven)
+
+    (Deploying to test server, obviously.)
 
 ** Diagnosing Deploy-Time Errors
 
