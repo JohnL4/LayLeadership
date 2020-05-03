@@ -8,4 +8,6 @@ import com.how_hard_can_it_be.layleadership.business.Member;
 public interface LayLeadershipRepository
 {
    Collection<Member> getAllMembers() throws SQLException;
+
+   Collection<Member> getAllMembersJPQL();
 }

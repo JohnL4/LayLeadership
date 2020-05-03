@@ -6,6 +6,9 @@ import com.how_hard_can_it_be.layleadership.service_interfaces.LayLeadershipRepo
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -19,6 +22,9 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
     // Guessing it's ok to hold on to the DataSource for a long time.
     @Resource( name = DATABASE_JNDI_NAME) // Automatically prefixes "java:comp/env" onto this resource.  SUPPOSEDLY, you can use 'lookup =' to give a complete path.
     private DataSource _dataSource;
+
+    @PersistenceUnit
+    EntityManagerFactory _entityMgrFactory;
 
     public LayLeadershipSqliteRepository() throws NamingException
     {
@@ -60,5 +66,24 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
             if (conn != null)
                 conn.close();
         }
+    }
+
+    @Override
+    public Collection<Member> getAllMembersJPQL()
+    {
+        Collection<Member> retval;
+        EntityManager         em = _entityMgrFactory.createEntityManager();
+
+        Collection<MemberDto> memberDtos = em.createQuery( "SELECT m FROM Member c", MemberDto.class )
+                   .getResultList();
+        retval = new ArrayList<>(  );
+        for (var memberDto : memberDtos)
+        {
+            var member = new Member( memberDto.getId(), memberDto.getFirstName(), memberDto.getLastName(),
+                                     memberDto.getPhoneNumber(), memberDto.getEmailAddress(), memberDto.isActive(),
+                                     memberDto.getComments() );
+            retval.add( member );
+        }
+        return retval;
     }
 }

@@ -23,20 +23,23 @@ public class MembersServlet extends HttpServlet
             throws IOException
     {
         PrintWriter out = aResponse.getWriter();
-        try
-        {
-            var members = _layLeadershipRepository.getAllMembers();
+//        try
+//        {
+//            var members = _layLeadershipRepository.getAllMembers();
+            var members = _layLeadershipRepository.getAllMembersJPQL();
 
             var gson             = new Gson();
             var membersJsonString = gson.toJson( members );
             aResponse.setContentType( "application/json" );
             aResponse.setCharacterEncoding( "UTF-8" );
+            out.println( "Memebers via JPQL:" );
+            out.println();
             out.print( membersJsonString );
-        }
-        catch (SQLException exc)
-        {
-            out.print( exc.toString());
-        }
+//        }
+//        catch (SQLException exc)
+//        {
+//            out.print( exc.toString());
+//        }
         out.flush();
     }
 }
