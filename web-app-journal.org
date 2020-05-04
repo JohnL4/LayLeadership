@@ -96,6 +96,15 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
    about that.  Hopefully, you're reading this after I've generated it via light-mode GUI and emacs
    is using different colors.
 
+** COMMENT Column view
+
+   More detail than you ever wanted, probably.  (Needs manual update, so may be out of sync with the actual text of this
+   document.)
+
+# C-c C-c in block to update or C-u C-c C-x C-u to update all such views in file from anywhere.
+#+BEGIN: columnview :hlines 1 :id global :indent t
+#+END:
+
 * Java
 
   Currently running my wiki on JSPWiki on Tomcat 8 on Java 8.  I'd like to run a different process
@@ -260,6 +269,15 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
    (So I deployed exactly what I'm building with.)
 
+*** TODO JNDI directory entry vs. injected CDI bean
+
+    Note that, when the dust has settled, this is not a CDI bean we're injecting somewhere, but it is a JNDI directory
+    entry that we'll look up to get a =DataSource=, at some point (possibly during CDI injection of a bean; TODO: CDI
+    bean lifecycle, because we'll need to return the JDBC connection to the pool when the bean is shut down).  That
+    might be obvious, but I was a little confused about it for a bit.
+
+    Injected bean lifecycle events: =@PostConstruct=, =@PreDestroy=.
+
 *** DONE Move =Resource= from =server.xml= to =context.xml=
     CLOSED: [2020-04-21 Tue 22:01]
 
@@ -326,6 +344,11 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
         error in the web app itself (like... a faceful of stack trace), which is good.  At least you
         know the lookup is being attempted.  If you put in an intentionally wrong resource name and
         get no errors, you know the lookup isn't being attempted at all.  For what that's worth.
+
+* RESEARCH-TODO TomEE
+
+  Variant of Tomcat that has more JavaEE libraries.  It may be possible to deploy it as a webapp, somehow.  Offers
+  container-managed JPA, among many other things.  TODO: research feasibility.
 
 * Database
 
@@ -723,7 +746,7 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
 * App code
 
-  Because this is where it gets real.
+  Because this is where it gets real.  Notes in this section are more code-centered than in the previous sections.
 
   Note that, at some point, I switched over to using JetBrains's IntelliJ IDEA community-edition
   Java IDE, and it started getting magic.  In particular, it can be set to automatically download
@@ -956,12 +979,32 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
         the context in a =<Context>= element in =context.xml=.  As opposed to some post on
         StackOverflow saying to put it in =GlobalNamingResources= in =server.xml=.
 
-**** Connect to SQLite d/b using JDBC
+**** IN-PROGRESS Connect to SQLite d/b using JDBC
 
 ***** DONE sqlite driver
       CLOSED: [2020-04-19 Sun 22:04]
 
+      - State "HOLD"       from "IN-PROGRESS" [2020-04-14 Tue 13:01] \\
+        Found a way to connect, theoretically; now just waiting to see if it actually works (depends on writing a bunch of other
+        code, under other items).
+
       Looks like the Xerial one is the most commonly-used.  Not hard to find at https://mvnrepository.com.
+
+***** DONE Getting DataSource from JNDI at the right time
+      CLOSED: [2020-04-29 Wed 14:36]
+
+      - CLOSING NOTE [2020-04-29 Wed 14:36] \\
+        (Solved a week or two ago, but merging notes between two machines and may have lost the timestamp on this.)
+
+      "Right time", ha.
+
+      I guess we'd need a very short-life-cycle bean to be injected and broken down after a single "read" or "write"
+      method.  For sqlite write, we probably want to use a transaction, for efficiency during concurrent access.  Do we
+      want to inject it as a method parameter?  And then we'd need to know whether it's for read or write (write
+      requires transaction).
+
+      And... why are we doing this with bean injection?  Because we don't know which d/b we'll be hitting (sqlite,
+      postgres, ...), so we can't hardcode the d/b connection setup.
 
 **** TODO Java Persistence API (JPA)
 
