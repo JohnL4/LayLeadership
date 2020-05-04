@@ -744,6 +744,39 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
     - https://javadoc.io/
 
+* Version Control
+** Git mechanics
+
+   (Apart from the basics of =git commit=.)
+
+*** New branch w/current outstanding changes
+
+    When you decide you're half-baked changes really should go into a separate branch.
+
+    :git checkout -b <new-branch-name>
+
+*** Merge another branch or commit into the current branch
+
+    When you decide the work on a branch is complete and should be merged into main ("master")
+
+    :git merge <commit>
+
+    Where /<commit>/ is either the name of another branch (will merge entire branch) or (maybe?) the
+    hash of another commit.
+
+*** See the list of commits
+
+    :git log
+
+    Gives the commit hash associated w/each commit, and you can use that hashes in other =git= commands.
+
+*** Restore working dir to match an old version
+
+    :git checkout <commit>
+
+    Where /<commit>/ is the hash of the old commit you want.  Note that /<commit>/ could also be the
+    name of another branch, in which case you get the head of that branch.    
+
 * App code
 
   Because this is where it gets real.  Notes in this section are more code-centered than in the previous sections.
@@ -1006,7 +1039,10 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
       And... why are we doing this with bean injection?  Because we don't know which d/b we'll be hitting (sqlite,
       postgres, ...), so we can't hardcode the d/b connection setup.
 
-**** TODO Java Persistence API (JPA)
+**** HOLD Java Persistence API (JPA)
+
+     - State "HOLD"       from "TODO"       [2020-05-03 Sun 19:54] \\
+       Straightening out problem with CDI bean and interface in separate modules.
 
 ***** "Criteria" queries:  Yikes.
 
@@ -1029,8 +1065,11 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
        Need to figure out how to get these (and whether they're useful).
 
-****** IN-PROGRESS EclipseLink
+****** HOLD EclipseLink
 
+       - State "HOLD"       from "TODO"       [2020-05-03 Sun 19:53] \\
+         Need to figure out what went wrong with my attempt to separate CDI bean from interface
+         (module-wise).
        - State "HOLD"       from "IN-PROGRESS" [2020-04-10 Fri 17:50] \\
          Waiting for a simple JDBC connection.
 
@@ -1044,9 +1083,10 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
 ******* Use EclipseLink in code
        
-******* Download & install
+******* TODO Download & install
 
-        Bleah, maybe I should start with a simple JDBC connection before I go crazy on JPA.
+        Bleah, maybe I should start with a simple JDBC connection before I go crazy on JPA.  Also,
+        maybe just doing this with Maven dependencies will suffice.
         
 *** DONE Lombok
     CLOSED: [2020-04-13 Mon 15:18]
