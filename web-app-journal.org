@@ -1172,8 +1172,11 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
 *** Injection failures
 
-**** RESEARCH-IN-PROGRESS Unsatisfied dependencies
+**** DONE Unsatisfied dependencies
+     CLOSED: [2020-05-04 Mon 11:27]
 
+     - CLOSING NOTE [2020-05-04 Mon 11:27] \\
+       Figured out that runtime dependencies need to be declared in Maven POM.
      - CLOSING NOTE [2020-04-25 Sat 12:37] \\
        Annotate the beans properly, and you're good.
 
@@ -1191,14 +1194,14 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
      annotate the beans you expect this to work for, so the CDI container knows that they /are/
      beans to be managed.
 
-***** Further notes on required build (POM) structuring
+***** Further notes on dependencies and required build (POM) structuring
 
       BUT... you must have sufficient module (jar) dependency declarations to ensure that the module
       (jar) implementing your CDI bean interface actually gets included in the build output.  It's
       not enough to satisfy the compiler.  More specifically:
 
-      Interface was declared in =Svc= ("service") module, so servlet code (or is the client of =Svc=)
-      could depend on only that interface (and module).
+      Interface was declared in =Svc= ("service") module, so servlet code (or whatever is the client of =Svc=) could
+      depend on only that interface (and module).
 
       Implementation was defined in =Data= module, which I intended to have sort of hidden away,
       since =Svc= clients didn't need to know about it directly.
@@ -1211,7 +1214,7 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
       =Svc=, since =Web= really only knows about the interfaces declared in =Svc=, and not the
       implementations defined in =Data=.  That's sort of the whole point of dependency injection.
 
-      Unfortunately, if you satisfy yourself with the following dependencies, then the result of the
+      Unfortunately, if you satisfy yourself with just those dependencies, diagrammed below, then the result of the
       Maven build will not include the =Data= jar file.
 
       #+BEGIN_SRC plantuml :file cdi-dependencies-to-satisfy-compiler.png
@@ -1234,7 +1237,7 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
       operation if you change module dependencies*.
 
       Instead, you need to add an extra dependency in the =Web= module to explicitly declare that it
-      has a (deploy-time) dependency on =Data=.  This is because the compiler doesn't need the
+      has a (run-time) dependency on =Data=.  This is because the compiler doesn't need the
       reference, but the dependency-injection system /does/ need it.  Otherwise, the runtime
       dependency can't be resolved, and you get more nasty errors about "unable to resolve
       dependency":
@@ -1255,11 +1258,10 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
         Web --> Svc
         Data --> Svc
-        Web --> Data
+        Web --> Data                    /' This is new. '/
         @enduml
       #+END_SRC
       
-
 **** DONE Ambiguous dependencies
      CLOSED: [2020-04-18 Sat 18:41]
 
