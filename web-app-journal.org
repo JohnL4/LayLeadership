@@ -5,6 +5,9 @@
 # Pandoc needs H:9; default is H:3.
 # `^:nil' means raw underscores and carets are not interpreted to mean sub- and superscript.  (Use {} to force interpretation.)
 #+OPTIONS: author:nil creator:t H:9 ^:{}
+
+#+PROPERTY: header-args:plantuml :exports both :cache yes
+
 #+HTML_HEAD: <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400,400i,600,600i|IBM+Plex+Sans:400,400i,600,600i|IBM+Plex+Serif:400,400i,600,600i">
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="org-mode.css" />
 
@@ -1044,8 +1047,7 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
 *** Injection failures
 
-**** RESEARCH-DONE Unsatisfied dependencies
-     CLOSED: [2020-04-25 Sat 12:37]
+**** RESEARCH-IN-PROGRESS Unsatisfied dependencies
 
      - CLOSING NOTE [2020-04-25 Sat 12:37] \\
        Annotate the beans properly, and you're good.
@@ -1063,6 +1065,75 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
      Answer: no, they don't have to be in the same JAR/module.  But, apparently, you /do/ have to
      annotate the beans you expect this to work for, so the CDI container knows that they /are/
      beans to be managed.
+
+***** Further notes on required build (POM) structuring
+
+      BUT... you must have sufficient module (jar) dependency declarations to ensure that the module
+      (jar) implementing your CDI bean interface actually gets included in the build output.  It's
+      not enough to satisfy the compiler.  More specifically:
+
+      Interface was declared in =Svc= ("service") module, so servlet code (or is the client of =Svc=)
+      could depend on only that interface (and module).
+
+      Implementation was defined in =Data= module, which I intended to have sort of hidden away,
+      since =Svc= clients didn't need to know about it directly.
+
+      =Data= depends on =Svc=, because =Data= refers to the interface in =Svc=.  (Can I compile w/out
+      the dependency declared in =Data=?  Answer: no.  Compilation fails w/out the required
+      dependencies declared in the POMs.)
+
+      However, =Web=, the module with servlets and JSPs, only needs to depend /at compile-time/ on
+      =Svc=, since =Web= really only knows about the interfaces declared in =Svc=, and not the
+      implementations defined in =Data=.  That's sort of the whole point of dependency injection.
+
+      Unfortunately, if you satisfy yourself with the following dependencies, then the result of the
+      Maven build will not include the =Data= jar file.
+
+      #+BEGIN_SRC plantuml :file cdi-dependencies-to-satisfy-compiler.png
+        @startuml
+        component Web
+        component Svc
+        component Data
+
+        Web --> Svc
+        Data --> Svc
+        @enduml
+      #+END_SRC
+
+      You might, if you have real sharp eyes, notice that Maven builds the =Web= module /before/ it
+      builds the =Data= module, which should give you a hint that the =Web= module won't include the
+      =Data= jar.
+
+      You can also be misled because Maven packaging can sweep up the results of old builds, which
+      might have some old jar files lying around.  To prevent that from happening, *run a "clean"
+      operation if you change module dependencies*.
+
+      Instead, you need to add an extra dependency in the =Web= module to explicitly declare that it
+      has a (deploy-time) dependency on =Data=.  This is because the compiler doesn't need the
+      reference, but the dependency-injection system /does/ need it.  Otherwise, the runtime
+      dependency can't be resolved, and you get more nasty errors about "unable to resolve
+      dependency":
+
+      #+BEGIN_EXAMPLE
+        Caused by: org.jboss.weld.exceptions.DeploymentException: WELD-001408: Unsatisfied dependencies for type LayLeadershipRepository with qualifiers @Default
+        at injection point [BackedAnnotatedField] @Inject private com.how_hard_can_it_be.layleadership.servlet.MembersServlet._layLeadershipRepository
+        at com.how_hard_can_it_be.layleadership.servlet.MembersServlet._layLeadershipRepository(MembersServlet.java:0)
+      #+END_EXAMPLE
+
+      So, the dependencies you need to declare in Maven are as follows:
+
+      #+BEGIN_SRC plantuml :file cdi-dependencies-to-satisfy-runtime.png
+        @startuml
+        component Web
+        component Svc
+        component Data
+
+        Web --> Svc
+        Data --> Svc
+        Web --> Data
+        @enduml
+      #+END_SRC
+      
 
 **** DONE Ambiguous dependencies
      CLOSED: [2020-04-18 Sat 18:41]
