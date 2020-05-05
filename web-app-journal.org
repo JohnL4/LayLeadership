@@ -1079,8 +1079,6 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
 ******* Add EclipseLink to build/deploy
 
-        
-
 ******* Use EclipseLink in code
        
 ******* TODO Download & install
