@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.how_hard_can_it_be.layleadership.business.Member;
 import com.how_hard_can_it_be.layleadership.service_interfaces.LayLeadershipRepository;
 import com.how_hard_can_it_be.inject.Mock;
+import jdk.jshell.spi.ExecutionControl;
 
 @Mock
 public class LayLeadershipRepositoryScaffold implements LayLeadershipRepository
@@ -19,5 +20,12 @@ public class LayLeadershipRepositoryScaffold implements LayLeadershipRepository
               , "sherry@didow.net", true, ""));
 
       return retval;
+   }
+
+   @Override
+   public Collection<Member> getAllMembersJPQL()
+   {
+      throw new RuntimeException( "not implemented");
+//      return null;
    }
 }

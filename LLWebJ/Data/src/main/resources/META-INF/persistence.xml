@@ -1,0 +1,10 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+    <persistence-unit name="LayLeadership">
+        <description>
+            Manages LayLeadership entities.
+        </description>
+        <non-jta-data-source>jdbc/LayLeadership</non-jta-data-source>
+        <jar-file>com.how_hard_can_it_be.layleadership.data.jar</jar-file>
+        <class>com.how_hard_can_it_be.layleadership.data.MemberDto</class>
+    </persistence-unit>
+</persistence>

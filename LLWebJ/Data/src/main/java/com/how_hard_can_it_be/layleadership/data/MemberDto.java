@@ -2,23 +2,28 @@ package com.how_hard_can_it_be.layleadership.data;
 
 import com.how_hard_can_it_be.layleadership.business.Member;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 /**
  * A {@link Member} DTO class.
  */
+@Entity( name="Member")
 public class MemberDto
 {
+    @Id @Column( name="MemberId")
     private long   _id;
     private String _firstName;
     private String _lastName;
     private String _phoneNumber;
     private String _emailAddress;
+    private String _comments;
 
     /**
      * Deceased, moved, etc.
      */
     private boolean _active;
-
-    private String _comments;
 
     public MemberDto()
     {
@@ -41,10 +46,10 @@ public class MemberDto
         return _id;
     }
 
-    public void setId( long aId )
-    {
-        _id = aId;
-    }
+//    public void setId( long aId )
+//    {
+//        _id = aId;
+//    }
 
     public String getFirstName()
     {

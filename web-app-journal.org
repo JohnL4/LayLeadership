@@ -1077,15 +1077,33 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
        <2020-04-25 Sat> Ok, now that I've got a working JDBC query, time to turn it into a JPQL query.
 
-******* Add EclipseLink to build/deploy
+******* HOLD Download & install
 
-******* Use EclipseLink in code
+        - State "HOLD"       from "TODO"       [2020-05-02 Sat 19:50] \\
+          Waiting to see if just adding Maven dependencies handles this.
+
+        +Bleah, maybe I should start with a simple JDBC connection before I go crazy on JPA.+ Well,
+        I'm working on it now (<2020-05-02 Sat>).  I probably don't need an explicit
+        downlod-and-install step; I can probably just add Maven dependencies and be off to the
+        races.
+        
+******* TODO Add EclipseLink to build/deploy
+
+******* TODO Use EclipseLink in code
        
 ******* TODO Download & install
 
         Bleah, maybe I should start with a simple JDBC connection before I go crazy on JPA.  Also,
         maybe just doing this with Maven dependencies will suffice.
         
+***** IN-PROGRESS Hooking it up
+
+      JTA is not available in Tomcat.  So we need a =non-jta-data-source=.
+
+      - [ ] Need a =persistence.xml=.
+      - [ ] Need a persistence unit
+      - [ ] Need the right JARs
+
 *** DONE Lombok
     CLOSED: [2020-04-13 Mon 15:18]
 
