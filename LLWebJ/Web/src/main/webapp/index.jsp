@@ -28,6 +28,10 @@ This is a list of working servlets so far:
       <td>Servlet that queries a JDBC database using a CDI bean, and dumps the results to the output stream as JSON.
       </td>
     </tr>
+    <tr>
+      <td><a href="jndiDump">JNDI Dump</a></td>
+      <td>Servlet dumps out JNDI environment</td>
+    </tr>
   </table>
 </p>
 </body>

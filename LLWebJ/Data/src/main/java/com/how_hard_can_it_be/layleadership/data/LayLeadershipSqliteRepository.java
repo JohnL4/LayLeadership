@@ -8,6 +8,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -23,7 +24,7 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
     @Resource( name = DATABASE_JNDI_NAME) // Automatically prefixes "java:comp/env" onto this resource.  SUPPOSEDLY, you can use 'lookup =' to give a complete path.
     private DataSource _dataSource;
 
-    @PersistenceUnit
+    @PersistenceUnit( unitName = "LayLeadership")
     EntityManagerFactory _entityMgrFactory;
 
     public LayLeadershipSqliteRepository() throws NamingException
@@ -72,11 +73,15 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
     public Collection<Member> getAllMembersJPQL()
     {
         Collection<Member> retval;
-        EntityManager         em = _entityMgrFactory.createEntityManager();
+        EntityManager      em;
 
-        Collection<MemberDto> memberDtos = em.createQuery( "SELECT m FROM Member c", MemberDto.class )
-                   .getResultList();
-        retval = new ArrayList<>(  );
+        if (_entityMgrFactory == null)
+            _entityMgrFactory = Persistence.createEntityManagerFactory( "LayLeadership" );
+
+        em = _entityMgrFactory.createEntityManager();
+        Collection<MemberDto> memberDtos = em.createQuery( "SELECT m FROM Member m", MemberDto.class )
+                                             .getResultList();
+        retval = new ArrayList<>();
         for (var memberDto : memberDtos)
         {
             var member = new Member( memberDto.getId(), memberDto.getFirstName(), memberDto.getLastName(),

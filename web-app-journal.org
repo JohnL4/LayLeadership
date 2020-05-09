@@ -269,7 +269,7 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
    (So I deployed exactly what I'm building with.)
 
-*** TODO JNDI directory entry vs. injected CDI bean
+*** TODO JNDI directory entry vs. injected CDI bean; lifecycle mgmt & JDBC connection pooling
 
     Note that, when the dust has settled, this is not a CDI bean we're injecting somewhere, but it is a JNDI directory
     entry that we'll look up to get a =DataSource=, at some point (possibly during CDI injection of a bean; TODO: CDI
@@ -1012,7 +1012,8 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
         the context in a =<Context>= element in =context.xml=.  As opposed to some post on
         StackOverflow saying to put it in =GlobalNamingResources= in =server.xml=.
 
-**** IN-PROGRESS Connect to SQLite d/b using JDBC
+**** DONE Connect to SQLite d/b using JDBC
+     CLOSED: [2020-05-09 Sat 17:06]
 
 ***** DONE sqlite driver
       CLOSED: [2020-04-19 Sun 22:04]
@@ -1062,11 +1063,17 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
       neutral with respect to vendor SQL dialects.)
 
 ****** TODO fetch plans
+       :PROPERTIES:
+       :CUSTOM_ID: jpql-fetch-plan
+       :END:
 
        Need to figure out how to get these (and whether they're useful).
 
-****** HOLD EclipseLink
+****** DONE EclipseLink
+       CLOSED: [2020-05-09 Sat 17:07]
 
+       - CLOSING NOTE [2020-05-09 Sat 17:07] \\
+         persistence.xml needs full JNDI path to DataSource: java:comp/env/jdbc/LayLeadership.
        - State "HOLD"       from "TODO"       [2020-05-03 Sun 19:53] \\
          Need to figure out what went wrong with my attempt to separate CDI bean from interface
          (module-wise).
@@ -1077,8 +1084,14 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
        <2020-04-25 Sat> Ok, now that I've got a working JDBC query, time to turn it into a JPQL query.
 
-******* HOLD Download & install
+******* DONE Download & install
+        CLOSED: [2020-05-09 Sat 17:08]
+        :PROPERTIES:
+        :CUSTOM_ID: eclipselink-download-and-install
+        :END:
 
+        - CLOSING NOTE [2020-05-09 Sat 17:08] \\
+          Yes, this can be done with Maven dependencies (i.e, just a POM edit, no need for separate download).
         - State "HOLD"       from "TODO"       [2020-05-02 Sat 19:50] \\
           Waiting to see if just adding Maven dependencies handles this.
 
@@ -1087,22 +1100,65 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
         downlod-and-install step; I can probably just add Maven dependencies and be off to the
         races.
         
-******* TODO Add EclipseLink to build/deploy
+******* DONE Add EclipseLink to build/deploy
+        CLOSED: [2020-05-09 Sat 17:09]
 
-******* TODO Use EclipseLink in code
+        - CLOSING NOTE [2020-05-09 Sat 17:09] \\
+          See [[file:web-app-journal.org::#eclipselink-download-and-install][Download & install]].
+
+******* DONE Use EclipseLink in code
+        CLOSED: [2020-05-09 Sat 17:09]
        
-******* TODO Download & install
+        - CLOSING NOTE [2020-05-09 Sat 17:09] \\
+          Don't need EclipseLink, per se, just standard JPA (JPQL) stuff.
 
-        Bleah, maybe I should start with a simple JDBC connection before I go crazy on JPA.  Also,
-        maybe just doing this with Maven dependencies will suffice.
-        
-***** IN-PROGRESS Hooking it up
+***** DONE Hooking it up
+      CLOSED: [2020-05-09 Sat 17:39]
+
+      - CLOSING NOTE [2020-05-09 Sat 17:39] \\
+        This is done, but I'm not super-happy with it.  The =@PersistenceUnit= annotation in the Sqlite repository isn't
+        working, so we have to have Java code in the SqliteRepository, and an explicit reference to the JNDI DataSource
+        via a full JNDI path in the =non-jta-data-source= element in =persistence.xml=.
 
       JTA is not available in Tomcat.  So we need a =non-jta-data-source=.
 
-      - [ ] Need a =persistence.xml=.
-      - [ ] Need a persistence unit
-      - [ ] Need the right JARs
+      - [X] Need a =persistence.xml=.
+        - Non-JTA datasource is specified with full JNDI path: =java:comp/env/jdbc/LayLeadership=.
+      - [X] Need a persistence unit
+        - In =persistence.xml=, above.
+      - [X] Need the right JARs
+        - Maven dependencies suffice.
+
+****** TODO Transactions
+
+       There is a java:comp/UserTransaction binding at run-time, with type =org.apache.naming.TransactionRef=.  We
+       should find out if that's useful (surely yes, right?).
+
+       Supposedly, SQLite gets a lot more efficient if you can wrap writes in a transaction.  This is probably also tied
+       up with the [[#jpql-fetch-plan][fetch plans]].
+
+****** TODO Injection of Persistent Unit via annotations, w/out code
+
+       So, we currently are able to have code create an EntityManager via direct reference to JNDI DataSource, which, I
+       guess, is ok, but we should be able to use the =@PersistenceUnit= annotation w/out needing code to create the
+       EntityManagerFactory.
+
+       #+BEGIN_SRC java
+         import javax.persistence.Persistence;
+
+         _entityMgrFactory = Persistence.createEntityManagerFactory( "LayLeadership" );
+         EntityManager em = _entityMgrFactory.createEntityManager();
+       #+END_SRC 
+
+       Need to find out:
+
+       1) Whether this is even possible with Tomcat (which is not a full EE container), and, if so,
+       2) How to do it.
+
+****** TODO Preventing resource leaks
+
+       Need to prevent JDBC connection leaks and other resource leaks by closing/releasing resources when appropriate
+       (e.g., at the end of a query?).
 
 *** DONE Lombok
     CLOSED: [2020-04-13 Mon 15:18]

@@ -14,15 +14,26 @@ public class MemberDto
 {
     @Id @Column( name="MemberId")
     private long   _id;
+
+    @Column( name="FirstName")
     private String _firstName;
+
+    @Column( name="lastName")
     private String _lastName;
+
+    @Column( name="phoneNumber")
     private String _phoneNumber;
+
+    @Column( name="emailAddress")
     private String _emailAddress;
+
+    @Column( name="comments")
     private String _comments;
 
     /**
      * Deceased, moved, etc.
      */
+    @Column( name="Active")
     private boolean _active;
 
     public MemberDto()
