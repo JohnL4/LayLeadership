@@ -1040,8 +1040,11 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
       And... why are we doing this with bean injection?  Because we don't know which d/b we'll be hitting (sqlite,
       postgres, ...), so we can't hardcode the d/b connection setup.
 
-**** HOLD Java Persistence API (JPA)
+**** DONE Java Persistence API (JPA)
+     CLOSED: [2020-05-09 Sat 22:12]
 
+     - CLOSING NOTE [2020-05-09 Sat 22:12] \\
+       CDI problem fixed last weekend, I think.
      - State "HOLD"       from "TODO"       [2020-05-03 Sun 19:54] \\
        Straightening out problem with CDI bean and interface in separate modules.
 
@@ -1107,10 +1110,30 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
           See [[file:web-app-journal.org::#eclipselink-download-and-install][Download & install]].
 
 ******* DONE Use EclipseLink in code
-        CLOSED: [2020-05-09 Sat 17:09]
+        CLOSED: [2020-05-09 Sat 22:35]
        
+        - CLOSING NOTE [2020-05-09 Sat 22:35] \\
+          Might want to consider using Derby instead of Sqlite, since EclipseLink doesn't exactly support Sqlite.
         - CLOSING NOTE [2020-05-09 Sat 17:09] \\
           Don't need EclipseLink, per se, just standard JPA (JPQL) stuff.
+
+        Note, though, that you probably need to specify the exact database you're connecting to, so EclipseLink can know
+        which dialect of SQL to utter.
+
+        #+BEGIN_EXAMPLE
+          [EL Info]: connection: 2020-05-09 22:02:11.498--Thread(Thread[http-nio-8080-exec-23,5,main])--Not able to detect
+          platform for vendor name [SQLite[3.30.1, 3]]. Defaulting to
+          [org.eclipse.persistence.platform.database.DatabasePlatform]. The database dialect used may not match with the database
+          you are using. Please explicitly provide a platform using property "eclipselink.target-database".
+        #+END_EXAMPLE
+
+        (Word-wrapped for readability.  In real life, this is one long log line.)
+
+        Here are the possible values for =eclipselink.target-database=:
+        https://www.eclipse.org/eclipselink/documentation/2.7/jpa/extensions/persistenceproperties_ref.htm#target-database.
+
+        Note that Sqlite isn't an option, but Derby is.  Argument for using Derby instead of Sqlite.  Interesting
+        StackOverflow post:  https://stackoverflow.com/a/12496259.
 
 ***** DONE Hooking it up
       CLOSED: [2020-05-09 Sat 17:39]
@@ -1118,7 +1141,8 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
       - CLOSING NOTE [2020-05-09 Sat 17:39] \\
         This is done, but I'm not super-happy with it.  The =@PersistenceUnit= annotation in the Sqlite repository isn't
         working, so we have to have Java code in the SqliteRepository, and an explicit reference to the JNDI DataSource
-        via a full JNDI path in the =non-jta-data-source= element in =persistence.xml=.
+        via a full JNDI path in the =non-jta-data-source= element in =persistence.xml=.  See [[#making-weld-process-data-jar][Injection of Persistent
+        Unit via annotations, w/out code]].
 
       JTA is not available in Tomcat.  So we need a =non-jta-data-source=.
 
@@ -1138,6 +1162,9 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
        up with the [[#jpql-fetch-plan][fetch plans]].
 
 ****** TODO Injection of Persistent Unit via annotations, w/out code
+       :PROPERTIES:
+       :CUSTOM_ID: making-weld-process-data-jar
+       :END:
 
        So, we currently are able to have code create an EntityManager via direct reference to JNDI DataSource, which, I
        guess, is ok, but we should be able to use the =@PersistenceUnit= annotation w/out needing code to create the
@@ -1152,8 +1179,32 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
        Need to find out:
 
-       1) Whether this is even possible with Tomcat (which is not a full EE container), and, if so,
-       2) How to do it.
+       1) Whether this is even possible with Tomcat (which is not a full EE container) [answer: yes, it seems to be
+          possible], and, if so,
+       2) How to do it [see below].
+
+       (See https://www.logicbig.com/tutorials/java-ee-tutorial/jpa/entity-context.html, but it doesn't have any
+       immediate bearing on the current problem.)
+
+       Do I need to include Weld as a dependecy in any module (e.g., =Data=) I want to get "cascading" injection in?
+
+       YES.  Add the following dependency to the =Data= module POM, which is copied from the =Web= module POM (so we
+       don't get version-mismatch issues):
+
+       #+BEGIN_SRC xml
+         <dependency>
+           <groupId>org.jboss.weld.servlet</groupId>
+           <artifactId>weld-servlet-core</artifactId>
+           <version>3.1.4.Final</version>
+           <scope>runtime</scope>
+         </dependency>
+       #+END_SRC
+
+       Note that the word "servlet" in groupId and artifactId refers to the fact that Tomcat is a "servlet container",
+       in JBoss's terminology, as opposed to a full-blown Java/Jakarta EE container.
+
+       Why this works is beyond me.  It doesn't seem to include the Weld jars in the generated Data.jar.  Somehow, it
+       brings classes in the =Data.jar= into Weld's domain.
 
 ****** TODO Preventing resource leaks
 
@@ -1180,6 +1231,30 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
 **** Responsiveness, measured from the client
      
+**** CDI logging
+
+     See https://weld.cdi-spec.org/documentation/#7
+
+     Add the following to $CATALINA_HOME/conf/logging.properties:
+
+     : org.jboss.weld.level=FINE
+
+**** JPA (EclipseLink) logging
+
+     See https://wiki.eclipse.org/EclipseLink/Examples/JPA/Logging
+
+     Include the following in the persistence unit defined in =persistence.xml=:
+
+     #+BEGIN_SRC xml
+       <persistence-unit>
+         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+         <properties>
+           <!-- I think you need to specify the provider if you're going to use provider-specific settings like the following. -->
+           <property name="eclipselink.logging.level" value="FINEST"/>
+         </properties>
+       </persistence-unit>
+     #+END_SRC 
+
 *** Security & Griefing
 *** Documentation generation
 *** Automated testing

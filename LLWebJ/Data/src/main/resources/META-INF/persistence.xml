@@ -3,8 +3,12 @@
         <description>
             Manages LayLeadership entities.
         </description>
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <non-jta-data-source>java:comp/env/jdbc/LayLeadership</non-jta-data-source>
         <jar-file>Data-1.0-SNAPSHOT.jar</jar-file>
         <class>com.how_hard_can_it_be.layleadership.data.MemberDto</class>
+        <properties>
+            <property name="eclipselink.logging.level" value="FINEST"/>
+        </properties>
     </persistence-unit>
 </persistence>

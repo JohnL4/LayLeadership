@@ -89,6 +89,7 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
                                      memberDto.getComments() );
             retval.add( member );
         }
+        em.close();
         return retval;
     }
 }
