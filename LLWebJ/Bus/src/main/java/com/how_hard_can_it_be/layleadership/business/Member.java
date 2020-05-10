@@ -20,15 +20,15 @@ public class Member
 
     private       String  _comments;
 
-    public Member( long aId, String aFirstName, String aLastName, String aPhoneNumber, String aEmailAddress,
-                   boolean aActive, String aComments )
+    public Member( long anid, String aFirstName, String aLastName, String aPhoneNumber, String anEmailAddress,
+                   boolean anActive, String aComments )
     {
-        _id           = aId;
+        _id           = anid;
         _firstName    = aFirstName;
         _lastName     = aLastName;
         _phoneNumber  = aPhoneNumber;
-        _emailAddress = aEmailAddress;
-        _active       = aActive;
+        _emailAddress = anEmailAddress;
+        _active       = anActive;
         _comments     = aComments;
     }
 

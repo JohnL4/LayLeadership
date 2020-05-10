@@ -3,8 +3,10 @@ package com.how_hard_can_it_be.layleadership.data;
 import com.how_hard_can_it_be.layleadership.business.Member;
 import com.how_hard_can_it_be.layleadership.service_interfaces.LayLeadershipRepository;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -18,17 +20,26 @@ import java.util.*;
 @ApplicationScoped
 public class LayLeadershipSqliteRepository implements LayLeadershipRepository
 {
-    private static final String DATABASE_JNDI_NAME = "jdbc/LayLeadership";
+    private static final String DATABASE_JNDI_NAME    = "jdbc/LayLeadership";
+    private static final String PERSISTENCE_UNIT_NAME = "LayLeadership";
 
     // Guessing it's ok to hold on to the DataSource for a long time.
     @Resource( name = DATABASE_JNDI_NAME) // Automatically prefixes "java:comp/env" onto this resource.  SUPPOSEDLY, you can use 'lookup =' to give a complete path.
     private DataSource _dataSource;
 
-    @PersistenceUnit( unitName = "LayLeadership")
+    @PersistenceUnit( unitName = PERSISTENCE_UNIT_NAME )
     EntityManagerFactory _entityMgrFactory;
 
-    public LayLeadershipSqliteRepository() throws NamingException
+    public LayLeadershipSqliteRepository()
     {
+    }
+
+    @PostConstruct
+    private void postConstruct()
+    {
+        if (_entityMgrFactory == null)
+            // Log a warning here, once we figure out how to log.
+            _entityMgrFactory = Persistence.createEntityManagerFactory( "LayLeadership" );
     }
 
     @Override
@@ -72,16 +83,22 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
     @Override
     public Collection<Member> getAllMembersJPQL()
     {
-        Collection<Member> retval;
+        Collection<Member> retval = new ArrayList<>();
         EntityManager      em;
 
-        if (_entityMgrFactory == null)
-            _entityMgrFactory = Persistence.createEntityManagerFactory( "LayLeadership" );
-
+//        if (_entityMgrFactory == null)
+//        {
+//            _entityMgrFactory = Persistence.createEntityManagerFactory( "LayLeadership" );
+//            retval.add( new Member(
+//                    -1, "Warning", "Message", "911", "badness@bad.com", false,
+//                    "EntityManagerFactory did not already exist; required explicit creation in code" ) );
+//        } else
+//            retval.add( new Member(
+//                    -1, "Info", "Message", "411", "okness@ok.com", false,
+//                    "EntityManagerFactory DID already exist; no need to create in code" ) );
         em = _entityMgrFactory.createEntityManager();
         Collection<MemberDto> memberDtos = em.createQuery( "SELECT m FROM Member m", MemberDto.class )
                                              .getResultList();
-        retval = new ArrayList<>();
         for (var memberDto : memberDtos)
         {
             var member = new Member( memberDto.getId(), memberDto.getFirstName(), memberDto.getLastName(),

@@ -1161,7 +1161,7 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
        Supposedly, SQLite gets a lot more efficient if you can wrap writes in a transaction.  This is probably also tied
        up with the [[#jpql-fetch-plan][fetch plans]].
 
-****** TODO Injection of Persistent Unit via annotations, w/out code
+****** IN-PROGRESS Injection of Persistent Unit via annotations, w/out code (even a =@PostConstruct= method)
        :PROPERTIES:
        :CUSTOM_ID: making-weld-process-data-jar
        :END:
@@ -1173,9 +1173,14 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
        #+BEGIN_SRC java
          import javax.persistence.Persistence;
 
-         _entityMgrFactory = Persistence.createEntityManagerFactory( "LayLeadership" );
+         if (_entityMgrFactory == null)
+            _entityMgrFactory = Persistence.createEntityManagerFactory( "LayLeadership" );
+
          EntityManager em = _entityMgrFactory.createEntityManager();
-       #+END_SRC 
+       #+END_SRC
+
+       (Note: the above conditional code can go in a =@PostConstruct= method, and at least we're playing along with
+       CDI.)
 
        Need to find out:
 
@@ -1186,25 +1191,46 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
        (See https://www.logicbig.com/tutorials/java-ee-tutorial/jpa/entity-context.html, but it doesn't have any
        immediate bearing on the current problem.)
 
-       Do I need to include Weld as a dependecy in any module (e.g., =Data=) I want to get "cascading" injection in?
+******* Do I need to include Weld as a dependecy in any module (e.g., =Data=) I want to get "cascading" injection in?  (Answer: NO.)
 
-       YES.  Add the following dependency to the =Data= module POM, which is copied from the =Web= module POM (so we
-       don't get version-mismatch issues):
+        I tried it, and, for one brief shining moment, it was working, but I didn't understand why.  The next morning, I
+        remembered the bit about running =mvn clean= after changing module dependencies, so I did, and now... we're
+        broken again, even though I included the Weld dependency in the Data module.  So... yay?  Consistency?
 
-       #+BEGIN_SRC xml
-         <dependency>
-           <groupId>org.jboss.weld.servlet</groupId>
-           <artifactId>weld-servlet-core</artifactId>
-           <version>3.1.4.Final</version>
-           <scope>runtime</scope>
-         </dependency>
-       #+END_SRC
+        Ah.  Ok, I figured out why it worked the 2nd time (duh):  The bean (=LayLeadershipSqliteRepository=) is
+        /application/ scoped, so, once I initialized it, it stayed initialized.  Duh.  (I'm actually kind of relieved I
+        understand at least this second mystery.)
 
-       Note that the word "servlet" in groupId and artifactId refers to the fact that Tomcat is a "servlet container",
-       in JBoss's terminology, as opposed to a full-blown Java/Jakarta EE container.
+        So, the problem remains and I can take the Weld dependency out of Data (see yesterday's (<2020-05-09 Sat>)
+        stupid notes, below).
 
-       Why this works is beyond me.  It doesn't seem to include the Weld jars in the generated Data.jar.  Somehow, it
-       brings classes in the =Data.jar= into Weld's domain.
+******** Old notes from <2020-05-09 Sat>, mostly ignorable
+
+         YES.  Add the following dependency to the =Data= module POM, which is copied from the =Web= module POM (so we
+         don't get version-mismatch issues):
+
+         #+BEGIN_SRC xml
+           <dependency>
+             <groupId>org.jboss.weld.servlet</groupId>
+             <artifactId>weld-servlet-core</artifactId>
+             <version>3.1.4.Final</version>
+             <scope>runtime</scope>
+           </dependency>
+         #+END_SRC
+
+         Note that the word "servlet" in groupId and artifactId refers to the fact that Tomcat is a "servlet container",
+         in JBoss's terminology, as opposed to a full-blown Java/Jakarta EE container.
+
+         Why this works is beyond me.  It doesn't seem to include the Weld jars in the generated Data.jar.  Somehow, it
+         brings classes in the =Data.jar= into Weld's domain.
+
+******* Do I need to explicitly declare the =@PersistenceUnit= of type =EntityManagerFactory= an injection point with =@Inject=? Answer: NO)
+
+        #+BEGIN_EXAMPLE
+          Caused by: org.jboss.weld.exceptions.DeploymentException: WELD-001408: Unsatisfied dependencies for type EntityManagerFactory with qualifiers @Default
+          at injection point [BackedAnnotatedField] @Inject @PersistenceUnit com.how_hard_can_it_be.layleadership.data.LayLeadershipSqliteRepository._entityMgrFactory
+          at com.how_hard_can_it_be.layleadership.data.LayLeadershipSqliteRepository._entityMgrFactory(LayLeadershipSqliteRepository.java:0)
+        #+END_EXAMPLE 
 
 ****** TODO Preventing resource leaks
 
