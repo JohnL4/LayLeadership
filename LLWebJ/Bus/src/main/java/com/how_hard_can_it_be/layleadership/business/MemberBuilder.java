@@ -52,7 +52,7 @@ public class MemberBuilder
         return this;
     }
 
-    public Member create()
+    public Member createMember()
     {
         return new Member( _id, _firstName, _lastName, _phoneNumber, _emailAddress, _Active, _comments );
     }

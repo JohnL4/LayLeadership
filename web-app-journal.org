@@ -1402,12 +1402,8 @@ it?".  I just see the Java world as cleaner, really.
       Some info on specific builders that work with MapStruct:
       https://mapstruct.org/documentation/stable/reference/html/#mapping-with-builders
 
-      It looks like we can use the builders created by Intellij with two changes:
-
-      1) Change the generated =createFoo()= method that creates a =Foo= to just =create()= (note that this basically
-         breaks IntelliJ's "update builder" refactoring, since it loses track of the =create()= method); and
-      2) Add a static public getter to the target class that's being built to return the builder (TODO: hmm, how
-         threadsafe is this?)
+      It looks like we can use the builders created by Intellij by adding a static public getter to the target class
+      that's being built to return the builder (TODO: hmm, how threadsafe is this?)
 
 **** DONE Is this required when using JPQL?
      CLOSED: [2020-05-10 Sun 13:35]
