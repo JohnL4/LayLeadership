@@ -16,12 +16,12 @@ public class Member
     /**
      * Deceased, moved, etc.
      */
-    private       boolean _active;
+    private boolean _active;
 
-    private       String  _comments;
+    private String _comments;
 
     public Member( long anId, String aFirstName, String aLastName, String aPhoneNumber, String anEmailAddress,
-                   boolean anActive, String aComments )
+                   boolean anActive, String aComments)
     {
         _id           = anId;
         _firstName    = aFirstName;

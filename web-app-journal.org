@@ -1404,7 +1404,8 @@ it?".  I just see the Java world as cleaner, really.
 
       It looks like we can use the builders created by Intellij with two changes:
 
-      1) Change the generated =createFoo()= method that creates a =Foo= to just =create()=; and
+      1) Change the generated =createFoo()= method that creates a =Foo= to just =create()= (note that this basically
+         breaks IntelliJ's "update builder" refactoring, since it loses track of the =create()= method); and
       2) Add a static public getter to the target class that's being built to return the builder (TODO: hmm, how
          threadsafe is this?)
 

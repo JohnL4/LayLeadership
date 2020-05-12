@@ -62,13 +62,14 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
             Collection<Member> retval = new ArrayList<>();
             while (rs.next())
             {
-                retval.add( new MemberBuilder().setId( rs.getLong( "MemberId" ) )
-                                               .setFirstName( rs.getString( "FirstName" ) )
-                                               .setLastName( rs.getString( "LastName" ) )
-                                               .setPhoneNumber( rs.getString( "PhoneNumber" ) )
-                                               .setEmailAddress( rs.getString( "EmailAddress" ) )
-                                               .setActive( rs.getBoolean( "Active" ) )
-                                               .setComments( rs.getString( "Comments" ) ).create() );
+                retval.add( new Member(
+                        rs.getLong( "MemberId" )
+                        , rs.getString( "FirstName" )
+                        , rs.getString( "LastName" )
+                        , rs.getString( "PhoneNumber" )
+                        , rs.getString( "EmailAddress" )
+                        , rs.getBoolean( "Active" )
+                        , rs.getString( "Comments" ) ) );
             }
             return retval;
         }
@@ -93,13 +94,10 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
                                              .getResultList();
         for (var memberDto : memberDtos)
         {
-            Member member;
-            member = new MemberBuilder().setId( memberDto.getId() ).setFirstName( memberDto.getFirstName() )
-                                        .setLastName( memberDto.getLastName() )
-                                        .setPhoneNumber( memberDto.getPhoneNumber() )
-                                        .setEmailAddress( memberDto.getEmailAddress() )
-                                        .setActive( memberDto.isActive() ).setComments( memberDto.getComments() )
-                                        .create();
+//            Member member;
+//            member = new Member( memberDto.getId(), memberDto.getFirstName(), memberDto.getLastName(),
+//                                 memberDto.getPhoneNumber(), memberDto.getEmailAddress(), memberDto.isActive(),
+//                                 memberDto.getComments() );
 //            retval.add( member );
             retval.add( MemberMapper.INSTANCE.memberDtoToMember( memberDto ));
         }
