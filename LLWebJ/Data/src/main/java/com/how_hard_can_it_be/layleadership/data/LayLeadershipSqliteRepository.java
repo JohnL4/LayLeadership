@@ -2,13 +2,12 @@ package com.how_hard_can_it_be.layleadership.data;
 
 import com.googlecode.jmapper.JMapper;
 import com.how_hard_can_it_be.layleadership.business.Member;
+import com.how_hard_can_it_be.layleadership.business.MemberBuilder;
 import com.how_hard_can_it_be.layleadership.service_interfaces.LayLeadershipRepository;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -63,14 +62,13 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
             Collection<Member> retval = new ArrayList<>();
             while (rs.next())
             {
-                retval.add( new Member(
-                        rs.getLong( "MemberId" )
-                        , rs.getString( "FirstName" )
-                        , rs.getString( "LastName" )
-                        , rs.getString( "PhoneNumber" )
-                        , rs.getString( "EmailAddress" )
-                        , rs.getBoolean( "Active" )
-                        , rs.getString( "Comments" ) ) );
+                retval.add( new MemberBuilder().setId( rs.getLong( "MemberId" ) )
+                                               .setFirstName( rs.getString( "FirstName" ) )
+                                               .setLastName( rs.getString( "LastName" ) )
+                                               .setPhoneNumber( rs.getString( "PhoneNumber" ) )
+                                               .setEmailAddress( rs.getString( "EmailAddress" ) )
+                                               .setActive( rs.getBoolean( "Active" ) )
+                                               .setComments( rs.getString( "Comments" ) ).create() );
             }
             return retval;
         }
@@ -88,18 +86,6 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
         EntityManager      em;
         JMapper<Member, MemberDto> memberMapper;
 
-        try
-        {
-            memberMapper = new JMapper<>( Member.class, MemberDto.class, "META-INF/jmapper.xml" );
-        }
-        catch (Exception exc)
-        {
-            retval.add( new Member(
-                    -1, "Error", "Message", "911", "bad@badness.com",
-                    false, exc.toString() ) );
-            memberMapper = null;
-        }
-
         em = _entityMgrFactory.createEntityManager();
         var tx = em.getTransaction();
         tx.begin(); // Totally unnecessary for a read.
@@ -108,13 +94,14 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
         for (var memberDto : memberDtos)
         {
             Member member;
-            if (memberMapper == null)
-                member = new Member( memberDto.getId(), memberDto.getFirstName(), memberDto.getLastName(),
-                                     memberDto.getPhoneNumber(), memberDto.getEmailAddress(), memberDto.isActive(),
-                                     memberDto.getComments() );
-            else
-                member = memberMapper.getDestination( memberDto );
-            retval.add( member );
+            member = new MemberBuilder().setId( memberDto.getId() ).setFirstName( memberDto.getFirstName() )
+                                        .setLastName( memberDto.getLastName() )
+                                        .setPhoneNumber( memberDto.getPhoneNumber() )
+                                        .setEmailAddress( memberDto.getEmailAddress() )
+                                        .setActive( memberDto.isActive() ).setComments( memberDto.getComments() )
+                                        .create();
+//            retval.add( member );
+            retval.add( MemberMapper.INSTANCE.memberDtoToMember( memberDto ));
         }
         tx.commit();
         em.close();

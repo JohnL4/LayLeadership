@@ -7,11 +7,11 @@ import java.util.Objects;
  */
 public class Member
 {
-    private final long    _id;
-    private       String  _firstName;
-    private       String  _lastName;
-    private       String  _phoneNumber;
-    private       String  _emailAddress;
+    private final long   _id;
+    private       String _firstName;
+    private       String _lastName;
+    private       String _phoneNumber;
+    private       String _emailAddress;
 
     /**
      * Deceased, moved, etc.
@@ -20,10 +20,10 @@ public class Member
 
     private       String  _comments;
 
-    public Member( long anid, String aFirstName, String aLastName, String aPhoneNumber, String anEmailAddress,
+    public Member( long anId, String aFirstName, String aLastName, String aPhoneNumber, String anEmailAddress,
                    boolean anActive, String aComments )
     {
-        _id           = anid;
+        _id           = anId;
         _firstName    = aFirstName;
         _lastName     = aLastName;
         _phoneNumber  = aPhoneNumber;
@@ -130,5 +130,9 @@ public class Member
                ", _active=" + _active +
                ", _comments='" + _comments + '\'' +
                '}';
+    }
+
+    public static MemberBuilder getMemberBuilder(){
+        return new MemberBuilder();
     }
 }

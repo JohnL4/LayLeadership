@@ -23,3 +23,5 @@ J2EE/
 **/.classpath
 **/.project
 **/.settings/
+/Hold/
+/LLWebJ/diffs.patch

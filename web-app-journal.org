@@ -1341,14 +1341,22 @@ it?".  I just see the Java world as cleaner, really.
 
     - MapStruct (https://mapstruct.org/)
     - modelmapper (http://modelmapper.org/)
-    - JMapper
+    - JMapper (https://jmapper-framework.github.io/jmapper-core/)
 
     See also:
 
     - https://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
     - https://www.baeldung.com/java-performance-mapping-frameworks
+    - https://www.reddit.com/r/java/comments/dt86ul/best_object_mapping_frameworks_for_java/?utm_medium=android_app&utm_source=share
     
-**** IN-PROGRESS JMapper
+**** HOLD JMapper
+
+     - State "HOLD"       from "IN-PROGRESS" [2020-05-12 Tue 09:40] \\
+       Maybe I won't use this, in lieu of Mapstruct.  Recent Reddit post (6 months old!) seems to prefer Mapstruct, sort of;
+       and I'm finding the JMapper docs pretty awful.  Gonna go research Mapstruct now.
+       
+       One good thing I learned from my foray into JMapper is how easy it is to load a resource from a jar file, something I
+       had forgotten.
 
      Don't want to annotate business-class objects with JMapper annotations because that introduces a dependency on
      JMapper in the business class, which we don't want to do ([[#maven-project-structure][onion core]] ([[onion-architecture]]), no dependencies, pls).
@@ -1360,6 +1368,45 @@ it?".  I just see the Java world as cleaner, really.
      of the jar, and we can pull it right back at run time via path ="META-INF/jmapper.xml"= (or whatever we named it).
 
      See https://stackoverflow.com/a/4585668.
+
+**** IN-PROGRESS Mapstruct
+
+     Looks like there are two pieces you need: mapstruct-core and mapstruct-processor.
+
+     Core is, I guess, the runtime part you need, and Processor is the compile-time part you need, /as a compiler
+     plugin/ (so I guess it doesn't stick around after that phase).
+
+     From the docs:
+
+     #+BEGIN_QUOTE
+     The general philosophy of MapStruct is to generate code which looks as much as possible as if you had written it
+     yourself from hand. In particular this means that the values are copied from source to target by plain
+     getter/setter invocations instead of reflection or similar.
+     #+END_QUOTE
+
+***** RESEARCH-TODO Using Builders
+      
+      Oh, nice:  MapStruct can use a builder to create an immutable object.  So, since it doesn't use reflection to
+      update read-only private fields (I always feel that's a bit sketchy), I can write a builder (or can that be
+      automatically generated, somehow?).  I guess the key is that, once an object is built, calling a setter (or some
+      setters) should result in an error.
+
+      (Hmm, the phrasing on the "multiple build methods" bullet item is terrible -- maybe this can be my first ever pull
+      request.)
+
+      Note that IntelliJ can create a builder for a constructor for an immutable object, and even update it (supposedly)
+      if you add new properties to the object.  This is some IDE magic I can live with.
+
+      If IntelliJ's builder supports the default =BuilderProvider=, we're golden.
+
+      Some info on specific builders that work with MapStruct:
+      https://mapstruct.org/documentation/stable/reference/html/#mapping-with-builders
+
+      It looks like we can use the builders created by Intellij with two changes:
+
+      1) Change the generated =createFoo()= method that creates a =Foo= to just =create()=; and
+      2) Add a static public getter to the target class that's being built to return the builder (TODO: hmm, how
+         threadsafe is this?)
 
 **** DONE Is this required when using JPQL?
      CLOSED: [2020-05-10 Sun 13:35]
