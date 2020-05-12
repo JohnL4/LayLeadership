@@ -12,5 +12,11 @@ target/
 README.html
 /ExcelConverter/Screen Shot 2018-03-19 at 10.12.58 PM.png
 /ExcelConverter/excel-converter-0-0.log.lck
-web-app-journal.html
 J2EE/
+
+# IntelliJ IDEA
+**/*.iml
+**/.idea/
+
+# VS Code
+**/.vscode/
