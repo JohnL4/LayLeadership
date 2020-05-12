@@ -529,7 +529,7 @@ it?".  I just see the Java world as cleaner, really.
     past was a single Maven project, but a project (parent or aggregate, packaging = =pom=) that has
     the following sub-projects shouldn't be too hard.
 
-    - business logic, with minimal dependencies (onion architecture core,
+    - <<onion-architecture>> business logic, with minimal dependencies (onion architecture core,
       (https://jeffreypalermo.com/2008/07/the-onion-architecture-part-2/ (the other parts are good,
       too)))
     - utilities I will probably use in other projects (again, minimal dependencies, and particularly
@@ -1351,7 +1351,7 @@ it?".  I just see the Java world as cleaner, really.
 **** IN-PROGRESS JMapper
 
      Don't want to annotate business-class objects with JMapper annotations because that introduces a dependency on
-     JMapper in the business class, which we don't want to do (onion core, no dependencies, pls).
+     JMapper in the business class, which we don't want to do ([[#maven-project-structure][onion core]] ([[onion-architecture]]), no dependencies, pls).
 
      So, we're trying an XML mapper.
 
