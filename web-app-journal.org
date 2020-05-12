@@ -1348,6 +1348,19 @@ it?".  I just see the Java world as cleaner, really.
     - https://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
     - https://www.baeldung.com/java-performance-mapping-frameworks
     
+**** IN-PROGRESS JMapper
+
+     Don't want to annotate business-class objects with JMapper annotations because that introduces a dependency on
+     JMapper in the business class, which we don't want to do (onion core, no dependencies, pls).
+
+     So, we're trying an XML mapper.
+
+     Turns out the classpath for a JAR file is... the root of the JAR, duh.  So, we can put the xml mapping (named
+     whatever we want) into =src/main/resources/META-INF= for the Data module, which puts it in =/META-INF= in the root
+     of the jar, and we can pull it right back at run time via path ="META-INF/jmapper.xml"= (or whatever we named it).
+
+     See https://stackoverflow.com/a/4585668.
+
 **** DONE Is this required when using JPQL?
      CLOSED: [2020-05-10 Sun 13:35]
 

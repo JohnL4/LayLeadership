@@ -86,8 +86,19 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
     {
         Collection<Member> retval = new ArrayList<>();
         EntityManager      em;
+        JMapper<Member, MemberDto> memberMapper;
 
-//        var mapper = new JMapper<Member, MemberDto>( Member.class, MemberDto.class,  "jmapper.xml");
+        try
+        {
+            memberMapper = new JMapper<>( Member.class, MemberDto.class, "META-INF/jmapper.xml" );
+        }
+        catch (Exception exc)
+        {
+            retval.add( new Member(
+                    -1, "Error", "Message", "911", "bad@badness.com",
+                    false, exc.toString() ) );
+            memberMapper = null;
+        }
 
         em = _entityMgrFactory.createEntityManager();
         var tx = em.getTransaction();
@@ -96,10 +107,13 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
                                              .getResultList();
         for (var memberDto : memberDtos)
         {
-            var member = new Member( memberDto.getId(), memberDto.getFirstName(), memberDto.getLastName(),
+            Member member;
+            if (memberMapper == null)
+                member = new Member( memberDto.getId(), memberDto.getFirstName(), memberDto.getLastName(),
                                      memberDto.getPhoneNumber(), memberDto.getEmailAddress(), memberDto.isActive(),
                                      memberDto.getComments() );
-//            var member = mapper.getDestination( memberDto );
+            else
+                member = memberMapper.getDestination( memberDto );
             retval.add( member );
         }
         tx.commit();
