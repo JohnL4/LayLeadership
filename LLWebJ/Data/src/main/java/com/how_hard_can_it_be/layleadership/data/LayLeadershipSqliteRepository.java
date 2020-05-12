@@ -1,5 +1,6 @@
 package com.how_hard_can_it_be.layleadership.data;
 
+import com.googlecode.jmapper.JMapper;
 import com.how_hard_can_it_be.layleadership.business.Member;
 import com.how_hard_can_it_be.layleadership.service_interfaces.LayLeadershipRepository;
 
@@ -86,17 +87,11 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
         Collection<Member> retval = new ArrayList<>();
         EntityManager      em;
 
-//        if (_entityMgrFactory == null)
-//        {
-//            _entityMgrFactory = Persistence.createEntityManagerFactory( "LayLeadership" );
-//            retval.add( new Member(
-//                    -1, "Warning", "Message", "911", "badness@bad.com", false,
-//                    "EntityManagerFactory did not already exist; required explicit creation in code" ) );
-//        } else
-//            retval.add( new Member(
-//                    -1, "Info", "Message", "411", "okness@ok.com", false,
-//                    "EntityManagerFactory DID already exist; no need to create in code" ) );
+//        var mapper = new JMapper<Member, MemberDto>( Member.class, MemberDto.class,  "jmapper.xml");
+
         em = _entityMgrFactory.createEntityManager();
+        var tx = em.getTransaction();
+        tx.begin(); // Totally unnecessary for a read.
         Collection<MemberDto> memberDtos = em.createQuery( "SELECT m FROM Member m", MemberDto.class )
                                              .getResultList();
         for (var memberDto : memberDtos)
@@ -104,9 +99,12 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
             var member = new Member( memberDto.getId(), memberDto.getFirstName(), memberDto.getLastName(),
                                      memberDto.getPhoneNumber(), memberDto.getEmailAddress(), memberDto.isActive(),
                                      memberDto.getComments() );
+//            var member = mapper.getDestination( memberDto );
             retval.add( member );
         }
+        tx.commit();
         em.close();
         return retval;
     }
+
 }

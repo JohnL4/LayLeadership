@@ -1161,12 +1161,21 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
        Supposedly, SQLite gets a lot more efficient if you can wrap writes in a transaction.  This is probably also tied
        up with the [[#jpql-fetch-plan][fetch plans]].
 
-****** IN-PROGRESS Injection of Persistent Unit via annotations, w/out code (even a =@PostConstruct= method)
+       Looks like just calling =EntityManager.getTransaction()= works.  At least, the code runs w/out error.
+
+****** DONE Injection of Persistent Unit via annotations, w/out code (even a =@PostConstruct= method)
+       CLOSED: [2020-05-10 Sun 13:34]
        :PROPERTIES:
        :CUSTOM_ID: making-weld-process-data-jar
        :END:
 
-       So, we currently are able to have code create an EntityManager via direct reference to JNDI DataSource, which, I
+       - State "HOLD"       from "IN-PROGRESS" [2020-05-10 Sun 12:51] \\
+         Giving up.  Maybe it's because Tomcat isn't a full-blown EE container, even though I /am/ using CDI
+         (Weld).
+
+       Everything I read says this is impossible with Tomcat, so I guess I should give up and move on.
+
+       We currently are able to have code create an EntityManager via direct reference to JNDI DataSource, which, I
        guess, is ok, but we should be able to use the =@PersistenceUnit= annotation w/out needing code to create the
        EntityManagerFactory.
 
@@ -1232,7 +1241,22 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
           at com.how_hard_can_it_be.layleadership.data.LayLeadershipSqliteRepository._entityMgrFactory(LayLeadershipSqliteRepository.java:0)
         #+END_EXAMPLE 
 
-****** TODO Preventing resource leaks
+******* DONE [#C] One final possibility: using a CDI producer method to wrap the code snippet
+        CLOSED: [2020-05-10 Sun 13:34]
+
+        - State "HOLD"       from "TODO"       [2020-05-10 Sun 13:22] \\
+          Probably not going to do it because I'd love to keep the current conditional code so I can drop it
+          in an EE container later and have it Just Work.
+
+        See https://www.sitepoint.com/cdi-weld-inject-jpa-hibernate-entity-managers/
+        
+****** DONE Preventing resource leaks
+       CLOSED: [2020-05-10 Sun 12:52]
+
+       - CLOSING NOTE [2020-05-10 Sun 12:52] \\
+         Calling =EntityManager.close()= at the end of a method seems to be sufficient, based on "Finer"
+         level logging in EclipseLink.  The Connection is returned to the pool /and/ transactions seem to be
+         handle (unit of work is released).
 
        Need to prevent JDBC connection leaks and other resource leaks by closing/releasing resources when appropriate
        (e.g., at the end of a query?).
@@ -1307,7 +1331,7 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
     Want to see what kinds of queries are actually created by whatever ORM system/framework I
     choose.
     
-*** TODO Object mappers (Domain/DTO)
+*** IN-PROGRESS Object mappers (Domain/DTO)
 
     Would be nice to be able to automagically transform DTOs to Domain objects and vice versa.
 
@@ -1322,9 +1346,17 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
     - https://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
     - https://www.baeldung.com/java-performance-mapping-frameworks
     
-**** TODO Is this required when using JPQL?
+**** DONE Is this required when using JPQL?
+     CLOSED: [2020-05-10 Sun 13:35]
 
-**** TODO Is this required when using Criteria?
+     - CLOSING NOTE [2020-05-10 Sun 13:35] \\
+       Yes, I think it is.  The JPA stuff just gets us DTO, not full-blown business objects.
+
+**** DONE Is this required when using Criteria?
+     CLOSED: [2020-05-10 Sun 13:36]
+
+     - CLOSING NOTE [2020-05-10 Sun 13:36] \\
+       Yes, I think it is.  The JPA stuff just gets us DTO, not full-blown business objects.
 
 * Operations
 

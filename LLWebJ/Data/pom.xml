@@ -62,5 +62,10 @@
           <version>2.0.SP1</version>
           <scope>provided</scope>
       </dependency>
+      <dependency>
+          <groupId>com.googlecode.jmapper-framework</groupId>
+          <artifactId>jmapper-core</artifactId>
+          <version>1.6.1.CR2</version>
+      </dependency>
   </dependencies>
 </project>

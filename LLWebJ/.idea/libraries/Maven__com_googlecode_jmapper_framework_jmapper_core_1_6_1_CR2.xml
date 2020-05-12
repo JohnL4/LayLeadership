@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.googlecode.jmapper-framework:jmapper-core:1.6.1.CR2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/googlecode/jmapper-framework/jmapper-core/1.6.1.CR2/jmapper-core-1.6.1.CR2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/googlecode/jmapper-framework/jmapper-core/1.6.1.CR2/jmapper-core-1.6.1.CR2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/googlecode/jmapper-framework/jmapper-core/1.6.1.CR2/jmapper-core-1.6.1.CR2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
