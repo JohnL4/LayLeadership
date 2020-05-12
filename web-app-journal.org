@@ -47,27 +47,30 @@
   The initial plans for this project are in [[file:README.org][README.org]].  (At
   https://github.com/JohnL4/LayLeadership.)
 
-[fn:1] Well... Most developers in the Microsoft world seem to have the attitude that if something
+[fn:1] I'd be happy to find an exception to this, but... in my experience, most developers in the Microsoft world seem
+to have the attitude that if something
 isn't created by Microsoft or endorsed by them, it's not worth their attention.  So, that whole
 open-source world mostly just leaves them cold.  I know things have changed recently and MS has
 Turned Over a Whole New Leaf, but the attitudes of the zillions of developers haven't really
 changed, and there's still, even now, a ton of baggage.  Even now, open source is only cool because
 Microsoft has endorsed it.  \\
 \\
-The Microsoft world is still stuck with old Microsoft decisions from decades ago, and the result is
+The Microsoft world is still dealing with old Microsoft decisions from decades ago, and the result is
 still a bit hacky (mixed-mode compilations, anyone? interop libraries?). \\
 \\
 *Also...* the Java world seems to proceed mostly from specification to implementation (with really
-good javadocs), while the Microsoft world is more "whatever Microsoft implemented, that's the
+good javadocs[fn:2]), while the Microsoft world is more "whatever Microsoft implemented, that's the
 standard, and we just have to hope they documented it well and why would anybody else re-implement
 it?".  I just see the Java world as cleaner, really.
+
+[fn:2] Well, /mostly/.
 
 ** More emo blather about "why Java"
 
    (You can skip this; it's information-free.)
 
    Some people will ask "Why Java?  Why not Node or Ruby [do people still say that?] or Kotlin or Go
-   or serverless or C# [seriously?[fn:2]] or Blazor or /<superior framework I haven't heard of
+   or serverless or C# [seriously?[fn:3]] or Blazor or /<superior framework I haven't heard of
    yet>/?  Java EE is /h-a-a-a-a-r-r-r-d/ [Barbie voice]."
 
    Because:
@@ -86,8 +89,7 @@ it?".  I just see the Java world as cleaner, really.
      things I've seen recently with various social-activism groups is a call for "web development".
      Wouldn't it be spiffy to pretty much immediately plunk down a complete, well-formed solution?
 
-[fn:2] Yeah, yeah, Mono, Linux, yada yada.  Seriously?  Why should I fight both Microsoft AND some
-open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
+[fn:3] I understand some folks like the idea of Mono on Linux, but that just seems like buying trouble.
 
 ** A note on horrible colors in source code
 
