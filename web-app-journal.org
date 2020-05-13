@@ -32,8 +32,7 @@
   various sections and I'm problem-solving.
 
   A very long time ago (15 years??), I was a semi-competent Java web-app programmer, and I'd like to
-  get back to that.  I've spent enough time in the Microsoft world, which has a different
-  character[fn:1], and I miss the Java world.
+  get back to that.  Or at least play around with it.
 
   My background is Java from the 90s (yes, it's that old) and early 2000s.  I worked for a startup
   that made a web app in the days before "Web 2.0", and we were poor and crude.  (We did survive the
@@ -47,30 +46,12 @@
   The initial plans for this project are in [[file:README.org][README.org]].  (At
   https://github.com/JohnL4/LayLeadership.)
 
-[fn:1] I'd be happy to find an exception to this, but... in my experience, most developers in the Microsoft world seem
-to have the attitude that if something
-isn't created by Microsoft or endorsed by them, it's not worth their attention.  So, that whole
-open-source world mostly just leaves them cold.  I know things have changed recently and MS has
-Turned Over a Whole New Leaf, but the attitudes of the zillions of developers haven't really
-changed, and there's still, even now, a ton of baggage.  Even now, open source is only cool because
-Microsoft has endorsed it.  \\
-\\
-The Microsoft world is still dealing with old Microsoft decisions from decades ago, and the result is
-still a bit hacky (mixed-mode compilations, anyone? interop libraries?). \\
-\\
-*Also...* the Java world seems to proceed mostly from specification to implementation (with really
-good javadocs[fn:2]), while the Microsoft world is more "whatever Microsoft implemented, that's the
-standard, and we just have to hope they documented it well and why would anybody else re-implement
-it?".  I just see the Java world as cleaner, really.
-
-[fn:2] Well, /mostly/.
-
 ** More emo blather about "why Java"
 
    (You can skip this; it's information-free.)
 
    Some people will ask "Why Java?  Why not Node or Ruby [do people still say that?] or Kotlin or Go
-   or serverless or C# [seriously?[fn:3]] or Blazor or /<superior framework I haven't heard of
+   or serverless or C# or Blazor or /<superior framework I haven't heard of
    yet>/?  Java EE is /h-a-a-a-a-r-r-r-d/ [Barbie voice]."
 
    Because:
@@ -88,8 +69,6 @@ it?".  I just see the Java world as cleaner, really.
      /quickly/, a well-structured web-app solution for whatever situation.  For example, one of the
      things I've seen recently with various social-activism groups is a call for "web development".
      Wouldn't it be spiffy to pretty much immediately plunk down a complete, well-formed solution?
-
-[fn:3] I understand some folks like the idea of Mono on Linux, but that just seems like buying trouble.
 
 ** A note on horrible colors in source code
 
@@ -1384,8 +1363,12 @@ it?".  I just see the Java world as cleaner, really.
      getter/setter invocations instead of reflection or similar.
      #+END_QUOTE
 
-***** RESEARCH-TODO Using Builders
+***** DONE Using Builders
+      CLOSED: [2020-05-13 Wed 11:47]
       
+      - CLOSING NOTE [2020-05-13 Wed 11:47] \\
+        Seems thread-safe enough.
+
       Oh, nice:  MapStruct can use a builder to create an immutable object.  So, since it doesn't use reflection to
       update read-only private fields (I always feel that's a bit sketchy), I can write a builder (or can that be
       automatically generated, somehow?).  I guess the key is that, once an object is built, calling a setter (or some
@@ -1402,8 +1385,28 @@ it?".  I just see the Java world as cleaner, really.
       Some info on specific builders that work with MapStruct:
       https://mapstruct.org/documentation/stable/reference/html/#mapping-with-builders
 
+      (FreeBuilder looks pretty good, actually.  https://github.com/inferred/FreeBuilder)
+
       It looks like we can use the builders created by Intellij by adding a static public getter to the target class
-      that's being built to return the builder (TODO: hmm, how threadsafe is this?)
+      that's being built to return the builder.
+
+      Hmm, how threadsafe is this?  Answer:  I think it's ok, actually.  The static builder-provider method news up an
+      instance of the builder and hands it off to be used to build an instance of the class it's building, so that seems
+      safe enough.  The single instance in the interface is set at class load-time (I guess), so there's no race
+      condition there.  And it's only ever used to refer through to the "map" method, which is itself threadsafe, since
+      it only uses local variables.
+
+***** TODO Split MapStruct use out of "Data" module?
+
+      Honestly, I don't know.  Seems like arguments can be made both ways.
+
+      Leave in Data module:
+      - DTOs don't leak out of Data module.  Repositories in Data module produce only business objects.
+      - If we move it out, where do we put it?  "Svc" module?  Then that module starts to become an octopus, maybe
+        (although there's not much in it now, so... shrug).
+
+      Move out of Data module:
+      - Less logic/complexity in Data module, which just handles d/b access.
 
 **** DONE Is this required when using JPQL?
      CLOSED: [2020-05-10 Sun 13:35]
@@ -1416,6 +1419,12 @@ it?".  I just see the Java world as cleaner, really.
 
      - CLOSING NOTE [2020-05-10 Sun 13:36] \\
        Yes, I think it is.  The JPA stuff just gets us DTO, not full-blown business objects.
+
+*** Builders
+
+    Like FreeBuilder.
+
+    Useful for when you really don't want a no-arg constructor because you want (some) immutable members.
 
 * Operations
 
