@@ -1,6 +1,0 @@
-<jmapper>
-    <class name="com.how_hard_can_it_be.layleadership.business.Member">
-        <attribute name="Id"><value name="Id"></value></attribute>
-        <attribute name="LastName"><value name="LastName"></value></attribute>
-    </class>
-</jmapper>

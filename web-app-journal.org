@@ -1312,7 +1312,11 @@
     Want to see what kinds of queries are actually created by whatever ORM system/framework I
     choose.
     
-*** IN-PROGRESS Object mappers (Domain/DTO)
+*** DONE Object mappers (Domain/DTO)
+    CLOSED: [2020-05-13 Wed 21:30]
+
+    - CLOSING NOTE [2020-05-13 Wed 21:30] \\
+      Chose MapStruct.
 
     Would be nice to be able to automagically transform DTOs to Domain objects and vice versa.
 
@@ -1328,8 +1332,11 @@
     - https://www.baeldung.com/java-performance-mapping-frameworks
     - https://www.reddit.com/r/java/comments/dt86ul/best_object_mapping_frameworks_for_java/?utm_medium=android_app&utm_source=share
     
-**** HOLD JMapper
+**** DONE JMapper
+     CLOSED: [2020-05-13 Wed 21:30]
 
+     - CLOSING NOTE [2020-05-13 Wed 21:30] \\
+       Chose MapStruct.
      - State "HOLD"       from "IN-PROGRESS" [2020-05-12 Tue 09:40] \\
        Maybe I won't use this, in lieu of Mapstruct.  Recent Reddit post (6 months old!) seems to prefer Mapstruct, sort of;
        and I'm finding the JMapper docs pretty awful.  Gonna go research Mapstruct now.
@@ -1348,7 +1355,8 @@
 
      See https://stackoverflow.com/a/4585668.
 
-**** IN-PROGRESS Mapstruct
+**** DONE Mapstruct
+     CLOSED: [2020-05-13 Wed 21:29]
 
      Looks like there are two pieces you need: mapstruct-core and mapstruct-processor.
 
@@ -1396,7 +1404,10 @@
       condition there.  And it's only ever used to refer through to the "map" method, which is itself threadsafe, since
       it only uses local variables.
 
-***** TODO Split MapStruct use out of "Data" module?
+***** HOLD Split MapStruct use out of "Data" module?
+
+      - State "HOLD"       from "TODO"       [2020-05-13 Wed 21:27] \\
+        Decided to leave it for now.
 
       Honestly, I don't know.  Seems like arguments can be made both ways.
 
