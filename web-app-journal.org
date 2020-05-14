@@ -725,6 +725,46 @@
 
     - https://javadoc.io/
 
+* Development environments
+
+** Emacs
+
+   The old standby.  This works if you're trying to get a handle on the various source files you need to juggle without
+   getting confused by the magic stuff the IDEs do, but does get cumbersome after a while.
+
+** Visual Studio Code
+
+   I tried this for a while, but Microsoft's affair with Red Hat (which owns JBoss) meant that JBoss/Eclipse plugins
+   started to sneak in, and I have a pretty bad taste in my mouth after struggling with JBoss "magic" in Eclipse.  No
+   thanks.
+
+** JetBrains
+
+   Off we go, to the land of more-or-less pure Java.
+
+*** IN-PROGRESS JPA connection through JNDI-resident DataSource
+
+    JPA =persistence.xml= (in =Data= module) specifies:
+
+    #+BEGIN_SRC xml
+      <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+      <non-jta-data-source>java:comp/env/jdbc/LayLeadership</non-jta-data-source>
+    #+END_SRC
+
+    and =context.xml= (in =Web= module) specifies:
+
+    #+BEGIN_SRC xml
+      <Resource name="jdbc/LayLeadership"
+                auth="Container"
+                type="javax.sql.DataSource"
+                driverClassName="org.sqlite.JDBC"
+                url="jdbc:sqlite:/usr/local/var/LayLeadership/layleadership.db"
+                />
+    #+END_SRC
+
+    So I need to find a way to either connect through all that (and there is no JNDI available unless this is deployed
+    onto Tomcat) or connect just via the connection url.
+
 * Version Control
 ** Git mechanics
 

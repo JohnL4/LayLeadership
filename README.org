@@ -328,9 +328,23 @@
 
    Requires tracking... date of use???  Needs a history table???  Maybe a rolling history table
    w/dates and a max. number of rows.
+* Server APIs required
+
+ #+BEGIN_SRC sql
+   select m.FirstName as llFirstName
+          , m.LastName as llLastName
+          , 
+       from LayLeadershipCommitteeMember llcm
+           join Member m on m.MemberId = llcm.MemberId
+           left join ContactTask ct on t.Assignee = llcm.MemberId
+           left join Member cm on cm.MemberId = ct.MemberId
+ #+END_SRC 
+
 * Server
 
   Something something Java.  Serve on a different port than the wiki?  Different process?
+
+  See [[file:web-app-journal.org][web-app-journal.org]]
 
 * Database
 
@@ -342,3 +356,5 @@
 
   Or some sort of AWS relational d/b.
   
+  See [[file:web-app-journal.org][web-app-journal.org]]
+
