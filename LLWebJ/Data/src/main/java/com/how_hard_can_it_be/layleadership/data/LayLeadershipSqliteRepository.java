@@ -1,9 +1,7 @@
 package com.how_hard_can_it_be.layleadership.data;
 
-import com.googlecode.jmapper.JMapper;
 import com.how_hard_can_it_be.layleadership.business.Activity;
 import com.how_hard_can_it_be.layleadership.business.Member;
-import com.how_hard_can_it_be.layleadership.business.MemberBuilder;
 import com.how_hard_can_it_be.layleadership.service_interfaces.LayLeadershipRepository;
 
 import javax.annotation.PostConstruct;
@@ -63,14 +61,15 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
             Collection<Member> retval = new ArrayList<>();
             while (rs.next())
             {
-                retval.add( new Member(
-                        rs.getLong( "MemberId" )
-                        , rs.getString( "FirstName" )
-                        , rs.getString( "LastName" )
-                        , rs.getString( "PhoneNumber" )
-                        , rs.getString( "EmailAddress" )
-                        , rs.getBoolean( "Active" )
-                        , rs.getString( "Comments" ) ) );
+                retval.add(new Member.MemberBuilder()
+                                   .setId(rs.getLong("MemberId"))
+                                   .setFirstName(rs.getString("FirstName"))
+                                   .setLastName(rs.getString("LastName"))
+                                   .setPhoneNumber(rs.getString("PhoneNumber"))
+                                   .setEmailAddress(rs.getString("EmailAddress"))
+                                   .setActive(rs.getBoolean("Active"))
+                                   .setComments(rs.getString("Comments"))
+                                   .createMember());
             }
             return retval;
         }

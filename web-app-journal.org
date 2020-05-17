@@ -1199,7 +1199,8 @@
 
       - [X] Need a =persistence.xml=.
         - Non-JTA datasource is specified with full JNDI path: =java:comp/env/jdbc/LayLeadership=.
-        - Each entity DTO class declared in the persistence unit (TODO: or none?  And depend on scanning?)
+        - Each entity DTO class declared in the persistence unit.  (Although, it would appear that we can simply rely on
+          the current project's .jar file being scanned for entity classes.)
         - Note that declaring the actual jar name (e.g., =Data-1.0-SNAPSHOT.jar=) does /not/ seem to be necessary, and,
           due to a bug in IntelliJ IDEA, breaks that IDE's JPQL scratchpad.
       - [X] Need a persistence unit

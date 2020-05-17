@@ -8,6 +8,11 @@ public enum ActivityType
     Unspecified,
 
     /**
+     * Should only see this on a deserialization failure from the d/b (data integrity failure, basically).
+     */
+    Unknown,
+
+    /**
      * Activity is a committee.
      */
     Committee,

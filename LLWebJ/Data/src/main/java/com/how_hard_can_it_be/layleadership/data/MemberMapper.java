@@ -5,10 +5,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-/**
- * TODO: move to somewhere else (Svc?).  Maybe mapping shouldn't be in the Data module, and we can just let Data handle
- * d/b access.
- */
 @Mapper
 public interface MemberMapper
 {

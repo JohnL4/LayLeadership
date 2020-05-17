@@ -177,6 +177,22 @@ implementing on a real server with a "real" database.
 
     (Do these really need to be configurable?)
     
+** EnumReference
+
+   =enum= dictionary, basically.  Some columns are actually populated with enums.  We store the numeric value of the
+   enum in the column and EnumReference can be used to determine what that numeric value means (i.e., what /name/ it
+   translates to).
+
+   For a language like C#, that's the end of the story -- we present the numeric value to the mapping layer (in C#) and
+   it gets turned into an instance of the enum.
+
+   For a language like Java in which the enum doesn't translate to a numeric value, we can use EnumReference to look up
+   the numeric value we stored in the d/b (our own d/b-level mapping of enum to integer) and present the /name/ to the
+   mapping layer (in Java), and the /name/ gets transformed into an instance of the enum w/out going through an integer.
+
+   This means the name must be exactly the Java enum in string form (i.e., without spaces or special characters,
+   conforming to the rules for a host language (Java) identifier).
+
 * Storyboards
 
 ** Initial
