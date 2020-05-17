@@ -69,36 +69,40 @@
    - Result :: Explicit focus on results. :)
    - NextTask :: Don't know if we can automatically create records or not. Use Zapier?
 
-** [MemberCommitteeHistory]
+** MemberActivityHistory -- Rename to MemberActivity?
 
-   n-to-n.  Maybe, for the purposes of AirTable, we want the member-history tables combined, so they
+   n-to-n.  Maybe, for the purposes of AirTable[fn:1], we want the member-history tables combined, so they
    can be presented in one stream.  Bad d/b design, but oh well.  Note that a member can serve
-   multiple times on the same committee.
+   multiple times on the same activity.
 
-   The idea being that we don't want to overload or fatigue members with committees.
+   The idea being that we don't want to overload or fatigue members with activitys.
 
    Note that this data is probably already available in the regular church database.
 
    - Member ::
-   - Committee ::
+   - Activity ::
    - StartDate ::
    - EndDate ::
-   - Notes :: Any (confidential) notes on that member's tenure on that committee.
+   - Notes :: Any (confidential) notes on that member's tenure on that activity.
 
-** [Committee]
+[fn:1] We don't care about AirTable -- not bending ourselves into a pretzel to satisfy its rules, since we're
+implementing on a real server with a "real" database.
+
+** [Activity]
 
    May not be necessary.  Church committee.  Can also cover other efforts, like Sunday school
    teacher or "Habitat organizer".
 
    - Name ::
-   - Blurb :: description of committee, for use in recruiting.  Really, the type of standard things we'd like to put in
+   - Type :: Committee, Sunday School (leader), Organizer/Contact (Habitat, ZOE)
+   - Blurb :: description of activity, for use in recruiting.  Really, the type of standard things we'd like to put in
               blurbs should be separate fields, so we can make sure to get them covered for all committees.
    - MeetingsPerYear :: assumption: 1-2-hour meetings
    - ExtraHoursPerMonth :: time required outside of meetings
 
-** [CommitteeMember?]
+** [ActivityMember?]
 
-   Not sure we need this (almost certain we don't), but it would be n-to-n.  See also MemberCommitteeHistory.
+   Not sure we need this (almost certain we don't), but it would be n-to-n.  See also MemberActivityHistory.
 
    - StartDate ::
    - EndDate :: 
@@ -125,7 +129,9 @@
                     MemberContactHistory notes/result.  Nullable.  If present, member's name will be
                     a hyperlink in the action list that will yield a popup containing this info.
 
-** LayLeadershipCommitteeMember
+** LayLeadershipCommitteeMember?
+
+   Maybe just join with a special activity ("Lay Leadership")
 
    Church members who are on the Lay Leadership committee.
 

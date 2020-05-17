@@ -529,6 +529,13 @@
     - maven-archetype-quickstart (parent and jar-type subs)
     - maven-archetype-webapp (probably just need one of these)
 
+    #+BEGIN_SRC bash
+      mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes   \
+                             -DarchetypeArtifactId=maven-archetype-quickstart \
+                             -DgroupId=com.how_hard_can_it_be                 \
+                             -DartifactId=jpql-repl
+    #+END_SRC 
+
     #+BEGIN_QUOTE 
     (Note: there might be some scary warnings at the beginning about HTTPS being required, but it works
     ok for setting up the initial project.  In my case, they came from my old =.m2= repository, and
@@ -563,6 +570,16 @@
          <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
        </properties>
      #+END_SRC
+
+**** dependency scope
+
+     See https://maven.apache.org/pom.html#Dependencies
+
+     - compile :: Available in all classpaths
+     - provided :: Referenced dependency doesn't need to be packaged w/the output of Maven because it will already been
+       present in the container at deploy-time.
+     - runtime :: Not required for compilation but must be present at run-time.
+     - test :: Referenced dependency is only needed at unit-test time (or up until then)
 
 **** How to define servlets (where the source code goes)
 
@@ -742,7 +759,17 @@
 
    Off we go, to the land of more-or-less pure Java.
 
-*** IN-PROGRESS JPA connection through JNDI-resident DataSource
+*** DONE JPA connection through JNDI-resident DataSource
+    CLOSED: [2020-05-16 Sat 17:37]
+
+    - CLOSING NOTE [2020-05-16 Sat 17:37] \\
+      Answer: in code, in a =@PostConstruct= method in the repository bean after it's been initialized by the CDI container,
+      add some code to create the =EntityManagerFactory= from the class =javax.persistence.Persistence=.  The argument to the
+      method =createEntityManagerFactory()= is exactly the string name of the Persistence Unit declared in =persistence.xml=.
+      
+      Since I added a =@PersistenceUnit= annotation to the =_entityMgrFactory= private data member (hoping that the container
+      would take care of me), I made the =@PostConstruct= logic conditional on =_entityMgrFactory= being null (which it
+      appears to always be, in Tomcat).
 
     JPA =persistence.xml= (in =Data= module) specifies:
 
@@ -764,6 +791,9 @@
 
     So I need to find a way to either connect through all that (and there is no JNDI available unless this is deployed
     onto Tomcat) or connect just via the connection url.
+
+    At development-time, there is no running Tomcat instance, but in IntelliJ IDEA you can actually create your own
+    DataSource using the connection url from =context.xml= and connect it to the persistence unit that way.
 
 * Version Control
 ** Git mechanics
@@ -1169,6 +1199,9 @@
 
       - [X] Need a =persistence.xml=.
         - Non-JTA datasource is specified with full JNDI path: =java:comp/env/jdbc/LayLeadership=.
+        - Each entity DTO class declared in the persistence unit (TODO: or none?  And depend on scanning?)
+        - Note that declaring the actual jar name (e.g., =Data-1.0-SNAPSHOT.jar=) does /not/ seem to be necessary, and,
+          due to a bug in IntelliJ IDEA, breaks that IDE's JPQL scratchpad.
       - [X] Need a persistence unit
         - In =persistence.xml=, above.
       - [X] Need the right JARs
@@ -1282,6 +1315,28 @@
        Need to prevent JDBC connection leaks and other resource leaks by closing/releasing resources when appropriate
        (e.g., at the end of a query?).
 
+****** TODO Addition of a 2nd DTO Entity isn't working
+
+       I didn't have any trouble (well...) reading the =Member= entity, but I have an error reading the =Activity=
+       entity, both in IDEA and at runtime in Tomcat.  I didn't see the stack trace until I commented out the code that
+       was reading the =Member= entity.  Prior to that, the code was just mysteriously bailing out.  I guess the thrown
+       exception somehow got swallowed.  Anyway, after commenting out the =Member= access, this is what I see:
+
+       #+BEGIN_EXAMPLE
+         java.lang.IllegalArgumentException: An exception occurred while creating a query in EntityManager: 
+         Exception Description: Problem compiling [SELECT a FROM Activity a]. 
+         [14, 22] The abstract schema type 'Activity' is unknown.
+
+         Root Cause
+
+         Exception [EclipseLink-0] (Eclipse Persistence Services - 2.7.6.v20200131-b7c997804f): org.eclipse.persistence.exceptions.JPQLException
+         Exception Description: Problem compiling [SELECT a FROM Activity a]. 
+         [14, 22] The abstract schema type 'Activity' is unknown.
+       #+END_EXAMPLE
+
+       I think this is because I didn't declare the =ActivityDto= class in =persistence.xml=, like I did with
+       =MemberDto=. 
+
 *** DONE Lombok
     CLOSED: [2020-04-13 Mon 15:18]
 
@@ -1337,7 +1392,13 @@
 **** Integration
 **** Database?
 *** Code coverage during [automated] testing
-*** Command pattern, undo/redo trees
+*** Command pattern, undo/redo trees, persistent data structure
+
+    Also need to think about how to structure the data to allow undo (at least) across sessions or users.
+
+    If we mark a member as no longer on a committee and that needs undoing, can we implement that?  Do we want to?  Or
+    do we just create another MemberActivity record?
+
 *** Well-known APIs
 **** Documenting with something like Swagger
 *** Data export/import

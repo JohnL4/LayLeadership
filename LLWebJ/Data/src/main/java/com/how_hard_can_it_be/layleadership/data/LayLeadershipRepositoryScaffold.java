@@ -3,6 +3,7 @@ package com.how_hard_can_it_be.layleadership.data;
 import java.util.Collection;
 import java.util.ArrayList;
 
+import com.how_hard_can_it_be.layleadership.business.Activity;
 import com.how_hard_can_it_be.layleadership.business.Member;
 import com.how_hard_can_it_be.layleadership.business.MemberBuilder;
 import com.how_hard_can_it_be.layleadership.service_interfaces.LayLeadershipRepository;
@@ -26,5 +27,10 @@ public class LayLeadershipRepositoryScaffold implements LayLeadershipRepository
    {
       throw new RuntimeException( "not implemented");
 //      return null;
+   }
+
+   @Override
+   public Collection<Activity> getAllActivitiesJPQL() {
+      throw new RuntimeException( "not implemented");
    }
 }

@@ -19,27 +19,31 @@ public class MembersServlet extends HttpServlet
     private LayLeadershipRepository _layLeadershipRepository;
 
     @Override
-    protected void doGet( HttpServletRequest aRequest, HttpServletResponse aResponse )
+    protected void doGet(HttpServletRequest aRequest, HttpServletResponse aResponse)
             throws IOException
     {
         PrintWriter out = aResponse.getWriter();
-//        try
-//        {
-//            var members = _layLeadershipRepository.getAllMembers();
-            var members = _layLeadershipRepository.getAllMembersJPQL();
+        aResponse.setContentType("application/json");
+        aResponse.setCharacterEncoding("UTF-8");
+        var gson = new Gson();
+        String jsonString;
 
-            var gson             = new Gson();
-            var membersJsonString = gson.toJson( members );
-            aResponse.setContentType( "application/json" );
-            aResponse.setCharacterEncoding( "UTF-8" );
-            out.println( "Memebers via JPQL:" );
-            out.println();
-            out.print( membersJsonString );
-//        }
-//        catch (SQLException exc)
-//        {
-//            out.print( exc.toString());
-//        }
+        var members = _layLeadershipRepository.getAllMembersJPQL();
+
+        jsonString = gson.toJson(members);
+        out.println("Memebers via JPQL:");
+        out.println();
+        out.println(jsonString);
+        out.println();
+
+        var activities = _layLeadershipRepository.getAllActivitiesJPQL();
+
+        jsonString = gson.toJson(activities);
+        out.println("Activities via JPQL:");
+        out.println();
+        out.println(jsonString);
+        out.println();
+
         out.flush();
     }
 }

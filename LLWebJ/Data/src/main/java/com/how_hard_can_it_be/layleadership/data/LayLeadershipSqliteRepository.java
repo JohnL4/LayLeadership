@@ -1,6 +1,7 @@
 package com.how_hard_can_it_be.layleadership.data;
 
 import com.googlecode.jmapper.JMapper;
+import com.how_hard_can_it_be.layleadership.business.Activity;
 import com.how_hard_can_it_be.layleadership.business.Member;
 import com.how_hard_can_it_be.layleadership.business.MemberBuilder;
 import com.how_hard_can_it_be.layleadership.service_interfaces.LayLeadershipRepository;
@@ -85,7 +86,6 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
     {
         Collection<Member> retval = new ArrayList<>();
         EntityManager      em;
-        JMapper<Member, MemberDto> memberMapper;
 
         em = _entityMgrFactory.createEntityManager();
         var tx = em.getTransaction();
@@ -94,13 +94,26 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
                                              .getResultList();
         for (var memberDto : memberDtos)
         {
-//            Member member;
-//            member = new Member( memberDto.getId(), memberDto.getFirstName(), memberDto.getLastName(),
-//                                 memberDto.getPhoneNumber(), memberDto.getEmailAddress(), memberDto.isActive(),
-//                                 memberDto.getComments() );
-//            retval.add( member );
             retval.add( MemberMapper.INSTANCE.memberDtoToMember( memberDto ));
         }
+        tx.commit();
+        em.close();
+        return retval;
+    }
+
+    @Override
+    public Collection<Activity> getAllActivitiesJPQL()
+    {
+        Collection<Activity> retval = new ArrayList<>();
+        EntityManager em;
+
+        em = _entityMgrFactory.createEntityManager();
+        var tx = em.getTransaction();
+        tx.begin();
+        Collection<ActivityDto> dtos = em.createQuery("SELECT a FROM Activity a", ActivityDto.class)
+                .getResultList();
+        for (var dto : dtos)
+            retval.add( ActivityMapper.INSTANCE.activityDtoToActivity( dto));
         tx.commit();
         em.close();
         return retval;
