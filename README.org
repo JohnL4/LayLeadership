@@ -69,36 +69,40 @@
    - Result :: Explicit focus on results. :)
    - NextTask :: Don't know if we can automatically create records or not. Use Zapier?
 
-** [MemberCommitteeHistory]
+** MemberActivityHistory -- Rename to MemberActivity?
 
-   n-to-n.  Maybe, for the purposes of AirTable, we want the member-history tables combined, so they
+   n-to-n.  Maybe, for the purposes of AirTable[fn:1], we want the member-history tables combined, so they
    can be presented in one stream.  Bad d/b design, but oh well.  Note that a member can serve
-   multiple times on the same committee.
+   multiple times on the same activity.
 
-   The idea being that we don't want to overload or fatigue members with committees.
+   The idea being that we don't want to overload or fatigue members with activitys.
 
    Note that this data is probably already available in the regular church database.
 
    - Member ::
-   - Committee ::
+   - Activity ::
    - StartDate ::
    - EndDate ::
-   - Notes :: Any (confidential) notes on that member's tenure on that committee.
+   - Notes :: Any (confidential) notes on that member's tenure on that activity.
 
-** [Committee]
+[fn:1] We don't care about AirTable -- not bending ourselves into a pretzel to satisfy its rules, since we're
+implementing on a real server with a "real" database.
+
+** [Activity]
 
    May not be necessary.  Church committee.  Can also cover other efforts, like Sunday school
    teacher or "Habitat organizer".
 
    - Name ::
-   - Blurb :: description of committee, for use in recruiting.  Really, the type of standard things we'd like to put in
+   - Type :: Committee, Sunday School (leader), Organizer/Contact (Habitat, ZOE)
+   - Blurb :: description of activity, for use in recruiting.  Really, the type of standard things we'd like to put in
               blurbs should be separate fields, so we can make sure to get them covered for all committees.
    - MeetingsPerYear :: assumption: 1-2-hour meetings
    - ExtraHoursPerMonth :: time required outside of meetings
 
-** [CommitteeMember?]
+** [ActivityMember?]
 
-   Not sure we need this (almost certain we don't), but it would be n-to-n.  See also MemberCommitteeHistory.
+   Not sure we need this (almost certain we don't), but it would be n-to-n.  See also MemberActivityHistory.
 
    - StartDate ::
    - EndDate :: 
@@ -125,7 +129,9 @@
                     MemberContactHistory notes/result.  Nullable.  If present, member's name will be
                     a hyperlink in the action list that will yield a popup containing this info.
 
-** LayLeadershipCommitteeMember
+** LayLeadershipCommitteeMember?
+
+   Maybe just join with a special activity ("Lay Leadership")
 
    Church members who are on the Lay Leadership committee.
 
@@ -171,6 +177,22 @@
 
     (Do these really need to be configurable?)
     
+** EnumReference
+
+   =enum= dictionary, basically.  Some columns are actually populated with enums.  We store the numeric value of the
+   enum in the column and EnumReference can be used to determine what that numeric value means (i.e., what /name/ it
+   translates to).
+
+   For a language like C#, that's the end of the story -- we present the numeric value to the mapping layer (in C#) and
+   it gets turned into an instance of the enum.
+
+   For a language like Java in which the enum doesn't translate to a numeric value, we can use EnumReference to look up
+   the numeric value we stored in the d/b (our own d/b-level mapping of enum to integer) and present the /name/ to the
+   mapping layer (in Java), and the /name/ gets transformed into an instance of the enum w/out going through an integer.
+
+   This means the name must be exactly the Java enum in string form (i.e., without spaces or special characters,
+   conforming to the rules for a host language (Java) identifier).
+
 * Storyboards
 
 ** Initial
@@ -328,9 +350,23 @@
 
    Requires tracking... date of use???  Needs a history table???  Maybe a rolling history table
    w/dates and a max. number of rows.
+* Server APIs required
+
+ #+BEGIN_SRC sql
+   select m.FirstName as llFirstName
+          , m.LastName as llLastName
+          , 
+       from LayLeadershipCommitteeMember llcm
+           join Member m on m.MemberId = llcm.MemberId
+           left join ContactTask ct on t.Assignee = llcm.MemberId
+           left join Member cm on cm.MemberId = ct.MemberId
+ #+END_SRC 
+
 * Server
 
   Something something Java.  Serve on a different port than the wiki?  Different process?
+
+  See [[file:web-app-journal.org][web-app-journal.org]]
 
 * Database
 
@@ -342,3 +378,5 @@
 
   Or some sort of AWS relational d/b.
   
+  See [[file:web-app-journal.org][web-app-journal.org]]
+

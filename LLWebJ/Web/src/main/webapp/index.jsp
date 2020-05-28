@@ -24,9 +24,13 @@ This is a list of working servlets so far:
       <td>Servlet that uses CDI to inject a bean.  Also does not route back to a JSP, so there's no EL fooferaw.</td>
     </tr>
     <tr>
-      <td><a href="members">Members</a></td>
+      <td><a href="data">Data</a></td>
       <td>Servlet that queries a JDBC database using a CDI bean, and dumps the results to the output stream as JSON.
       </td>
+    </tr>
+    <tr>
+      <td><a href="jndiDump">JNDI Dump</a></td>
+      <td>Servlet dumps out JNDI environment</td>
     </tr>
   </table>
 </p>

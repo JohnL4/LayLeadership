@@ -26,14 +26,18 @@
 
 * Overview
 
+  @@html:<span style="border: 1px solid red;">@@
+  ON HIATUS -- I have taken a new job that is soaking up my energy at the moment, so this side project is going on
+  hiatus until further notice.
+  @@html:</span>@@ 
+
   I'm going to keep a diary of my effort to develop a web app from soup to nuts.  This is an emacs
   org-mode file that's part "living document" and part journal.  I skip around a bit in writing it
   because /this part/ goes with /that part/, but it's also a bit chronological as you get into
   various sections and I'm problem-solving.
 
   A very long time ago (15 years??), I was a semi-competent Java web-app programmer, and I'd like to
-  get back to that.  I've spent enough time in the Microsoft world, which has a different
-  character[fn:1], and I miss the Java world.
+  get back to that.  Or at least play around with it.
 
   My background is Java from the 90s (yes, it's that old) and early 2000s.  I worked for a startup
   that made a web app in the days before "Web 2.0", and we were poor and crude.  (We did survive the
@@ -47,27 +51,12 @@
   The initial plans for this project are in [[file:README.org][README.org]].  (At
   https://github.com/JohnL4/LayLeadership.)
 
-[fn:1] Well... Most developers in the Microsoft world seem to have the attitude that if something
-isn't created by Microsoft or endorsed by them, it's not worth their attention.  So, that whole
-open-source world mostly just leaves them cold.  I know things have changed recently and MS has
-Turned Over a Whole New Leaf, but the attitudes of the zillions of developers haven't really
-changed, and there's still, even now, a ton of baggage.  Even now, open source is only cool because
-Microsoft has endorsed it.  \\
-\\
-The Microsoft world is still stuck with old Microsoft decisions from decades ago, and the result is
-still a bit hacky (mixed-mode compilations, anyone? interop libraries?). \\
-\\
-*Also...* the Java world seems to proceed mostly from specification to implementation (with really
-good javadocs), while the Microsoft world is more "whatever Microsoft implemented, that's the
-standard, and we just have to hope they documented it well and why would anybody else re-implement
-it?".  I just see the Java world as cleaner, really.
-
 ** More emo blather about "why Java"
 
    (You can skip this; it's information-free.)
 
    Some people will ask "Why Java?  Why not Node or Ruby [do people still say that?] or Kotlin or Go
-   or serverless or C# [seriously?[fn:2]] or Blazor or /<superior framework I haven't heard of
+   or serverless or C# or Blazor or /<superior framework I haven't heard of
    yet>/?  Java EE is /h-a-a-a-a-r-r-r-d/ [Barbie voice]."
 
    Because:
@@ -85,9 +74,6 @@ it?".  I just see the Java world as cleaner, really.
      /quickly/, a well-structured web-app solution for whatever situation.  For example, one of the
      things I've seen recently with various social-activism groups is a call for "web development".
      Wouldn't it be spiffy to pretty much immediately plunk down a complete, well-formed solution?
-
-[fn:2] Yeah, yeah, Mono, Linux, yada yada.  Seriously?  Why should I fight both Microsoft AND some
-open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
 ** A note on horrible colors in source code
 
@@ -269,7 +255,7 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
    (So I deployed exactly what I'm building with.)
 
-*** TODO JNDI directory entry vs. injected CDI bean
+*** TODO JNDI directory entry vs. injected CDI bean; lifecycle mgmt & JDBC connection pooling
 
     Note that, when the dust has settled, this is not a CDI bean we're injecting somewhere, but it is a JNDI directory
     entry that we'll look up to get a =DataSource=, at some point (possibly during CDI injection of a bean; TODO: CDI
@@ -527,7 +513,7 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
     past was a single Maven project, but a project (parent or aggregate, packaging = =pom=) that has
     the following sub-projects shouldn't be too hard.
 
-    - business logic, with minimal dependencies (onion architecture core,
+    - <<onion-architecture>> business logic, with minimal dependencies (onion architecture core,
       (https://jeffreypalermo.com/2008/07/the-onion-architecture-part-2/ (the other parts are good,
       too)))
     - utilities I will probably use in other projects (again, minimal dependencies, and particularly
@@ -547,6 +533,13 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
     - maven-archetype-quickstart (parent and jar-type subs)
     - maven-archetype-webapp (probably just need one of these)
+
+    #+BEGIN_SRC bash
+      mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes   \
+                             -DarchetypeArtifactId=maven-archetype-quickstart \
+                             -DgroupId=com.how_hard_can_it_be                 \
+                             -DartifactId=jpql-repl
+    #+END_SRC 
 
     #+BEGIN_QUOTE 
     (Note: there might be some scary warnings at the beginning about HTTPS being required, but it works
@@ -582,6 +575,16 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
          <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
        </properties>
      #+END_SRC
+
+**** dependency scope
+
+     See https://maven.apache.org/pom.html#Dependencies
+
+     - compile :: Available in all classpaths
+     - provided :: Referenced dependency doesn't need to be packaged w/the output of Maven because it will already been
+       present in the container at deploy-time.
+     - runtime :: Not required for compilation but must be present at run-time.
+     - test :: Referenced dependency is only needed at unit-test time (or up until then)
 
 **** How to define servlets (where the source code goes)
 
@@ -743,6 +746,59 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
     - https://search.maven.org/ (i.e., Sonatype, a major supporter of Maven)
 
     - https://javadoc.io/
+
+* Development environments
+
+** Emacs
+
+   The old standby.  This works if you're trying to get a handle on the various source files you need to juggle without
+   getting confused by the magic stuff the IDEs do, but does get cumbersome after a while.
+
+** Visual Studio Code
+
+   I tried this for a while, but Microsoft's affair with Red Hat (which owns JBoss) meant that JBoss/Eclipse plugins
+   started to sneak in, and I have a pretty bad taste in my mouth after struggling with JBoss "magic" in Eclipse.  No
+   thanks.
+
+** JetBrains
+
+   Off we go, to the land of more-or-less pure Java.
+
+*** DONE JPA connection through JNDI-resident DataSource
+    CLOSED: [2020-05-16 Sat 17:37]
+
+    - CLOSING NOTE [2020-05-16 Sat 17:37] \\
+      Answer: in code, in a =@PostConstruct= method in the repository bean after it's been initialized by the CDI container,
+      add some code to create the =EntityManagerFactory= from the class =javax.persistence.Persistence=.  The argument to the
+      method =createEntityManagerFactory()= is exactly the string name of the Persistence Unit declared in =persistence.xml=.
+      
+      Since I added a =@PersistenceUnit= annotation to the =_entityMgrFactory= private data member (hoping that the container
+      would take care of me), I made the =@PostConstruct= logic conditional on =_entityMgrFactory= being null (which it
+      appears to always be, in Tomcat).
+
+    JPA =persistence.xml= (in =Data= module) specifies:
+
+    #+BEGIN_SRC xml
+      <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+      <non-jta-data-source>java:comp/env/jdbc/LayLeadership</non-jta-data-source>
+    #+END_SRC
+
+    and =context.xml= (in =Web= module) specifies:
+
+    #+BEGIN_SRC xml
+      <Resource name="jdbc/LayLeadership"
+                auth="Container"
+                type="javax.sql.DataSource"
+                driverClassName="org.sqlite.JDBC"
+                url="jdbc:sqlite:/usr/local/var/LayLeadership/layleadership.db"
+                />
+    #+END_SRC
+
+    So I need to find a way to either connect through all that (and there is no JNDI available unless this is deployed
+    onto Tomcat) or connect just via the connection url.
+
+    At development-time, there is no running Tomcat instance, but in IntelliJ IDEA you can actually create your own
+    DataSource using the connection url from =context.xml= and connect it to the persistence unit that way.
 
 * Version Control
 ** Git mechanics
@@ -1012,7 +1068,8 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
         the context in a =<Context>= element in =context.xml=.  As opposed to some post on
         StackOverflow saying to put it in =GlobalNamingResources= in =server.xml=.
 
-**** IN-PROGRESS Connect to SQLite d/b using JDBC
+**** DONE Connect to SQLite d/b using JDBC
+     CLOSED: [2020-05-09 Sat 17:06]
 
 ***** DONE sqlite driver
       CLOSED: [2020-04-19 Sun 22:04]
@@ -1039,8 +1096,11 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
       And... why are we doing this with bean injection?  Because we don't know which d/b we'll be hitting (sqlite,
       postgres, ...), so we can't hardcode the d/b connection setup.
 
-**** HOLD Java Persistence API (JPA)
+**** DONE Java Persistence API (JPA)
+     CLOSED: [2020-05-09 Sat 22:12]
 
+     - CLOSING NOTE [2020-05-09 Sat 22:12] \\
+       CDI problem fixed last weekend, I think.
      - State "HOLD"       from "TODO"       [2020-05-03 Sun 19:54] \\
        Straightening out problem with CDI bean and interface in separate modules.
 
@@ -1062,11 +1122,17 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
       neutral with respect to vendor SQL dialects.)
 
 ****** TODO fetch plans
+       :PROPERTIES:
+       :CUSTOM_ID: jpql-fetch-plan
+       :END:
 
        Need to figure out how to get these (and whether they're useful).
 
-****** HOLD EclipseLink
+****** DONE EclipseLink
+       CLOSED: [2020-05-09 Sat 17:07]
 
+       - CLOSING NOTE [2020-05-09 Sat 17:07] \\
+         persistence.xml needs full JNDI path to DataSource: java:comp/env/jdbc/LayLeadership.
        - State "HOLD"       from "TODO"       [2020-05-03 Sun 19:53] \\
          Need to figure out what went wrong with my attempt to separate CDI bean from interface
          (module-wise).
@@ -1077,17 +1143,206 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
        <2020-04-25 Sat> Ok, now that I've got a working JDBC query, time to turn it into a JPQL query.
 
-******* Add EclipseLink to build/deploy
+******* DONE Download & install
+        CLOSED: [2020-05-09 Sat 17:08]
+        :PROPERTIES:
+        :CUSTOM_ID: eclipselink-download-and-install
+        :END:
 
+        - CLOSING NOTE [2020-05-09 Sat 17:08] \\
+          Yes, this can be done with Maven dependencies (i.e, just a POM edit, no need for separate download).
+        - State "HOLD"       from "TODO"       [2020-05-02 Sat 19:50] \\
+          Waiting to see if just adding Maven dependencies handles this.
+
+        +Bleah, maybe I should start with a simple JDBC connection before I go crazy on JPA.+ Well,
+        I'm working on it now (<2020-05-02 Sat>).  I probably don't need an explicit
+        downlod-and-install step; I can probably just add Maven dependencies and be off to the
+        races.
         
+******* DONE Add EclipseLink to build/deploy
+        CLOSED: [2020-05-09 Sat 17:09]
 
-******* Use EclipseLink in code
+        - CLOSING NOTE [2020-05-09 Sat 17:09] \\
+          See [[file:web-app-journal.org::#eclipselink-download-and-install][Download & install]].
+
+******* DONE Use EclipseLink in code
+        CLOSED: [2020-05-09 Sat 22:35]
        
-******* TODO Download & install
+        - CLOSING NOTE [2020-05-09 Sat 22:35] \\
+          Might want to consider using Derby instead of Sqlite, since EclipseLink doesn't exactly support Sqlite.
+        - CLOSING NOTE [2020-05-09 Sat 17:09] \\
+          Don't need EclipseLink, per se, just standard JPA (JPQL) stuff.
 
-        Bleah, maybe I should start with a simple JDBC connection before I go crazy on JPA.  Also,
-        maybe just doing this with Maven dependencies will suffice.
+        Note, though, that you probably need to specify the exact database you're connecting to, so EclipseLink can know
+        which dialect of SQL to utter.
+
+        #+BEGIN_EXAMPLE
+          [EL Info]: connection: 2020-05-09 22:02:11.498--Thread(Thread[http-nio-8080-exec-23,5,main])--Not able to detect
+          platform for vendor name [SQLite[3.30.1, 3]]. Defaulting to
+          [org.eclipse.persistence.platform.database.DatabasePlatform]. The database dialect used may not match with the database
+          you are using. Please explicitly provide a platform using property "eclipselink.target-database".
+        #+END_EXAMPLE
+
+        (Word-wrapped for readability.  In real life, this is one long log line.)
+
+        Here are the possible values for =eclipselink.target-database=:
+        https://www.eclipse.org/eclipselink/documentation/2.7/jpa/extensions/persistenceproperties_ref.htm#target-database.
+
+        Note that Sqlite isn't an option, but Derby is.  Argument for using Derby instead of Sqlite.  Interesting
+        StackOverflow post:  https://stackoverflow.com/a/12496259.
+
+***** DONE Hooking it up
+      CLOSED: [2020-05-09 Sat 17:39]
+
+      - CLOSING NOTE [2020-05-09 Sat 17:39] \\
+        This is done, but I'm not super-happy with it.  The =@PersistenceUnit= annotation in the Sqlite repository isn't
+        working, so we have to have Java code in the SqliteRepository, and an explicit reference to the JNDI DataSource
+        via a full JNDI path in the =non-jta-data-source= element in =persistence.xml=.  See [[#making-weld-process-data-jar][Injection of Persistent
+        Unit via annotations, w/out code]].
+
+      JTA is not available in Tomcat.  So we need a =non-jta-data-source=.
+
+      - [X] Need a =persistence.xml=.
+        - Non-JTA datasource is specified with full JNDI path: =java:comp/env/jdbc/LayLeadership=.
+        - Each entity DTO class declared in the persistence unit.  (Although, it would appear that we can simply rely on
+          the current project's .jar file being scanned for entity classes.)
+        - Note that declaring the actual jar name (e.g., =Data-1.0-SNAPSHOT.jar=) does /not/ seem to be necessary, and,
+          due to a bug in IntelliJ IDEA, breaks that IDE's JPQL scratchpad.
+      - [X] Need a persistence unit
+        - In =persistence.xml=, above.
+      - [X] Need the right JARs
+        - Maven dependencies suffice.
+
+****** TODO Transactions
+
+       There is a java:comp/UserTransaction binding at run-time, with type =org.apache.naming.TransactionRef=.  We
+       should find out if that's useful (surely yes, right?).
+
+       Supposedly, SQLite gets a lot more efficient if you can wrap writes in a transaction.  This is probably also tied
+       up with the [[#jpql-fetch-plan][fetch plans]].
+
+       Looks like just calling =EntityManager.getTransaction()= works.  At least, the code runs w/out error.
+
+****** DONE Injection of Persistent Unit via annotations, w/out code (even a =@PostConstruct= method)
+       CLOSED: [2020-05-10 Sun 13:34]
+       :PROPERTIES:
+       :CUSTOM_ID: making-weld-process-data-jar
+       :END:
+
+       - State "HOLD"       from "IN-PROGRESS" [2020-05-10 Sun 12:51] \\
+         Giving up.  Maybe it's because Tomcat isn't a full-blown EE container, even though I /am/ using CDI
+         (Weld).
+
+       Everything I read says this is impossible with Tomcat, so I guess I should give up and move on.
+
+       We currently are able to have code create an EntityManager via direct reference to JNDI DataSource, which, I
+       guess, is ok, but we should be able to use the =@PersistenceUnit= annotation w/out needing code to create the
+       EntityManagerFactory.
+
+       #+BEGIN_SRC java
+         import javax.persistence.Persistence;
+
+         if (_entityMgrFactory == null)
+            _entityMgrFactory = Persistence.createEntityManagerFactory( "LayLeadership" );
+
+         EntityManager em = _entityMgrFactory.createEntityManager();
+       #+END_SRC
+
+       (Note: the above conditional code can go in a =@PostConstruct= method, and at least we're playing along with
+       CDI.)
+
+       Need to find out:
+
+       1) Whether this is even possible with Tomcat (which is not a full EE container) [answer: yes, it seems to be
+          possible], and, if so,
+       2) How to do it [see below].
+
+       (See https://www.logicbig.com/tutorials/java-ee-tutorial/jpa/entity-context.html, but it doesn't have any
+       immediate bearing on the current problem.)
+
+******* Do I need to include Weld as a dependecy in any module (e.g., =Data=) I want to get "cascading" injection in?  (Answer: NO.)
+
+        I tried it, and, for one brief shining moment, it was working, but I didn't understand why.  The next morning, I
+        remembered the bit about running =mvn clean= after changing module dependencies, so I did, and now... we're
+        broken again, even though I included the Weld dependency in the Data module.  So... yay?  Consistency?
+
+        Ah.  Ok, I figured out why it worked the 2nd time (duh):  The bean (=LayLeadershipSqliteRepository=) is
+        /application/ scoped, so, once I initialized it, it stayed initialized.  Duh.  (I'm actually kind of relieved I
+        understand at least this second mystery.)
+
+        So, the problem remains and I can take the Weld dependency out of Data (see yesterday's (<2020-05-09 Sat>)
+        stupid notes, below).
+
+******** Old notes from <2020-05-09 Sat>, mostly ignorable
+
+         YES.  Add the following dependency to the =Data= module POM, which is copied from the =Web= module POM (so we
+         don't get version-mismatch issues):
+
+         #+BEGIN_SRC xml
+           <dependency>
+             <groupId>org.jboss.weld.servlet</groupId>
+             <artifactId>weld-servlet-core</artifactId>
+             <version>3.1.4.Final</version>
+             <scope>runtime</scope>
+           </dependency>
+         #+END_SRC
+
+         Note that the word "servlet" in groupId and artifactId refers to the fact that Tomcat is a "servlet container",
+         in JBoss's terminology, as opposed to a full-blown Java/Jakarta EE container.
+
+         Why this works is beyond me.  It doesn't seem to include the Weld jars in the generated Data.jar.  Somehow, it
+         brings classes in the =Data.jar= into Weld's domain.
+
+******* Do I need to explicitly declare the =@PersistenceUnit= of type =EntityManagerFactory= an injection point with =@Inject=? Answer: NO)
+
+        #+BEGIN_EXAMPLE
+          Caused by: org.jboss.weld.exceptions.DeploymentException: WELD-001408: Unsatisfied dependencies for type EntityManagerFactory with qualifiers @Default
+          at injection point [BackedAnnotatedField] @Inject @PersistenceUnit com.how_hard_can_it_be.layleadership.data.LayLeadershipSqliteRepository._entityMgrFactory
+          at com.how_hard_can_it_be.layleadership.data.LayLeadershipSqliteRepository._entityMgrFactory(LayLeadershipSqliteRepository.java:0)
+        #+END_EXAMPLE 
+
+******* DONE [#C] One final possibility: using a CDI producer method to wrap the code snippet
+        CLOSED: [2020-05-10 Sun 13:34]
+
+        - State "HOLD"       from "TODO"       [2020-05-10 Sun 13:22] \\
+          Probably not going to do it because I'd love to keep the current conditional code so I can drop it
+          in an EE container later and have it Just Work.
+
+        See https://www.sitepoint.com/cdi-weld-inject-jpa-hibernate-entity-managers/
         
+****** DONE Preventing resource leaks
+       CLOSED: [2020-05-10 Sun 12:52]
+
+       - CLOSING NOTE [2020-05-10 Sun 12:52] \\
+         Calling =EntityManager.close()= at the end of a method seems to be sufficient, based on "Finer"
+         level logging in EclipseLink.  The Connection is returned to the pool /and/ transactions seem to be
+         handle (unit of work is released).
+
+       Need to prevent JDBC connection leaks and other resource leaks by closing/releasing resources when appropriate
+       (e.g., at the end of a query?).
+
+****** TODO Addition of a 2nd DTO Entity isn't working
+
+       I didn't have any trouble (well...) reading the =Member= entity, but I have an error reading the =Activity=
+       entity, both in IDEA and at runtime in Tomcat.  I didn't see the stack trace until I commented out the code that
+       was reading the =Member= entity.  Prior to that, the code was just mysteriously bailing out.  I guess the thrown
+       exception somehow got swallowed.  Anyway, after commenting out the =Member= access, this is what I see:
+
+       #+BEGIN_EXAMPLE
+         java.lang.IllegalArgumentException: An exception occurred while creating a query in EntityManager: 
+         Exception Description: Problem compiling [SELECT a FROM Activity a]. 
+         [14, 22] The abstract schema type 'Activity' is unknown.
+
+         Root Cause
+
+         Exception [EclipseLink-0] (Eclipse Persistence Services - 2.7.6.v20200131-b7c997804f): org.eclipse.persistence.exceptions.JPQLException
+         Exception Description: Problem compiling [SELECT a FROM Activity a]. 
+         [14, 22] The abstract schema type 'Activity' is unknown.
+       #+END_EXAMPLE
+
+       I think this is because I didn't declare the =ActivityDto= class in =persistence.xml=, like I did with
+       =MemberDto=. 
+
 *** DONE Lombok
     CLOSED: [2020-04-13 Mon 15:18]
 
@@ -1108,6 +1363,30 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
 **** Responsiveness, measured from the client
      
+**** CDI logging
+
+     See https://weld.cdi-spec.org/documentation/#7
+
+     Add the following to $CATALINA_HOME/conf/logging.properties:
+
+     : org.jboss.weld.level=FINE
+
+**** JPA (EclipseLink) logging
+
+     See https://wiki.eclipse.org/EclipseLink/Examples/JPA/Logging
+
+     Include the following in the persistence unit defined in =persistence.xml=:
+
+     #+BEGIN_SRC xml
+       <persistence-unit>
+         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+         <properties>
+           <!-- I think you need to specify the provider if you're going to use provider-specific settings like the following. -->
+           <property name="eclipselink.logging.level" value="FINEST"/>
+         </properties>
+       </persistence-unit>
+     #+END_SRC 
+
 *** Security & Griefing
 *** Documentation generation
 *** Automated testing
@@ -1119,7 +1398,13 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 **** Integration
 **** Database?
 *** Code coverage during [automated] testing
-*** Command pattern, undo/redo trees
+*** Command pattern, undo/redo trees, persistent data structure
+
+    Also need to think about how to structure the data to allow undo (at least) across sessions or users.
+
+    If we mark a member as no longer on a committee and that needs undoing, can we implement that?  Do we want to?  Or
+    do we just create another MemberActivity record?
+
 *** Well-known APIs
 **** Documenting with something like Swagger
 *** Data export/import
@@ -1134,7 +1419,11 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
     Want to see what kinds of queries are actually created by whatever ORM system/framework I
     choose.
     
-*** TODO Object mappers (Domain/DTO)
+*** DONE Object mappers (Domain/DTO)
+    CLOSED: [2020-05-13 Wed 21:30]
+
+    - CLOSING NOTE [2020-05-13 Wed 21:30] \\
+      Chose MapStruct.
 
     Would be nice to be able to automagically transform DTOs to Domain objects and vice versa.
 
@@ -1142,16 +1431,118 @@ open-source implementation of a Microsoft "spec" that has /almost/ no glitches?
 
     - MapStruct (https://mapstruct.org/)
     - modelmapper (http://modelmapper.org/)
-    - JMapper
+    - JMapper (https://jmapper-framework.github.io/jmapper-core/)
 
     See also:
 
     - https://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
     - https://www.baeldung.com/java-performance-mapping-frameworks
+    - https://www.reddit.com/r/java/comments/dt86ul/best_object_mapping_frameworks_for_java/?utm_medium=android_app&utm_source=share
     
-**** TODO Is this required when using JPQL?
+**** DONE JMapper
+     CLOSED: [2020-05-13 Wed 21:30]
 
-**** TODO Is this required when using Criteria?
+     - CLOSING NOTE [2020-05-13 Wed 21:30] \\
+       Chose MapStruct.
+     - State "HOLD"       from "IN-PROGRESS" [2020-05-12 Tue 09:40] \\
+       Maybe I won't use this, in lieu of Mapstruct.  Recent Reddit post (6 months old!) seems to prefer Mapstruct, sort of;
+       and I'm finding the JMapper docs pretty awful.  Gonna go research Mapstruct now.
+       
+       One good thing I learned from my foray into JMapper is how easy it is to load a resource from a jar file, something I
+       had forgotten.
+
+     Don't want to annotate business-class objects with JMapper annotations because that introduces a dependency on
+     JMapper in the business class, which we don't want to do ([[#maven-project-structure][onion core]] ([[onion-architecture]]), no dependencies, pls).
+
+     So, we're trying an XML mapper.
+
+     Turns out the classpath for a JAR file is... the root of the JAR, duh.  So, we can put the xml mapping (named
+     whatever we want) into =src/main/resources/META-INF= for the Data module, which puts it in =/META-INF= in the root
+     of the jar, and we can pull it right back at run time via path ="META-INF/jmapper.xml"= (or whatever we named it).
+
+     See https://stackoverflow.com/a/4585668.
+
+**** DONE Mapstruct
+     CLOSED: [2020-05-13 Wed 21:29]
+
+     Looks like there are two pieces you need: mapstruct-core and mapstruct-processor.
+
+     Core is, I guess, the runtime part you need, and Processor is the compile-time part you need, /as a compiler
+     plugin/ (so I guess it doesn't stick around after that phase).
+
+     From the docs:
+
+     #+BEGIN_QUOTE
+     The general philosophy of MapStruct is to generate code which looks as much as possible as if you had written it
+     yourself from hand. In particular this means that the values are copied from source to target by plain
+     getter/setter invocations instead of reflection or similar.
+     #+END_QUOTE
+
+***** DONE Using Builders
+      CLOSED: [2020-05-13 Wed 11:47]
+      
+      - CLOSING NOTE [2020-05-13 Wed 11:47] \\
+        Seems thread-safe enough.
+
+      Oh, nice:  MapStruct can use a builder to create an immutable object.  So, since it doesn't use reflection to
+      update read-only private fields (I always feel that's a bit sketchy), I can write a builder (or can that be
+      automatically generated, somehow?).  I guess the key is that, once an object is built, calling a setter (or some
+      setters) should result in an error.
+
+      (Hmm, the phrasing on the "multiple build methods" bullet item is terrible -- maybe this can be my first ever pull
+      request.)
+
+      Note that IntelliJ can create a builder for a constructor for an immutable object, and even update it (supposedly)
+      if you add new properties to the object.  This is some IDE magic I can live with.
+
+      If IntelliJ's builder supports the default =BuilderProvider=, we're golden.
+
+      Some info on specific builders that work with MapStruct:
+      https://mapstruct.org/documentation/stable/reference/html/#mapping-with-builders
+
+      (FreeBuilder looks pretty good, actually.  https://github.com/inferred/FreeBuilder)
+
+      It looks like we can use the builders created by Intellij by adding a static public getter to the target class
+      that's being built to return the builder.
+
+      Hmm, how threadsafe is this?  Answer:  I think it's ok, actually.  The static builder-provider method news up an
+      instance of the builder and hands it off to be used to build an instance of the class it's building, so that seems
+      safe enough.  The single instance in the interface is set at class load-time (I guess), so there's no race
+      condition there.  And it's only ever used to refer through to the "map" method, which is itself threadsafe, since
+      it only uses local variables.
+
+***** HOLD Split MapStruct use out of "Data" module?
+
+      - State "HOLD"       from "TODO"       [2020-05-13 Wed 21:27] \\
+        Decided to leave it for now.
+
+      Honestly, I don't know.  Seems like arguments can be made both ways.
+
+      Leave in Data module:
+      - DTOs don't leak out of Data module.  Repositories in Data module produce only business objects.
+      - If we move it out, where do we put it?  "Svc" module?  Then that module starts to become an octopus, maybe
+        (although there's not much in it now, so... shrug).
+
+      Move out of Data module:
+      - Less logic/complexity in Data module, which just handles d/b access.
+
+**** DONE Is this required when using JPQL?
+     CLOSED: [2020-05-10 Sun 13:35]
+
+     - CLOSING NOTE [2020-05-10 Sun 13:35] \\
+       Yes, I think it is.  The JPA stuff just gets us DTO, not full-blown business objects.
+
+**** DONE Is this required when using Criteria?
+     CLOSED: [2020-05-10 Sun 13:36]
+
+     - CLOSING NOTE [2020-05-10 Sun 13:36] \\
+       Yes, I think it is.  The JPA stuff just gets us DTO, not full-blown business objects.
+
+*** Builders
+
+    Like FreeBuilder.
+
+    Useful for when you really don't want a no-arg constructor because you want (some) immutable members.
 
 * Operations
 

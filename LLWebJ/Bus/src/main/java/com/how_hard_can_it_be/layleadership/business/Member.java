@@ -7,28 +7,29 @@ import java.util.Objects;
  */
 public class Member
 {
-    private final long    _id;
-    private       String  _firstName;
-    private       String  _lastName;
-    private       String  _phoneNumber;
-    private       String  _emailAddress;
+    private final long   _id;
+    private       String _firstName;
+    private       String _lastName;
+    private       String _phoneNumber;
+    private       String _emailAddress;
 
     /**
      * Deceased, moved, etc.
      */
-    private       boolean _active;
+    private boolean _active;
 
-    private       String  _comments;
+    private String _comments;
 
-    public Member( long aId, String aFirstName, String aLastName, String aPhoneNumber, String aEmailAddress,
-                   boolean aActive, String aComments )
+    private Member(
+            long anId, String aFirstName, String aLastName, String aPhoneNumber, String anEmailAddress,
+            boolean anActive, String aComments)
     {
-        _id           = aId;
+        _id           = anId;
         _firstName    = aFirstName;
         _lastName     = aLastName;
         _phoneNumber  = aPhoneNumber;
-        _emailAddress = aEmailAddress;
-        _active       = aActive;
+        _emailAddress = anEmailAddress;
+        _active       = anActive;
         _comments     = aComments;
     }
 
@@ -130,5 +131,69 @@ public class Member
                ", _active=" + _active +
                ", _comments='" + _comments + '\'' +
                '}';
+    }
+
+    public static MemberBuilder getMemberBuilder(){
+        return new MemberBuilder();
+    }
+
+    public static class MemberBuilder
+    {
+        private long _id;
+        private String  _firstName;
+        private String  _lastName;
+        private String  _phoneNumber;
+        private String  _emailAddress;
+        private boolean _Active;
+        private String  _comments;
+        private boolean _active;
+
+        public MemberBuilder setId(long aId )
+        {
+            _id = aId;
+            return this;
+        }
+
+        public MemberBuilder setFirstName(String aFirstName )
+        {
+            _firstName = aFirstName;
+            return this;
+        }
+
+        public MemberBuilder setLastName(String aLastName )
+        {
+            _lastName = aLastName;
+            return this;
+        }
+
+        public MemberBuilder setPhoneNumber(String aPhoneNumber )
+        {
+            _phoneNumber = aPhoneNumber;
+            return this;
+        }
+
+        public MemberBuilder setEmailAddress(String aEmailAddress )
+        {
+            _emailAddress = aEmailAddress;
+            return this;
+        }
+
+        public MemberBuilder setActive(boolean aActive )
+        {
+            _Active = aActive;
+            return this;
+        }
+
+        public MemberBuilder setComments(String aComments )
+        {
+            _comments = aComments;
+            return this;
+        }
+
+        public Member createMember()
+        {
+            return new Member( _id, _firstName, _lastName, _phoneNumber, _emailAddress, _Active, _comments );
+        }
+
     }
 }
