@@ -107,14 +107,23 @@ public class LayLeadershipSqliteRepository implements LayLeadershipRepository
         EntityManager em;
 
         em = _entityMgrFactory.createEntityManager();
-        var tx = em.getTransaction();
-        tx.begin();
+//        var tx = em.getTransaction();
+//        tx.begin();
         Collection<ActivityDto> dtos = em.createQuery("SELECT a FROM Activity a", ActivityDto.class)
                 .getResultList();
         for (var dto : dtos)
             retval.add( ActivityMapper.INSTANCE.activityDtoToActivity( dto));
-        tx.commit();
+//        tx.commit();
         em.close();
+        return retval;
+    }
+
+    @Override
+    public Collection<Object> getAllInternalObjectsJPQL(String anEntityName)
+    {
+        Collection<Object> retval = new ArrayList<>();
+        EntityManager em = _entityMgrFactory.createEntityManager();
+
         return retval;
     }
 

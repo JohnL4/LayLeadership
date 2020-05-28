@@ -13,4 +13,12 @@ public interface LayLeadershipRepository
    Collection<Member> getAllMembersJPQL();
 
    Collection<Activity> getAllActivitiesJPQL();
+
+   /**
+    * Awful hack to return a collection of "internal" objects from the persistence layer to a client so they can
+    * do whatever they want with it.  Don't do this in real life.
+    * @param anEntityName
+    * @return
+    */
+   Collection<Object> getAllInternalObjectsJPQL( String anEntityName);
 }

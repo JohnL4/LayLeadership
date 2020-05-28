@@ -26,6 +26,11 @@
 
 * Overview
 
+  @@html:<span style="border: 1px solid red;">@@
+  ON HIATUS -- I have taken a new job that is soaking up my energy at the moment, so this side project is going on
+  hiatus until further notice.
+  @@html:</span>@@ 
+
   I'm going to keep a diary of my effort to develop a web app from soup to nuts.  This is an emacs
   org-mode file that's part "living document" and part journal.  I skip around a bit in writing it
   because /this part/ goes with /that part/, but it's also a bit chronological as you get into

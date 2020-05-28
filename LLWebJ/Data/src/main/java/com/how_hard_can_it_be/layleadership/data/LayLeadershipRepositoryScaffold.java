@@ -44,4 +44,10 @@ public class LayLeadershipRepositoryScaffold implements LayLeadershipRepository
    public Collection<Activity> getAllActivitiesJPQL() {
       throw new RuntimeException( "not implemented");
    }
+
+   @Override
+   public Collection<Object> getAllInternalObjectsJPQL(String anEntityName)
+   {
+      return null;
+   }
 }
