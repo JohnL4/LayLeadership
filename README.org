@@ -1,5 +1,7 @@
 * Overview
 
+  /(Quick note: in mid-May of 2020, I was laid off and found another job (which I really enjoy).  In the ensuing hustle and intensity of the new job, this project fell (temporarily) dormant. I still hope to get back to it.)/
+
   This repository is intended to capture my notes and various bits of software I write to help my Methodist church's Lay
   Leadership committee.
 
